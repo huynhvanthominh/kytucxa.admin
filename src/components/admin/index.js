@@ -1,0 +1,41 @@
+import { Redirect, Route, Switch } from "react-router-dom";
+import NotFoundPage from "../error/not-found-page";
+import LayoutAdmin from "../layouts/admin/layout-admin";
+import InputMaterial from "./input-material";
+import MaterialTypeAdd from "./material-type/material-type-add";
+import MaterialTypeList from "./material-type/material-type-list";
+import MaterialTypeView from "./material-type/material-type-view";
+import MaterialAdd from "./material/material-add";
+import MaterialList from "./material/material-list";
+
+const IndexAdmin = () => {
+  return (
+    <LayoutAdmin>
+      <Switch>
+        <Route path="/Admin/Material-Type/Edit/:id">
+          <MaterialTypeView />
+        </Route>
+        <Route path="/Admin/Material-Type/Add">
+          <MaterialTypeAdd />
+        </Route>
+        <Route path="/Admin/Material-Type">
+          <MaterialTypeList />
+        </Route>
+        <Route path="/Admin/Material">
+          <MaterialList />
+        </Route>
+        <Route path="/Admin/MaterialAdd">
+          <MaterialAdd />
+        </Route>
+        <Route path="/Admin/Input">
+          <InputMaterial />
+        </Route>
+        <Route path="/">
+          <Redirect to="/Admin/Material-Type" />
+        </Route>
+      </Switch>
+    </LayoutAdmin>
+  );
+};
+
+export default IndexAdmin;

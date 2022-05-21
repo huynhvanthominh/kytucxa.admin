@@ -1,0 +1,17 @@
+li {
+    list-style: none;
+}
+
+@import url("size.scss");
+@import url("button.scss");
+@import url("card.scss");
+@import url("table.scss");
+
+.input-file {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}

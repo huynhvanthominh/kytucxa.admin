@@ -1,0 +1,42 @@
+.layout-admin {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+
+  .menu {
+    width: 300px;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-right: 0.25rem solid #0066ff;
+    z-index: 999;
+    background: white;
+  }
+
+  .header-main {
+    width: 100%;
+    height: 100%;
+    margin-left: 300px;
+
+    .header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: calc(100% - 300px);
+      height: 50px;
+      border-bottom: 0.25rem solid #0066ff
+    }
+  }
+
+  .main {
+    margin-top: 50px;
+    height: calc(100% - 50px);
+    width: 100%;
+    overflow: auto;
+    padding: 1rem;
+    position: relative;
+  }
+}
