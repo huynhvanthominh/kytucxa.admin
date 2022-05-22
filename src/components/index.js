@@ -6,7 +6,7 @@ import NotFoundPage from "./error/not-found-page";
 import "../css/index.scss"
 
 const Index = () => {
-  return (
+  return (  
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
