@@ -7,20 +7,20 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { pink } from "@mui/material/colors";
 import { Button } from "@mui/material";
-import { materialTypeService } from "../../../services/material-type.service"
+import { materialTypeService } from "../../../apis/material-type.api"
 import Alert from "../../../customs/Alert-custom"
 import ALERT from "../../../consts/status-alter"
 import MESSAGE from "../../../consts/message-alert"
-import { uploadFileService } from "../../../services/upload-file.service";
+import { uploadFileService } from "../../../apis/upload-file.api";
 import PATH from "../../../consts/path";
 import TableDateCustom from "../../../customs/Table-Date-custom";
 import { TOAST } from "../../../customs/toast-custom"
 const MaterialTypeList = () => {
 
     const initSelected = {
-        idLoaivatchat: null,
-        tenLoaivatchat: "",
-        hinhanh: ""
+        id: null,
+        name: "",
+        media: ""
     }
 
     const title = "Loại vật chất";
@@ -41,19 +41,19 @@ const MaterialTypeList = () => {
         fetchMaterialType();
     }, []);
 
-    const confirmDelete = (data: any, row: any) => {
+    const confirmDelete = (_, row) => {
         setSelected(row)
-        setMessage(`Có chắc muốn xóa "${row?.tenLoaivatchat}"`)
+        setMessage(`Có chắc muốn xóa "${row?.name}"`)
         setStatus(ALERT.QUESTION)
         setIsShow(true);
     }
     const handleDelete = async () => {
         try {
-            const { data } = await materialTypeService.delete(selected.idLoaivatchat)
-            if (data.affectedRows > 0) {
+            const { data } = await materialTypeService.delete(selected.id)
+            if (data.status) {
                 TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
                 fetchMaterialType();
-                uploadFileService.removeImage(selected.hinhanh)
+                uploadFileService.removeImage(selected.media, "materialType")
             } else {
                 TOAST.EROR(MESSAGE.DELETE_ERROR)
             }
@@ -85,33 +85,34 @@ const MaterialTypeList = () => {
                     {{
                         columns: [
                             {
+                                search: false,
                                 title: "",
-                                data: "hinhanh",
+                                data: "media",
                                 className: "justify-content-center",
-                                render: (data: any) => <div className="table-img"><img src={PATH.IMAGES + data} alt="" /></div>
+                                render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
                             },
                             {
                                 title: "Tên loại vật chất",
-                                data: "tenLoaivatchat",
+                                data: "name",
                                 sort: true,
                             },
                             {
                                 title: "Ngày tạo",
                                 className: "justify-content-center",
-                                data: "createAt",
+                                data: "createdAt",
                                 sort: true,
-                                render: (data: string) => <TableDateCustom date={data} />
+                                render: (data) => <TableDateCustom date={data} />
                             },
                             {
                                 title: "Ngày cập nhật",
                                 className: "justify-content-center",
-                                data: "updateAt",
+                                data: "updatedAt",
                                 sort: true,
-                                render: (data: string) => <TableDateCustom date={data} />
+                                render: (data) => <TableDateCustom date={data} />
                             },
                             {
                                 title: "",
-                                data: "idLoaivatchat",
+                                data: "id",
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-end">

@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-import { materialService } from "../../../services/material.service";
-import { materialTypeService } from "../../../services/material-type.service";
+import { materialService } from "../../../apis/material.api";
+import { materialTypeService } from "../../../apis/material-type.api";
 import Table from "../../themes/table/table";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
 import { pink } from "@mui/material/colors";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { LinkCustom } from "../../../customs/Link.Custom";
 import { TOAST } from "../../../customs/toast-custom"
 import Alert from "../../../customs/Alert-custom";
 import ALERT from "../../../consts/status-alter";
 import MESSAGE from "../../../consts/message-alert";
 import PATH from "../../../consts/path";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 const MaterialList = () => {
 
     const title = "Vật chất";
+    const history = useHistory();
     const { path } = useRouteMatch();
     const [materials, setMaterials] = useState([]);
     const [materialType, setMaterialType] = useState(-1)
@@ -31,7 +33,6 @@ const MaterialList = () => {
             const { data } = await materialTypeService.get();
             setMaterialTypes(data)
         }
-
         fetchMaterialType()
     }, [])
 
@@ -56,13 +57,13 @@ const MaterialList = () => {
 
     const confirm = (_, row) => {
         setSelected(row);
-        setMessage(`Có chắc mún xóa "${row.tenVatchat}"`);
+        setMessage(`Có chắc mún xóa "${row.name}"`);
         setIsShow(true);
     }
     const handleDelete = async () => {
         try {
-            const { data } = await materialService.delete(selected?.idVatchat);
-            if (data.affectedRows > 0) {
+            const { data } = await materialService.delete(selected?.id);
+            if (data.status) {
                 TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
                 getData();
             } else {
@@ -86,7 +87,7 @@ const MaterialList = () => {
                     >
                         <MenuItem value={-1}>Tất cả</MenuItem>
                         {
-                            materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.idLoaivatchat}>{materialType?.tenLoaivatchat}</MenuItem>)
+                            materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
                         }
                     </Select>
                 </FormControl>
@@ -116,27 +117,29 @@ const MaterialList = () => {
                         columns: [
                             {
                                 title: "",
-                                data: "hinhanh",
+                                search: false,
+                                data: "media",
                                 className: "justify-content-center",
-                                render: (data: any) => <div className="table-img"><img src={PATH.IMAGES + data} alt="" /></div>
+                                render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
                             },
                             {
                                 title: "Tên vật chất",
-                                data: "tenVatchat",
+                                data: "name",
                                 sort: true,
                             },
                             {
                                 title: "Tên loại vật chất",
-                                data: "tenLoaivatchat",
+                                data: "nameMaterialtype",
                                 sort: true,
                             },
                             {
                                 title: "",
-                                data: "idVatchat",
+                                data: "id",
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { }} variant="text"><EditIcon color="primary" /></Button>
+                                            <Button onClick={() => { history.push("/Admin/Detail-Material/" + data) }} variant="text"><RemoveRedEyeIcon color="success" /></Button>
+                                            <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>
                                     );

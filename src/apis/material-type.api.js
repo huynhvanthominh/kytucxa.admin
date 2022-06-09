@@ -4,9 +4,11 @@ const path = "/material-type/"
 
 const get = async () => await axios.get(path)
 
-const add = async (payload) => await axios.post(path, payload)
+const add = async (payload) => {
+    return await axios.post(path, payload)
+}
 
-const update = async (materialType) => axios.patch(path + materialType?.idLoaivatchat, materialType)
+const update = async (materialType) => axios.patch(path, materialType)
 
 const _delete = async (id) => await axios.delete(path + id)
 

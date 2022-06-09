@@ -59,7 +59,7 @@ export default function Menu() {
         <ListItemIcon>
           <InboxIcon />
         </ListItemIcon>
-        <ListItemText primary="Nhập và Hóa đơn" />
+        <ListItemText primary="Nhập và hóa đơn vật chất" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
@@ -81,7 +81,7 @@ export default function Menu() {
             sx={{ pl: 4 }}
             button
             component={React.forwardRef((props, ref) => (
-              <Link {...props} ref={ref} to={material}></Link>
+              <Link {...props} ref={ref} to={"/Admin/Bill-Material"}></Link>
             ))}
           >
             <ListItemIcon>

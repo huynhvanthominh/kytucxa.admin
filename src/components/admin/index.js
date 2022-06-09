@@ -1,12 +1,15 @@
 import { Redirect, Route, Switch } from "react-router-dom";
 import NotFoundPage from "../error/not-found-page";
 import LayoutAdmin from "../layouts/admin/layout-admin";
+import BillMaterial from "./bill-material/bill-material";
+import DetailMaterial from "./detai-material/detail-material";
 import InputMaterial from "./input-material";
 import MaterialTypeAdd from "./material-type/material-type-add";
 import MaterialTypeList from "./material-type/material-type-list";
 import MaterialTypeView from "./material-type/material-type-view";
 import MaterialAdd from "./material/material-add";
 import MaterialList from "./material/material-list";
+import MaterialView from "./material/material-view";
 
 const IndexAdmin = () => {
   return (
@@ -21,11 +24,20 @@ const IndexAdmin = () => {
         <Route path="/Admin/Material-Type">
           <MaterialTypeList />
         </Route>
+        <Route path="/Admin/Detail-Material/:id">
+          <DetailMaterial />
+        </Route>
+        <Route path="/Admin/Material/:id">
+          <MaterialView />
+        </Route>
         <Route path="/Admin/Material">
           <MaterialList />
         </Route>
         <Route path="/Admin/MaterialAdd">
           <MaterialAdd />
+        </Route>
+        <Route path="/Admin/Bill-Material">
+          <BillMaterial />
         </Route>
         <Route path="/Admin/Input">
           <InputMaterial />

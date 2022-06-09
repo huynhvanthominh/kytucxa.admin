@@ -63,11 +63,13 @@ const Table = ({ dataSource, children, ...props }) => {
         dataSource.filter((item) => {
           var show = false;
           for (let i = 0; i < columns.length; i++) {
-            let key = columns[i].data;
-            let string = item[key].toString().toUpperCase();
-            let stringChilren = search.toString().toUpperCase();
-            if (string.includes(stringChilren)) {
-              show = true;
+            if (columns[i].search !== false) {
+              let key = columns[i].data;
+              let string = item[key].toString().toUpperCase();
+              let stringChilren = search.toString().toUpperCase();
+              if (string.includes(stringChilren)) {
+                show = true;
+              }
             }
           }
           return show;
