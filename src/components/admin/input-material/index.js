@@ -8,11 +8,12 @@ import { materialService } from "../../../apis/material.api";
 import { TOAST } from "../../../customs/toast-custom";
 import { pink } from "@mui/material/colors";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import QRCode from "react-qr-code";
+import QRCode from "qrcode";
 import { toPng } from 'html-to-image';
 import Loading from "../../../customs/loading";
 import { billMaterialAPI } from "../../../apis/bill-material.api";
-
+import { uploadFileService } from "../../../apis/upload-file.api";
+import { formatMoney } from "../../../helps/formatMoney";
 const InputMaterial = () => {
     const [loading, setLoading] = useState(false);
     const [statuses, setStatuses] = useState([]);
@@ -89,8 +90,8 @@ const InputMaterial = () => {
                 {
                     material,
                     status,
-                    price,
-                    quantity
+                    price: parseFloat(price),
+                    quantity: parseInt(quantity)
                 }
             ])
             setMaterial("")
@@ -98,26 +99,6 @@ const InputMaterial = () => {
             setPrice(0)
             setQuantity(0)
         }
-    }
-
-    const handleCreate = () => {
-        data.forEach(item => {
-            console.log(item);
-        })
-        const qr = QRCodeRef.current.childNodes[0]
-        toPng(qr).then(data => {
-            var arr = data.split(','),
-                mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]),
-                n = bstr.length,
-                u8arr = new Uint8Array(n);
-
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            const file = new File([u8arr], "text.png", { status: mime });
-            console.log(file);
-        })
     }
 
     const createDetailBill = async (idBill) => {
@@ -130,22 +111,43 @@ const InputMaterial = () => {
                     quantity: +item.quantity,
                     price: +item.price,
                 }
+                const arrTmp = new Array(+item.quantity).fill(0);
 
-                await billMaterialAPI.createDetailBill(detailBill).then(rs => {
-                    for (let i = 0; i < +item.quantity; i++) {
-                        const detailMaterial = {
+                await billMaterialAPI.createDetailBill(detailBill).then(async rs => {
+                    let i = 0;
+                    arrTmp.forEach(async (_) => {
+                        i++;
+                        let detailMaterial = {
                             id: `${Date.now()}-${item.material}-${item.status}-${item.quantity}-${item.price}-${i}`,
-                            idDetailBill: rs.data.id
+                            idDetailBill: rs.data.id,
+                            qr: ""
                         }
+                        const base64 = await QRCode.toDataURL(detailMaterial.id, {
+                            errorCorrectionLevel: 'H',
+                        })
+                        console.log(base64);
+                        var arr = base64.split(','),
+                            mime = arr[0].match(/:(.*?);/)[1],
+                            bstr = atob(arr[1]),
+                            n = bstr.length,
+                            u8arr = new Uint8Array(n);
+
+                        while (n--) {
+                            u8arr[n] = bstr.charCodeAt(n);
+                        }
+                        const file = new File([u8arr], "text.png", { status: mime, type: "image/png" });
+                        console.log(file);
+                        const { data } = await uploadFileService.uploadImage(file)
+                        detailMaterial = { ...detailMaterial, qr: data.name }
                         materialService.addDetailMaterial(detailMaterial);
-                    }
+                    })
+
                 }).catch(err => {
                     TOAST.EROR(err)
                 });
-
-
             })
-
+            TOAST.SUCCESS("Tạo hóa đơn thành công !");
+            history.push("/Admin/Bill-Material/");
         } catch (error) {
             TOAST.EROR(error.message);
         }
@@ -157,8 +159,6 @@ const InputMaterial = () => {
             const { data } = await billMaterialAPI.create({ total })
             if (data.id) {
                 await createDetailBill(data.id)
-                TOAST.SUCCESS("Tạo hóa đơn thành công !");
-                history.push("/Admin/Bill-Material/");
             } else {
                 console.log(data);
                 TOAST.EROR("Tạo hóa đơn thất bại !");
@@ -191,9 +191,6 @@ const InputMaterial = () => {
     return (
         <Loading loading={loading}>
             <div className="mt-4">
-                {/* <div style={{ background: 'white', padding: '16px' }} ref={QRCodeRef}>
-                <QRCode value={qr} level="H" id="qr" />
-            </div> */}
                 <div className="border-bottom border-primary border-5" />
                 <Grid container columns={20} spacing={2} sx={{ py: 4 }}>
                     <Grid item md={4} sm={20}>
@@ -270,8 +267,8 @@ const InputMaterial = () => {
                                                 <td>{getVatchatByIdVatchat(item.material).name}</td>
                                                 <td>{getTypeByValueType(item.status).name}</td>
                                                 <td>{item.quantity}</td>
-                                                <td>{item.price}</td>
-                                                <td>{+item.quantity * item.price}</td>
+                                                <td>{formatMoney(item.price)}</td>
+                                                <td>{formatMoney(+item.quantity * item.price)}</td>
                                                 <td>
                                                     <div className="d-flex justify-content-center">
                                                         <Button variant="text" onClick={() => removeData(item)}><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
@@ -284,7 +281,7 @@ const InputMaterial = () => {
                                 <tr className="table-danger">
                                     <td colSpan={3}></td>
                                     <td colSpan={3}>Tổng tiền</td>
-                                    <td>{total} VNĐ</td>
+                                    <td>{formatMoney(total)} VNĐ</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -15,6 +15,7 @@ import ALERT from "../../../consts/status-alter";
 import MESSAGE from "../../../consts/message-alert";
 import PATH from "../../../consts/path";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import TableDateCustom from "../../../customs/Table-Date-custom";
 
 const DetailMaterial = () => {
 
@@ -23,17 +24,22 @@ const DetailMaterial = () => {
     const { id } = useParams();
     const [datas, setDatas] = useState([]);
 
+    const getMaterial = async () => {
+        const { data } = await materialService.getById(id)
+        setTitle(data.name);
+    }
+
     const fetchData = async () => {
         try {
             const { data } = await materialService.getDetailMaterial(id);
             setDatas(data)
-            setTitle("Vật chất: " + data[0].nameMaterial)
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
     useEffect(() => {
+        getMaterial();
         fetchData()
     }, [id])
 
@@ -41,35 +47,34 @@ const DetailMaterial = () => {
         <div className="mt-4">
             <div className="d-flex align-items-center">
                 <div>
-                    <h3>{title}</h3>
+                    <h3>Vật chất: {title}</h3>
                 </div>
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={datas} hover striped border>
+                <Table dataSource={datas} hover striped border >
                     {{
                         columns: [
                             {
-                                title: "#ID",
-                                data: "id",
+                                title: "",
+                                data: "qr",
+                                render: data => <div className="table-img">
+                                    <img src={PATH.MATERIAL + data} />
+                                </div>
                             },
                             {
-                                title: "Số lượng",
-                                data: "quantity",
+                                title: "Tình trạng",
+                                data: "status",
                                 sort: true,
                             },
                             {
-                                title: "Đơn giá",
-                                data: "price",
+                                title: "Ngày tạo",
+                                data: "createdAt",
                                 sort: true,
-                            },
-                            {
-                                data: "id",
-                                title: "Tổng tiền",
-                                sort: true,
-                                render: (_, row) => +row.price * +row.quantity
+                                render: (data) => <TableDateCustom date={data} />
                             },
                         ],
+                        limit: [10, 20, 50, 100, -1]
                     }}
                 </Table>
             </div>

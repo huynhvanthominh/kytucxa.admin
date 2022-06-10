@@ -187,12 +187,17 @@ const Table = ({ dataSource, children, ...props }) => {
             }
           </tbody>
         </table>
-        <div className='d-flex justify-content-end'>
-          {limit > 0 && data.length > 0 && count > 1 && <Pagination count={count} page={page} onChange={(e, val) => {
-            setLoading(true)
-            setPage(val)
-            setTimeout(() => setLoading(false), 500)
-          }} color="primary" showFirstButton={count >= 10} showLastButton={count >= 10} />}
+        <div className='d-flex justify-content-end align-items-center'>
+          {limit > 0 && data.length > 0 && count > 1 && (
+            <>
+              Total: {data.length}
+              <Pagination count={count} page={page} onChange={(e, val) => {
+                setLoading(true)
+                setPage(val)
+                setTimeout(() => setLoading(false), 500)
+              }} color="primary" showFirstButton={count >= 10} showLastButton={count >= 10} />
+            </>
+          )}
         </div>
       </div>
     </div>

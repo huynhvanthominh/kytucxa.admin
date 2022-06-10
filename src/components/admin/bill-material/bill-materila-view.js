@@ -1,29 +1,29 @@
-import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { billMaterialAPI } from "../../../apis/bill-material.api";
 import TableDateCustom from "../../../customs/Table-Date-custom";
+import { TOAST } from "../../../customs/toast-custom";
 import Table from "../../themes/table/table";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { formatMoney } from "../../../helps/formatMoney";
 
-const BillMaterial = () => {
-    const title = "Hóa đơn nhập vật chất"
+const BillMaterialView = () => {
+    const { id } = useParams();
     const [bills, setBills] = useState([]);
-    const history = useHistory();
+    const title = "Chi tiết hóa đơn";
     const fetchBill = async () => {
         try {
-            const { data } = await billMaterialAPI.getAllAdmin();
-            setBills(data);
+            const { data } = await billMaterialAPI.getById(id);
+            console.log(data);
+            setBills(data)
         } catch (error) {
-
+            TOAST.EROR(error.message)
         }
     }
-
     useEffect(() => {
-        fetchBill();
-    }, [])
-
+        if (id) {
+            fetchBill();
+        }
+    }, [id]);
     return (
         <div className="mt-4">
             <div className="d-flex align-items-center">
@@ -37,29 +37,32 @@ const BillMaterial = () => {
                     {{
                         columns: [
                             {
-                                title: "Tổng tiền",
+                                title: "Tên vật chất",
                                 search: false,
-                                data: "total",
-                                className: "justify-content-center",
+                                data: "nameMaterial",
+                            },
+                            {
+                                title: "Tình trạng",
+                                data: "status",
+                            },
+                            {
+                                title: "Số lượng",
+                                data: "quantity",
+                            },
+                            {
+                                title: "Đơn giá",
+                                data: "price",
                                 render: (data) => formatMoney(data) + " VNĐ"
                             },
                             {
-                                className: "justify-content-center",
-                                title: "Ngày tạo",
-                                data: "createdAt",
-                                sort: true,
-                                render: (data) => <TableDateCustom date={data} />
+                                title: "Thành tiền",
+                                data: "id",
+                                render: (_, row) => formatMoney(+row?.quantity * +row.price) + " VNĐ"
                             },
                             {
-                                title: "",
-                                data: "id",
-                                render: function (data, row) {
-                                    return (
-                                        <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Bill-Material/" + data) }} variant="text"><RemoveRedEyeIcon color="primary" /></Button>
-                                        </div>
-                                    );
-                                },
+                                title: "Ngày tạo",
+                                data: "createdAt",
+                                render: (data) => <TableDateCustom date={data} />
                             },
                         ],
                     }}
@@ -69,4 +72,4 @@ const BillMaterial = () => {
     )
 }
 
-export default BillMaterial;
+export default BillMaterialView;
