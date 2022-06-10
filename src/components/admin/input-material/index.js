@@ -39,7 +39,7 @@ const InputMaterial = () => {
     const fetchStatus = async () => {
         try {
             const { data } = await materialService.getStatus();
-            setStatuses(data);
+            setStatuses(data.slice(0, 2));
         } catch (error) {
             TOAST.EROR(error.message)
         }
@@ -125,7 +125,6 @@ const InputMaterial = () => {
                         const base64 = await QRCode.toDataURL(detailMaterial.id, {
                             errorCorrectionLevel: 'H',
                         })
-                        console.log(base64);
                         var arr = base64.split(','),
                             mime = arr[0].match(/:(.*?);/)[1],
                             bstr = atob(arr[1]),
@@ -136,7 +135,6 @@ const InputMaterial = () => {
                             u8arr[n] = bstr.charCodeAt(n);
                         }
                         const file = new File([u8arr], "text.png", { status: mime, type: "image/png" });
-                        console.log(file);
                         const { data } = await uploadFileService.uploadImage(file)
                         detailMaterial = { ...detailMaterial, qr: data.name }
                         materialService.addDetailMaterial(detailMaterial);
@@ -160,7 +158,6 @@ const InputMaterial = () => {
             if (data.id) {
                 await createDetailBill(data.id)
             } else {
-                console.log(data);
                 TOAST.EROR("Tạo hóa đơn thất bại !");
             }
             setTimeout(() => setLoading(false), 500)

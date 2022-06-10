@@ -1,26 +1,13 @@
 import { useEffect, useState } from "react";
-import EditIcon from '@mui/icons-material/Edit';
 import { materialService } from "../../../apis/material.api";
-import { materialTypeService } from "../../../apis/material-type.api";
 import Table from "../../themes/table/table";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import AddIcon from '@mui/icons-material/Add';
-import { pink } from "@mui/material/colors";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { LinkCustom } from "../../../customs/Link.Custom";
-import { TOAST } from "../../../customs/toast-custom"
-import Alert from "../../../customs/Alert-custom";
-import ALERT from "../../../consts/status-alter";
-import MESSAGE from "../../../consts/message-alert";
+import { useParams } from "react-router-dom";
 import PATH from "../../../consts/path";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import TableDateCustom from "../../../customs/Table-Date-custom";
+import { TOAST } from '../../../customs/toast-custom';
 
 const DetailMaterial = () => {
-
     const [title, setTitle] = useState("");
-    const history = useHistory();
     const { id } = useParams();
     const [datas, setDatas] = useState([]);
 
@@ -59,7 +46,7 @@ const DetailMaterial = () => {
                                 title: "",
                                 data: "qr",
                                 render: data => <div className="table-img">
-                                    <img src={PATH.MATERIAL + data} />
+                                    <img src={PATH.MATERIAL + data} alt="" />
                                 </div>
                             },
                             {
