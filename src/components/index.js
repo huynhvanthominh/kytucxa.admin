@@ -4,9 +4,9 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import IndexAdmin from "./admin";
 import NotFoundPage from "./error/not-found-page";
 import "../css/index.scss"
-
+import Login from "./layouts/auth/login";
 const Index = () => {
-  return (  
+  return (
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
@@ -14,6 +14,12 @@ const Index = () => {
         </Route>
         <Route path="/Admin/">
           <IndexAdmin />
+        </Route>
+        <Route path="/Auth/Login/">
+          <Login />
+        </Route>
+        <Route path="/Auth/">
+          <Redirect to={"/Auth/Login"} />
         </Route>
         <Route path="*">
           <NotFoundPage />

@@ -6,14 +6,20 @@ import reportWebVitals from './reportWebVitals';
 import { AxiosConfig } from './config/axios.config';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MenuProvider from './providers/menu';
+import AuthProvider from './providers/auth';
 
 AxiosConfig()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
-    <ToastContainer />
+    <AuthProvider>
+      <MenuProvider>
+        <App />
+        <ToastContainer />
+      </MenuProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
