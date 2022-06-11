@@ -4,6 +4,7 @@ import LayoutAdmin from "../layouts/admin/layout-admin";
 import BillMaterial from "./bill-material/bill-material";
 import BillMaterialView from "./bill-material/bill-materila-view";
 import DetailMaterial from "./detai-material/detail-material";
+import DetailMaterialView from "./detai-material/detail-material-view";
 import InputMaterial from "./input-material";
 import MaterialTypeAdd from "./material-type/material-type-add";
 import MaterialTypeList from "./material-type/material-type-list";
@@ -24,6 +25,9 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Material-Type">
           <MaterialTypeList />
+        </Route>
+        <Route path="/Admin/Detail-Material/View/:id">
+          <DetailMaterialView />
         </Route>
         <Route path="/Admin/Detail-Material/:id">
           <DetailMaterial />

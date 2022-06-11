@@ -1,6 +1,5 @@
-import { LoadingButton } from "@mui/lab"
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { useHistory } from "react-router-dom";
@@ -9,7 +8,6 @@ import { TOAST } from "../../../customs/toast-custom";
 import { pink } from "@mui/material/colors";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import QRCode from "qrcode";
-import { toPng } from 'html-to-image';
 import Loading from "../../../customs/loading";
 import { billMaterialAPI } from "../../../apis/bill-material.api";
 import { uploadFileService } from "../../../apis/upload-file.api";
@@ -24,9 +22,7 @@ const InputMaterial = () => {
     const [price, setPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [material, setMaterial] = useState("");
-    const [qr, setQr] = useState("");
     const [total, setTotal] = useState(0);
-    const QRCodeRef = useRef()
 
     useEffect(() => {
         let tmp = 0;

@@ -5,8 +5,12 @@ import { useParams } from "react-router-dom";
 import PATH from "../../../consts/path";
 import TableDateCustom from "../../../customs/Table-Date-custom";
 import { TOAST } from '../../../customs/toast-custom';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { Button } from "@mui/material";
 
 const DetailMaterial = () => {
+    const history = useHistory();
     const [title, setTitle] = useState("");
     const { id } = useParams();
     const [datas, setDatas] = useState([]);
@@ -59,6 +63,17 @@ const DetailMaterial = () => {
                                 data: "createdAt",
                                 sort: true,
                                 render: (data) => <TableDateCustom date={data} />
+                            },
+                            {
+                                data: "id",
+                                sort: true,
+                                render: function (data, row) {
+                                    return (
+                                        <div className="d-flex justify-content-center">
+                                            <Button onClick={() => { history.push("/Admin/Detail-Material/View/" + data) }} variant="text"><RemoveRedEyeIcon color="primary" /></Button>
+                                        </div>
+                                    );
+                                },
                             },
                         ],
                         limit: [10, 20, 50, 100, -1]

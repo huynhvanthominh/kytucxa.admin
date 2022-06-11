@@ -70,30 +70,38 @@ const MaterialTypeView = () => {
     const handleUpdate = async () => {
         setIsLoadingButton(true)
         try {
-            let payload = { ...materialType }
-            if (isChangeFile) {
-                const upload = await uploadImage();
-                if (upload?.name) {
-                    removeImage(materialType.media)
-                    payload = { ...payload, media: upload?.name }
+            if (checkValue()) {
+                let payload = { ...materialType }
+                if (isChangeFile) {
+                    const upload = await uploadImage();
+                    if (upload?.name) {
+                        removeImage(materialType.media)
+                        payload = { ...payload, media: upload?.name }
+                    }
+                }
+                payload = { ...payload, updatedAt: new Date() }
+                const { data } = await materialTypeService.update(payload);
+                if (data?.error) {
+                    TOAST.EROR(data?.message);
+                } else {
+                    TOAST.SUCCESS("Cập nhật thành công !");
+                    history.goBack();
+
                 }
             }
-            payload = { ...payload, updatedAt: new Date() }
-            const { data } = await materialTypeService.update(payload);
-            if (data?.error) {
-                TOAST.EROR(data?.message);
-            } else {
-                TOAST.SUCCESS("Cập nhật thành công !");
-                history.goBack();
-
-            }
-
         } catch (error) {
             TOAST.EROR(error.message)
         }
         setTimeout(() => setIsLoadingButton(false), 1000)
     }
 
+    const checkValue = () => {
+        if (materialType.name.length === 0) {
+            TOAST.WARN("Vui lòng nhập tên !")
+            return false
+        }
+        return true
+    }
 
     const handleChange = async (e) => {
         setIsLoaddingImage(true)

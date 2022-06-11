@@ -14,6 +14,7 @@ const BillMaterial = () => {
     const fetchBill = async () => {
         try {
             const { data } = await billMaterialAPI.getAllAdmin();
+            console.log(data);
             setBills(data);
         } catch (error) {
 
