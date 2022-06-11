@@ -70,7 +70,7 @@ const MaterialTypeList = () => {
             <Alert isShow={isShow} title={title} status={status} close={() => setIsShow(false)} confirm={handleDelete} >{message}</Alert>
             <div className="d-flex align-items-center">
                 <div>
-                    <h3>{title}</h3>
+                    <h3>{title} ({materialTypes.length})</h3>
                 </div>
                 <Button className="ms-auto" variant="contained">
                     <LinkCustom color="white" to={path + "/Add"}>

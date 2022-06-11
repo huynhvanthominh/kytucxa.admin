@@ -7,13 +7,27 @@ import TableDateCustom from "../../../customs/Table-Date-custom";
 import { TOAST } from '../../../customs/toast-custom';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Button } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const DetailMaterial = () => {
     const history = useHistory();
     const [title, setTitle] = useState("");
     const { id } = useParams();
     const [datas, setDatas] = useState([]);
+    const [status, setStatus] = useState("");
+    const [statuses, setStatuses] = useState([]);
+    const [total, setTotal] = useState([]);
+
+    const fetchStaus = async () => {
+        try {
+            const { data } = await materialService.getStatus();
+            setStatuses(data);
+        } catch (error) {
+
+        }
+    }
+
+    useEffect(() => { fetchStaus() }, [])
 
     const getMaterial = async () => {
         const { data } = await materialService.getById(id)
@@ -22,17 +36,48 @@ const DetailMaterial = () => {
 
     const fetchData = async () => {
         try {
-            const { data } = await materialService.getDetailMaterial(id);
-            setDatas(data)
+            if (status === "") {
+                const { data } = await materialService.getDetailMaterial(id);
+                setDatas(data)
+                setTotal(data);
+            } else {
+                const { data } = await materialService.getDetailMaterialByStatus(id, status);
+                setDatas(data)
+            }
+
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
     useEffect(() => {
+        fetchData();
+    }, [id, status])
+
+    useEffect(() => {
         getMaterial();
-        fetchData()
     }, [id])
+
+    const Filter = () => {
+        return (
+            <Box>
+                <FormControl fullWidth size="small">
+                    <InputLabel>Trạng thái</InputLabel>
+                    <Select
+                        className="min-width-200"
+                        label="Trạng thái"
+                        value={status}
+                        onChange={e => setStatus(e.target.value)}
+                    >
+                        <MenuItem value={""}>Tất cả</MenuItem>
+                        {
+                            statuses.map((status, i) => <MenuItem key={i} value={status?.id}>{status?.name}</MenuItem>)
+                        }
+                    </Select>
+                </FormControl>
+            </Box>
+        )
+    }
 
     return (
         <div className="mt-4">
@@ -40,10 +85,16 @@ const DetailMaterial = () => {
                 <div>
                     <h3>Vật chất: {title}</h3>
                 </div>
+                <div className="ms-auto d-flex">
+                    <h3 className="me-4">Tổng: {total.length}</h3>
+                    <h3 className="me-4"> Mới: {total.filter(item => item.idStatus === 1).length}</h3>
+                    <h3 className="me-4">Đã qua sử dụng: {total.filter(item => item.idStatus === 2).length}</h3>
+                    <h3 className="me-4">Đang sử dụng: {total.filter(item => item.idStatus === 3).length}</h3>
+                </div>
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={datas} hover striped border >
+                <Table dataSource={datas} hover striped border filter={<Filter />}>
                     {{
                         columns: [
                             {

@@ -29,7 +29,7 @@ const BillMaterial = () => {
         <div className="mt-4">
             <div className="d-flex align-items-center">
                 <div>
-                    <h3>{title}</h3>
+                    <h3>{title} ({bills.length})</h3>
                 </div>
             </div>
             <div className="border-bottom border-primary border-5" />
