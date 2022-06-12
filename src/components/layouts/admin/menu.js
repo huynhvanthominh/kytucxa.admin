@@ -119,6 +119,19 @@ export default function Menu() {
         </List>
       </Collapse >
       <ListItem
+        selected={selected === 9}
+        onClick={() => setSelected(9)}
+        button
+        component={React.forwardRef((props, ref) => (
+          <Link {...props} ref={ref} to={"/Admin/Trouble/"}></Link>
+        ))}
+      >
+        <ListItemIcon>
+          <SendIcon />
+        </ListItemIcon>
+        <ListItemText primary="Sự cố" />
+      </ListItem>
+      <ListItem
         selected={selected === 0}
         onClick={() => setSelected(0)}
         button
@@ -179,8 +192,54 @@ export default function Menu() {
             <ListItemIcon>
               <SendIcon />
             </ListItemIcon>
-            <ListItemText primary="Hóa đơn" />
+            <ListItemText primary="Hóa đơn vật chất" />
           </ListItem>
+
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 3.3}
+            onClick={() => setSelected(3.3)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Contract"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Hợp đồng" />
+          </ListItem>
+
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 3.4}
+            onClick={() => setSelected(3.4)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Bill"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Hoá đơn hợp đồng" />
+          </ListItem>
+
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 3.5}
+            onClick={() => setSelected(3.5)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Receipt"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Biên nhận" />
+          </ListItem>
+
         </List>
       </Collapse >
       <ListItemButton onClick={clickStatistical}>

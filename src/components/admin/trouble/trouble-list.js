@@ -16,9 +16,8 @@ import MESSAGE from "../../../consts/message-alert";
 import PATH from "../../../consts/path";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
-const MaterialList = () => {
-
-    const title = "Vật chất";
+export default function () {
+    const title = "Sự cố";
     const history = useHistory();
     const { path } = useRouteMatch();
     const [materials, setMaterials] = useState([]);
@@ -76,25 +75,42 @@ const MaterialList = () => {
 
     const Filter = () => {
         return (
-            <Box>
-                <FormControl fullWidth size="small">
-                    <InputLabel>Loại vật chất</InputLabel>
-                    <Select
-                        className="min-width-200"
-                        label="Loại vật chất"
-                        value={materialType}
-                        onChange={e => setMaterialType(e.target.value)}
-                    >
-                        <MenuItem value={-1}>Tất cả</MenuItem>
-                        {
-                            materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
-                        }
-                    </Select>
-                </FormControl>
-            </Box>
+            <div className="d-flex">
+                <Box>
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Khu</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Khu"
+                            value={materialType}
+                            onChange={e => setMaterialType(e.target.value)}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+                <Box className="ms-2">
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Phòng</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Phòng"
+                            value={materialType}
+                            onChange={e => setMaterialType(e.target.value)}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+            </div>
         )
     }
-
 
     return (
         <div>
@@ -104,7 +120,7 @@ const MaterialList = () => {
                     <h3>{title} ({materials.length})</h3>
                 </div>
                 <Button className="ms-auto me-1" variant="contained">
-                    <LinkCustom color="white" to={path + "Add"}>
+                    <LinkCustom color="white" to={"/Admin/Trouble/Add"}>
                         <AddIcon />
                         Thêm
                     </LinkCustom>
@@ -116,21 +132,15 @@ const MaterialList = () => {
                     {{
                         columns: [
                             {
-                                title: "",
+                                title: "Tên",
                                 search: false,
                                 data: "media",
                                 className: "justify-content-center",
                                 render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
                             },
                             {
-                                title: "Tên vật chất",
+                                title: "Ngày bị",
                                 data: "name",
-                                className: "justify-content-center",
-                                sort: true,
-                            },
-                            {
-                                title: "Tên loại vật chất",
-                                data: "nameMaterialtype",
                                 className: "justify-content-center",
                                 sort: true,
                             },
@@ -154,5 +164,3 @@ const MaterialList = () => {
         </div>
     )
 }
-
-export default MaterialList;
