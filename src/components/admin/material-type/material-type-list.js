@@ -72,7 +72,7 @@ const MaterialTypeList = () => {
                 <div>
                     <h3>{title} ({materialTypes.length})</h3>
                 </div>
-                <Button className="ms-auto" variant="contained">
+                <Button className="ms-auto me-1" variant="contained">
                     <LinkCustom color="white" to={path + "/Add"}>
                         <AddIcon />
                         Thêm

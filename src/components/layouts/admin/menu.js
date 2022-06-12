@@ -37,6 +37,45 @@ export default function Menu() {
       }
     >
       <ListItem
+        selected={selected === 5}
+        onClick={() => setSelected(5)}
+        button
+        component={React.forwardRef((props, ref) => (
+          <Link {...props} ref={ref} to={"/Admin/Area"}></Link>
+        ))}
+      >
+        <ListItemIcon>
+          <SendIcon />
+        </ListItemIcon>
+        <ListItemText primary="Khu" />
+      </ListItem>
+      <ListItem
+        selected={selected === 6}
+        onClick={() => setSelected(6)}
+        button
+        component={React.forwardRef((props, ref) => (
+          <Link {...props} ref={ref} to={"/Admin/TypeRoom"}></Link>
+        ))}
+      >
+        <ListItemIcon>
+          <SendIcon />
+        </ListItemIcon>
+        <ListItemText primary="Loại phòng" />
+      </ListItem>
+      <ListItem
+        selected={selected === 7}
+        onClick={() => setSelected(7)}
+        button
+        component={React.forwardRef((props, ref) => (
+          <Link {...props} ref={ref} to={"/Admin/Room"}></Link>
+        ))}
+      >
+        <ListItemIcon>
+          <SendIcon />
+        </ListItemIcon>
+        <ListItemText primary="Phòng" />
+      </ListItem>
+      <ListItem
         selected={selected === 0}
         onClick={() => setSelected(0)}
         button
@@ -72,8 +111,7 @@ export default function Menu() {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem
-            selected={selected === 3.1}
-            onClick={() => setSelected(3.1)}
+            selected={selected === 3.1} onClick={() => setSelected(3.1)}
             sx={{ pl: 4 }}
             button
             component={React.forwardRef((props, ref) => (
