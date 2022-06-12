@@ -37,6 +37,19 @@ export default function Menu() {
       }
     >
       <ListItem
+        selected={selected === 5}
+        onClick={() => setSelected(5)}
+        button
+        component={React.forwardRef((props, ref) => (
+          <Link {...props} ref={ref} to={"/Admin/Area"}></Link>
+        ))}
+      >
+        <ListItemIcon>
+          <SendIcon />
+        </ListItemIcon>
+        <ListItemText primary="Khu" />
+      </ListItem>
+      <ListItem
         selected={selected === 0}
         onClick={() => setSelected(0)}
         button
@@ -72,8 +85,7 @@ export default function Menu() {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem
-            selected={selected === 3.1}
-            onClick={() => setSelected(3.1)}
+            selected={selected === 3.1} onClick={() => setSelected(3.1)}
             sx={{ pl: 4 }}
             button
             component={React.forwardRef((props, ref) => (
