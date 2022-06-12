@@ -19,8 +19,8 @@ const InputMaterial = () => {
     const [materials, setMaterials] = useState([]);
     const [data, setData] = useState([]);
     const [status, setStatus] = useState("");
-    const [price, setPrice] = useState(0);
-    const [quantity, setQuantity] = useState(0);
+    const [price, setPrice] = useState("");
+    const [quantity, setQuantity] = useState("");
     const [material, setMaterial] = useState("");
     const [total, setTotal] = useState(0);
 
@@ -225,14 +225,14 @@ const InputMaterial = () => {
                     <Grid item md={4} sm={20}>
                         <Box>
                             <FormControl fullWidth>
-                                <TextField value={quantity} onChange={e => setQuantity(e.target.value)} status={"number"} label="Số lượng" variant="outlined" size="small" />
+                                <TextField value={quantity} onChange={e => setQuantity(e.target.value)} className="hide-spin" type="number" status={"number"} label="Số lượng" variant="outlined" size="small" />
                             </FormControl>
                         </Box>
                     </Grid>
                     <Grid item md={4} sm={20}>
                         <Box>
                             <FormControl fullWidth>
-                                <TextField value={price} onChange={e => setPrice(e.target.value)} status={"number"} label="Đơn giá" variant="outlined" size="small" />
+                                <TextField value={price} onChange={e => setPrice(e.target.value)} className="hide-spin" type="number" status={"number"} label="Đơn giá" variant="outlined" size="small" />
                             </FormControl>
                         </Box>
                     </Grid>
