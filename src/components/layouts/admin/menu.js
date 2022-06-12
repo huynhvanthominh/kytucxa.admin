@@ -50,6 +50,19 @@ export default function Menu() {
         <ListItemText primary="Khu" />
       </ListItem>
       <ListItem
+        selected={selected === 6}
+        onClick={() => setSelected(6)}
+        button
+        component={React.forwardRef((props, ref) => (
+          <Link {...props} ref={ref} to={"/Admin/TypeRoom"}></Link>
+        ))}
+      >
+        <ListItemIcon>
+          <SendIcon />
+        </ListItemIcon>
+        <ListItemText primary="Loại phòng" />
+      </ListItem>
+      <ListItem
         selected={selected === 0}
         onClick={() => setSelected(0)}
         button

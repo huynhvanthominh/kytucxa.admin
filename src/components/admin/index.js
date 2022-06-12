@@ -15,6 +15,8 @@ import MaterialAdd from "./material/material-add";
 import MaterialList from "./material/material-list";
 import MaterialView from "./material/material-view";
 import StatisticalMaterial from "./statistical/statistical-material";
+import TypeRoomList from "./typeroom/typeroom-list";
+import TypeRoomView from "./typeroom/typeroom-view";
 
 const IndexAdmin = () => {
   return (
@@ -61,6 +63,15 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Area">
           <AreaList />
+        </Route>
+        <Route path="/Admin/TypeRoom/Add">
+          <TypeRoomView />
+        </Route>
+        <Route path="/Admin/TypeRoom/View/:id">
+          <TypeRoomView />
+        </Route>
+        <Route path="/Admin/TypeRoom">
+          <TypeRoomList />
         </Route>
         <Route path="/Admin/Statistical/Material-Type">
           <StatisticalMaterial />

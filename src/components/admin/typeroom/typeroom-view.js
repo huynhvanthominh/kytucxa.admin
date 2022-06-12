@@ -24,9 +24,9 @@ const initMaterial = {
     media: "",
 }
 
-const AreaView = () => {
+const TypeRoomView = () => {
 
-    const title = "Khu";
+    const title = "Loại phòng";
     const history = useHistory();
     const { id } = useParams();
     const [materialTypes, setMaterialTypes] = useState([]);
@@ -128,14 +128,36 @@ const AreaView = () => {
                 <div className="border-bottom border-primary border-5" />
                 <Grid container spacing={4} columns={16} className="py-4">
                     <Grid item md={8} sm={16}>
+                        <Card className="card-file">
+                            <label className="input-file">
+                                <input multiple onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
+                                {
+                                    loadingImage ? <CircularProgress /> :
+                                        image.length === 0 ?
+                                            <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
+                                            <img src={image} />
+                                }
+                            </label>
+                        </Card>
+                    </Grid>
+                    <Grid item md={8} sm={16}>
                         <Grid container spacing={2} columns={16}>
                             <Grid item sm={16}>
                                 <Box>
-                                    <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
-                                        })} label="Tên khu" variant="standard" />
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Khu</InputLabel>
+                                        <Select
+                                            value={material?.idMaterialType}
+                                            label="Khu"
+                                            onChange={e => setMaterial({
+                                                ...material,
+                                                idMaterialType: e.target.value
+                                            })}
+                                        >
+                                            {
+                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                            }
+                                        </Select>
                                     </FormControl>
                                 </Box>
                             </Grid>
@@ -145,7 +167,7 @@ const AreaView = () => {
                                         <TextField value={material?.name} onChange={e => setMaterial({
                                             ...material,
                                             name: e.target.value
-                                        })} label="Địa chỉ" variant="standard" />
+                                        })} label="Tên loại phòng" variant="standard" />
                                     </FormControl>
                                 </Box>
                             </Grid>
@@ -155,7 +177,27 @@ const AreaView = () => {
                                         <TextField value={material?.name} onChange={e => setMaterial({
                                             ...material,
                                             name: e.target.value
-                                        })} label="Số phòng" variant="standard" />
+                                        })} label="Giá loại phòng" type={"number"} className="hide-spin" variant="standard" />
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={8}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                            ...material,
+                                            name: e.target.value
+                                        })} label="Diện tích" type={"number"} className="hide-spin" variant="standard" />
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={8}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                            ...material,
+                                            name: e.target.value
+                                        })} label="Số lượng khách" type={"number"} className="hide-spin" variant="standard" />
                                     </FormControl>
                                 </Box>
                             </Grid>
@@ -165,50 +207,70 @@ const AreaView = () => {
                                         <TextField value={material?.name} onChange={e => setMaterial({
                                             ...material,
                                             name: e.target.value
-                                        })} label="Giờ đóng cửa" variant="standard" />
-                                    </FormControl>
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item md={8} sm={16}>
-                        <Grid container spacing={5} columns={16}>
-                            <Grid item sm={16}>
-                                <Box>
-                                    <FormControl fullWidth>
-                                        <TextField
-                                            id="outlined-multiline-static"
-                                            label="Multiline"
-                                            multiline
-                                            rows={3}
-                                            defaultValue="Default Value"
-                                        />
+                                        })} label="Đối tượng" variant="standard" />
                                     </FormControl>
                                 </Box>
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField
-                                            label="Multiline"
-                                            multiline
-                                            rows={3}
-                                        />
+                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                            ...material,
+                                            name: e.target.value
+                                        })} label="Lưu ý"   multiline rows={4}/>
                                     </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Dịch vụ có phí</InputLabel>
+                                        <Select
+                                            value={material?.idMaterialType}
+                                            label="Dịch vụ có phí"
+                                            onChange={e => setMaterial({
+                                                ...material,
+                                                idMaterialType: e.target.value
+                                            })}
+                                        >
+                                            {
+                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Dịch vụ miễn phí</InputLabel>
+                                        <Select
+                                            value={material?.idMaterialType}
+                                            label="Dịch vụ miễn phí"
+                                            onChange={e => setMaterial({
+                                                ...material,
+                                                idMaterialType: e.target.value
+                                            })}
+                                        >
+                                            {
+                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    {id ? <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>:
+                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Thêm</Button>}
+                                    <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>
                                 </Box>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-                <div className="d-flex align-items-center">
-                    {
-                        id ? <Button variant="contained" className="me-1" endIcon={<EditIcon />}>Cập nhật</Button> :
-                            <Button variant="contained" className="me-1" endIcon={<AddIcon />}>Thêm</Button>}
-                    <Button variant="contained" color="inherit" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Trở về</Button>
-                </div>
             </div >
         </Loading>
     )
 }
-
-export default AreaView;
+export default TypeRoomView;
