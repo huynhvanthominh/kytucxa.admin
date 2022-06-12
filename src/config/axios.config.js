@@ -1,5 +1,6 @@
 import axios from "axios";
+import PATH from "../consts/path";
 
 export const AxiosConfig = () => {
-    axios.defaults.baseURL = 'http://192.168.1.10:3001/';
+    axios.defaults.baseURL = PATH.URL_SERVER;
 }
