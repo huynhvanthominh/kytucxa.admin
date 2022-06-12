@@ -46,7 +46,7 @@ const DetailMaterialView = () => {
 
     return (
         <Loading loading={loading}>
-            <div className="mt-4">
+            <div>
                 <div className="d-flex align-items-center">
                     <div>
                         <h3>Vật chất: {detailMaterial.nameMaterial}</h3>
@@ -57,7 +57,7 @@ const DetailMaterialView = () => {
                     <Grid item md={8} sm={16}>
                         <Card className="card-file">
                             <label className="input-file">
-                                <img src={PATH.MATERIAL + detailMaterial.qr} />
+                                <img src={PATH.MATERIAL + detailMaterial.qr} alt="" />
                             </label>
                         </Card>
                     </Grid>
@@ -100,7 +100,7 @@ const DetailMaterialView = () => {
                     </Grid>
                 </Grid>
             </div >
-        </Loading>
+        </Loading >
     )
 }
 

@@ -115,7 +115,7 @@ const MaterialAdd = () => {
 
     return (
         <Loading loading={loading}>
-            <div className="mt-4">
+            <div>
                 <div className="d-flex align-items-center">
                     <div>
                         <h3>Vật chất</h3>

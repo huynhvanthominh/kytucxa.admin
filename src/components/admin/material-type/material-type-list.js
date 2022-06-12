@@ -66,7 +66,7 @@ const MaterialTypeList = () => {
     }
 
     return (
-        <div className="mt-4">
+        <div>
             <Alert isShow={isShow} title={title} status={status} close={() => setIsShow(false)} confirm={handleDelete} >{message}</Alert>
             <div className="d-flex align-items-center">
                 <div>

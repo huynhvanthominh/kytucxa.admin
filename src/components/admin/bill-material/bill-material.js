@@ -26,7 +26,7 @@ const BillMaterial = () => {
     }, [])
 
     return (
-        <div className="mt-4">
+        <div>
             <div className="d-flex align-items-center">
                 <div>
                     <h3>{title} ({bills.length})</h3>

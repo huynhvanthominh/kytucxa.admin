@@ -99,7 +99,7 @@ const InputMaterial = () => {
 
     const createDetailBill = async (idBill) => {
         try {
-            data.forEach(async (item) => {
+            await data.forEach(async (item) => {
                 const detailBill = {
                     idBill: idBill,
                     idMaterial: item.material,
@@ -115,6 +115,7 @@ const InputMaterial = () => {
                         i++;
                         let detailMaterial = {
                             id: `${Date.now()}-${item.material}-${item.status}-${item.quantity}-${item.price}-${i}`,
+                            idMaterial: item.material,
                             idDetailBill: rs.data.id,
                             qr: ""
                         }
@@ -183,7 +184,12 @@ const InputMaterial = () => {
 
     return (
         <Loading loading={loading}>
-            <div className="mt-4">
+            <div>
+                <div className="d-flex align-items-center">
+                    <div>
+                        <h3>Nhập vật chất</h3>
+                    </div>
+                </div>
                 <div className="border-bottom border-primary border-5" />
                 <Grid container columns={20} spacing={2} sx={{ py: 4 }}>
                     <Grid item md={4} sm={20}>

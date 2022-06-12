@@ -97,7 +97,7 @@ const MaterialList = () => {
 
 
     return (
-        <div className="mt-4">
+        <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
             <div className="d-flex align-items-center">
                 <div>
@@ -125,11 +125,13 @@ const MaterialList = () => {
                             {
                                 title: "Tên vật chất",
                                 data: "name",
+                                className: "justify-content-center",
                                 sort: true,
                             },
                             {
                                 title: "Tên loại vật chất",
                                 data: "nameMaterialtype",
+                                className: "justify-content-center",
                                 sort: true,
                             },
                             {

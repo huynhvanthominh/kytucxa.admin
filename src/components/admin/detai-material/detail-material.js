@@ -80,12 +80,12 @@ const DetailMaterial = () => {
     }
 
     return (
-        <div className="mt-4">
+        <div>
             <div className="d-flex align-items-center">
                 <div>
                     <h3>Vật chất: {title}</h3>
                 </div>
-                <div className="ms-auto d-flex">
+                <div className="ms-auto d-flex flex-wrap">
                     <h3 className="me-4">Tổng: {total.length}</h3>
                     <h3 className="me-4"> Mới: {total.filter(item => item.idStatus === 1).length}</h3>
                     <h3 className="me-4">Đã qua sử dụng: {total.filter(item => item.idStatus === 2).length}</h3>
@@ -107,17 +107,18 @@ const DetailMaterial = () => {
                             {
                                 title: "Tình trạng",
                                 data: "status",
+                                className: "justify-content-center",
                                 sort: true,
                             },
                             {
                                 title: "Ngày tạo",
                                 data: "createdAt",
+                                className: "justify-content-center",
                                 sort: true,
                                 render: (data) => <TableDateCustom date={data} />
                             },
                             {
                                 data: "id",
-                                sort: true,
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">

@@ -12,6 +12,7 @@ import MaterialTypeView from "./material-type/material-type-view";
 import MaterialAdd from "./material/material-add";
 import MaterialList from "./material/material-list";
 import MaterialView from "./material/material-view";
+import StatisticalMaterial from "./statistical/statistical-material";
 
 const IndexAdmin = () => {
   return (
@@ -49,6 +50,12 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Input">
           <InputMaterial />
+        </Route>
+        <Route path="/Admin/Statistical/Material-Type">
+          <StatisticalMaterial />
+        </Route>
+        <Route path="/Admin/Statistical/*">
+          <Redirect to={"/Admin/Statistical/Material-Type"} />
         </Route>
         <Route path="/">
           <Redirect to="/Admin/Material-Type" />

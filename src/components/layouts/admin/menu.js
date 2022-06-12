@@ -19,11 +19,14 @@ export default function Menu() {
   const materialType = path + "Material-Type";
   const material = path + "Material";
   const [open, setOpen] = React.useState(false);
-
+  const [selected, setSelected] = React.useState(0);
+  const [statistical, setStatistical] = React.useState(false);
   const handleClick = () => {
     setOpen(!open);
   };
-
+  const clickStatistical = () => {
+    setStatistical(!statistical)
+  }
   return (
     <List
       component="nav"
@@ -34,6 +37,8 @@ export default function Menu() {
       }
     >
       <ListItem
+        selected={selected === 0}
+        onClick={() => setSelected(0)}
         button
         component={React.forwardRef((props, ref) => (
           <Link {...props} ref={ref} to={materialType}></Link>
@@ -45,6 +50,8 @@ export default function Menu() {
         <ListItemText primary="Loại vật chất" />
       </ListItem>
       <ListItem
+        selected={selected === 1}
+        onClick={() => setSelected(1)}
         button
         component={React.forwardRef((props, ref) => (
           <Link {...props} ref={ref} to={material}></Link>
@@ -59,12 +66,14 @@ export default function Menu() {
         <ListItemIcon>
           <InboxIcon />
         </ListItemIcon>
-        <ListItemText primary="Nhập và hóa đơn vật chất" />
+        <ListItemText primary="Hóa đơn vật chất" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem
+            selected={selected === 3.1}
+            onClick={() => setSelected(3.1)}
             sx={{ pl: 4 }}
             button
             component={React.forwardRef((props, ref) => (
@@ -80,6 +89,8 @@ export default function Menu() {
           <ListItem
             sx={{ pl: 4 }}
             button
+            selected={selected === 3.2}
+            onClick={() => setSelected(3.2)}
             component={React.forwardRef((props, ref) => (
               <Link {...props} ref={ref} to={"/Admin/Bill-Material"}></Link>
             ))}
@@ -88,6 +99,46 @@ export default function Menu() {
               <SendIcon />
             </ListItemIcon>
             <ListItemText primary="Hóa đơn" />
+          </ListItem>
+        </List>
+      </Collapse >
+      <ListItemButton onClick={clickStatistical}>
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText primary="Thống kê" />
+        {statistical ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={statistical} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 4.1}
+            onClick={() => setSelected(4.1)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Statistical/Material-Type"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Loại vật chất" />
+          </ListItem>
+
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 4.2}
+            onClick={() => setSelected(4.2)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Bill-Material"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Vật chất" />
           </ListItem>
         </List>
       </Collapse >
