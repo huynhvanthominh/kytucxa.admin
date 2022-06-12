@@ -1,6 +1,8 @@
 import { Redirect, Route, Switch } from "react-router-dom";
 import NotFoundPage from "../error/not-found-page";
 import LayoutAdmin from "../layouts/admin/layout-admin";
+import AreaList from "./area/area-list";
+import AreaView from "./area/area-view";
 import BillMaterial from "./bill-material/bill-material";
 import BillMaterialView from "./bill-material/bill-materila-view";
 import DetailMaterial from "./detai-material/detail-material";
@@ -12,7 +14,13 @@ import MaterialTypeView from "./material-type/material-type-view";
 import MaterialAdd from "./material/material-add";
 import MaterialList from "./material/material-list";
 import MaterialView from "./material/material-view";
+import RoomList from "./room/room-list";
+import RoomView from "./room/room-view";
+import FreeService from "./service/free-service";
+import PaidService from "./service/paid-service";
 import StatisticalMaterial from "./statistical/statistical-material";
+import TypeRoomList from "./typeroom/typeroom-list";
+import TypeRoomView from "./typeroom/typeroom-view";
 
 const IndexAdmin = () => {
   return (
@@ -51,11 +59,44 @@ const IndexAdmin = () => {
         <Route path="/Admin/Input">
           <InputMaterial />
         </Route>
+        <Route path="/Admin/Area/View/:id">
+          <AreaView />
+        </Route>
+        <Route path="/Admin/Area/Add">
+          <AreaView />
+        </Route>
+        <Route path="/Admin/Area">
+          <AreaList />
+        </Route>
+        <Route path="/Admin/TypeRoom/Add">
+          <TypeRoomView />
+        </Route>
+        <Route path="/Admin/TypeRoom/View/:id">
+          <TypeRoomView />
+        </Route>
+        <Route path="/Admin/TypeRoom">
+          <TypeRoomList />
+        </Route>
+        <Route path="/Admin/Room/Add">
+          <RoomView />
+        </Route>
+        <Route path="/Admin/Room/View/:id">
+          <RoomView />
+        </Route>
+        <Route path="/Admin/Room">
+          <RoomList />
+        </Route>
         <Route path="/Admin/Statistical/Material-Type">
           <StatisticalMaterial />
         </Route>
         <Route path="/Admin/Statistical/*">
           <Redirect to={"/Admin/Statistical/Material-Type"} />
+        </Route>
+        <Route path="/Admin/Service/Paid">
+          <PaidService/>
+        </Route>
+        <Route path="/Admin/Service/Free">
+          <FreeService/>
         </Route>
         <Route path="/">
           <Redirect to="/Admin/Material-Type" />

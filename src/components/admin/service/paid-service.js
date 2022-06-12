@@ -13,12 +13,16 @@ import { TOAST } from "../../../customs/toast-custom"
 import Alert from "../../../customs/Alert-custom";
 import ALERT from "../../../consts/status-alter";
 import MESSAGE from "../../../consts/message-alert";
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import PATH from "../../../consts/path";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
-const MaterialList = () => {
-
-    const title = "Vật chất";
+import Popup from "../../themes/popup/popup";
+import { Card, CircularProgress, Grid, Input, TextField } from "@mui/material";
+import Loading from "../../../customs/loading";
+const PaidService = () => {
+    const [loading, setLoading] = useState(false);
+    const [material, setMaterial] = useState();
+    const title = "Dịch vụ có phí";
     const history = useHistory();
     const { path } = useRouteMatch();
     const [materials, setMaterials] = useState([]);
@@ -27,6 +31,21 @@ const MaterialList = () => {
     const [message, setMessage] = useState("");
     const [isShow, setIsShow] = useState(false)
     const [selected, setSelected] = useState({});
+    const [open, setOpen] = useState(false);
+    const [loadingImage, setLoadingImage] = useState(false);
+    const [file, setFile] = useState();
+    const [image, setImage] = useState("")
+    const handleChange = (e) => {
+        setLoadingImage(true)
+        const reader = new FileReader();
+        const file = e.target.files[0]
+        setFile(file)
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+            setImage(reader.result)
+        };
+        setTimeout(() => setLoadingImage(false), 500)
+    }
 
     useEffect(() => {
         const fetchMaterialType = async () => {
@@ -99,12 +118,65 @@ const MaterialList = () => {
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
+            <Popup size="lg" title={title} close={() => setOpen(false)} open={open} confirm={() => { }} labelConfirm={"Thêm"}>
+                <Loading loading={loading}>
+                    <Grid container spacing={4} columns={16} className="py-4">
+                        <Grid item md={8} sm={16}>
+                            <Card className="card-file">
+                                <label className="input-file">
+                                    <Input onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
+                                    {
+                                        loadingImage ? <CircularProgress /> :
+                                            image.length === 0 ?
+                                                <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
+                                                <img src={image} />
+                                    }
+                                </label>
+                            </Card>
+                        </Grid>
+                        <Grid item md={8} sm={16}>
+                            <Grid container spacing={2} columns={16}>
+                                <Grid item sm={16}>
+                                    <Box>
+                                        <FormControl fullWidth>
+                                            <TextField value={material?.name} onChange={e => setMaterial({
+                                                ...material,
+                                                name: e.target.value
+                                            })} label="Tên dịch vụ" variant="standard" />
+                                        </FormControl>
+                                    </Box>
+                                </Grid>
+                                <Grid item sm={16}>
+                                    <Box>
+                                        <FormControl fullWidth>
+                                            <TextField value={material?.name} onChange={e => setMaterial({
+                                                ...material,
+                                                name: e.target.value
+                                            })} label="Đơn vị tính" variant="standard" />
+                                        </FormControl>
+                                    </Box>
+                                </Grid>
+                                <Grid item sm={16}>
+                                    <Box>
+                                        <FormControl fullWidth>
+                                            <TextField value={material?.name} onChange={e => setMaterial({
+                                                ...material,
+                                                name: e.target.value
+                                            })} label="Giá dịch vụ" variant="standard" type={"number"} className="hide-spin" />
+                                        </FormControl>
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Loading>
+            </Popup>
             <div className="d-flex align-items-center">
                 <div>
                     <h3>{title} ({materials.length})</h3>
                 </div>
-                <Button className="ms-auto me-1" variant="contained">
-                    <LinkCustom color="white" to={path + "Add"}>
+                <Button className="ms-auto me-1" variant="contained" onClick={() => setOpen(true)}>
+                    <LinkCustom color="white" to={"#"}>
                         <AddIcon />
                         Thêm
                     </LinkCustom>
@@ -156,4 +228,4 @@ const MaterialList = () => {
 
 }
 
-export default MaterialList;
+export default PaidService;
