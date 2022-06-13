@@ -16,6 +16,8 @@ import MaterialList from "./material/material-list";
 import MaterialView from "./material/material-view";
 import RoomList from "./room/room-list";
 import RoomView from "./room/room-view";
+import FreeService from "./service/free-service";
+import PaidService from "./service/paid-service";
 import StatisticalMaterial from "./statistical/statistical-material";
 import TypeRoomList from "./typeroom/typeroom-list";
 import TypeRoomView from "./typeroom/typeroom-view";
@@ -89,6 +91,12 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Statistical/*">
           <Redirect to={"/Admin/Statistical/Material-Type"} />
+        </Route>
+        <Route path="/Admin/Service/Paid">
+          <PaidService/>
+        </Route>
+        <Route path="/Admin/Service/Free">
+          <FreeService/>
         </Route>
         <Route path="/">
           <Redirect to="/Admin/Material-Type" />

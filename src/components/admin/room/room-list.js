@@ -114,7 +114,6 @@ const RoomList = () => {
         )
     }
 
-
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>

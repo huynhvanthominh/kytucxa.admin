@@ -21,8 +21,12 @@ export default function Menu() {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(0);
   const [statistical, setStatistical] = React.useState(false);
+  const [service, setService] = React.useState(false);
   const handleClick = () => {
     setOpen(!open);
+  };
+  const clickService = () => {
+    setService(!service);
   };
   const clickStatistical = () => {
     setStatistical(!statistical)
@@ -75,6 +79,45 @@ export default function Menu() {
         </ListItemIcon>
         <ListItemText primary="Phòng" />
       </ListItem>
+      <ListItemButton onClick={clickService}>
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText primary="Dịch vụ" />
+        {service ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={service} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            selected={selected === 8.1} onClick={() => setSelected(8.1)}
+            sx={{ pl: 4 }}
+            button
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Service/Paid"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Có phí" />
+          </ListItem>
+
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 8.2}
+            onClick={() => setSelected(8.2)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Service/Free"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Miễn phí" />
+          </ListItem>
+        </List>
+      </Collapse >
       <ListItem
         selected={selected === 0}
         onClick={() => setSelected(0)}
@@ -105,7 +148,7 @@ export default function Menu() {
         <ListItemIcon>
           <InboxIcon />
         </ListItemIcon>
-        <ListItemText primary="Hóa đơn vật chất" />
+        <ListItemText primary="Hóa đơn" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
