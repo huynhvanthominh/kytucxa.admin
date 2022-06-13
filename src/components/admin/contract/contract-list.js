@@ -1,100 +1,65 @@
-import { useEffect, useState } from "react";
-import EditIcon from '@mui/icons-material/Edit';
-import { materialService } from "../../../apis/material.api";
-import { materialTypeService } from "../../../apis/material-type.api";
-import Table from "../../themes/table/table";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import AddIcon from '@mui/icons-material/Add';
-import { pink } from "@mui/material/colors";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { LinkCustom } from "../../../customs/Link.Custom";
-import { TOAST } from "../../../customs/toast-custom"
 import Alert from "../../../customs/Alert-custom";
 import ALERT from "../../../consts/status-alter";
-import MESSAGE from "../../../consts/message-alert";
+import { LinkCustom } from "../../../customs/Link.Custom";
+import AddIcon from "@mui/icons-material/Add";
+import Table from "../../themes/table/table";
 import PATH from "../../../consts/path";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
-const MaterialList = () => {
-
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { pink } from "@mui/material/colors";
+import { useHistory } from "react-router-dom"
+import { useState } from "react";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+export default function ContractList() {
     const title = "Vật chất";
     const history = useHistory();
-    const { path } = useRouteMatch();
     const [materials, setMaterials] = useState([]);
     const [materialType, setMaterialType] = useState(-1)
     const [materialTypes, setMaterialTypes] = useState([])
     const [message, setMessage] = useState("");
     const [isShow, setIsShow] = useState(false)
     const [selected, setSelected] = useState({});
-
-    useEffect(() => {
-        const fetchMaterialType = async () => {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data)
-        }
-        fetchMaterialType()
-    }, [])
-
-    const getData = async () => {
-        try {
-            if (materialType === -1) {
-                const { data } = await materialService.get();
-                setMaterials(data);
-            } else {
-                const { data } = await materialService.getByIdLoaivatchat(materialType);
-                setMaterials(data);
-            }
-
-        } catch (error) {
-            TOAST.EROR(error.message)
-        }
-    }
-
-    useEffect(() => {
-        getData();
-    }, [materialType]);
-
-    const confirm = (_, row) => {
-        setSelected(row);
-        setMessage(`Có chắc mún xóa "${row.name}"`);
-        setIsShow(true);
-    }
-    const handleDelete = async () => {
-        try {
-            const { data } = await materialService.delete(selected?.id);
-            if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                getData();
-            } else {
-                TOAST.EROR(MESSAGE.DELETE_ERROR)
-            }
-        } catch (error) {
-            TOAST.EROR(error.message)
-        }
-    }
-
+    const handleDelete = async () => { }
+    const confirm = () => { }
     const Filter = () => {
         return (
-            <Box>
-                <FormControl fullWidth size="small">
-                    <InputLabel>Loại vật chất</InputLabel>
-                    <Select
-                        className="min-width-200"
-                        label="Loại vật chất"
-                        value={materialType}
-                        onChange={e => setMaterialType(e.target.value)}
-                    >
-                        <MenuItem value={-1}>Tất cả</MenuItem>
-                        {
-                            materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
-                        }
-                    </Select>
-                </FormControl>
-            </Box>
+            <div className="d-flex">
+                <Box>
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Khu</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Khu"
+                            value={materialType}
+                            onChange={e => setMaterialType(e.target.value)}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+                <Box className="ms-2">
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Phòng</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Phòng"
+                            value={materialType}
+                            onChange={e => setMaterialType(e.target.value)}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+            </div>
         )
     }
-
 
     return (
         <div>
@@ -104,7 +69,7 @@ const MaterialList = () => {
                     <h3>{title} ({materials.length})</h3>
                 </div>
                 <Button className="ms-auto me-1" variant="contained">
-                    <LinkCustom color="white" to={path + "Add"}>
+                    <LinkCustom color="white" to={"#"}>
                         <AddIcon />
                         Thêm
                     </LinkCustom>
@@ -116,20 +81,20 @@ const MaterialList = () => {
                     {{
                         columns: [
                             {
-                                title: "",
+                                title: "Mã HĐ",
                                 search: false,
                                 data: "media",
                                 className: "justify-content-center",
                                 render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
                             },
                             {
-                                title: "Tên vật chất",
+                                title: "Thời gian",
                                 data: "name",
                                 className: "justify-content-center",
                                 sort: true,
                             },
                             {
-                                title: "Tên loại vật chất",
+                                title: "Trạng thái",
                                 data: "nameMaterialtype",
                                 className: "justify-content-center",
                                 sort: true,
@@ -154,5 +119,3 @@ const MaterialList = () => {
         </div>
     )
 }
-
-export default MaterialList;

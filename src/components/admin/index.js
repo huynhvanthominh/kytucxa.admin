@@ -21,6 +21,15 @@ import PaidService from "./service/paid-service";
 import StatisticalMaterial from "./statistical/statistical-material";
 import TypeRoomList from "./typeroom/typeroom-list";
 import TypeRoomView from "./typeroom/typeroom-view";
+import BillView from "./Bill/BillView";
+import BillList from "./Bill/BillList";
+import ContractList from "./contract/contract-list";
+import ContractView from "./contract/contract-view";
+import ContractAdd from "./contract/contract-add";
+import ReceiptList from "./receipt/receipt-list";
+import ReceiptView from "./receipt/receipt-view";
+import TroubleList from "./trouble/trouble-list";
+import TroubleView from "./trouble/trouble-view";
 
 const IndexAdmin = () => {
   return (
@@ -86,6 +95,24 @@ const IndexAdmin = () => {
         <Route path="/Admin/Room">
           <RoomList />
         </Route>
+        <Route path="/Admin/Bill/View/:id">
+          <BillView />
+        </Route>
+        <Route path="/Admin/Bill/Add">
+          <BillView />
+        </Route>
+        <Route path="/Admin/Bill">
+          <BillList />
+        </Route>
+        <Route path="/Admin/Contract/Edit/:id">
+          <ContractAdd />
+        </Route>
+        <Route path="/Admin/Contract/View/:id">
+          <ContractView />
+        </Route>
+        <Route path="/Admin/Contract">
+          <ContractList />
+        </Route>
         <Route path="/Admin/Statistical/Material-Type">
           <StatisticalMaterial />
         </Route>
@@ -97,6 +124,24 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Service/Free">
           <FreeService/>
+        </Route>
+        <Route path="/Admin/Receipt/Add">
+          <ReceiptView/>
+        </Route>
+        <Route path="/Admin/Receipt/View/:id">
+          <ReceiptView/>
+        </Route>
+        <Route path="/Admin/Receipt">
+          <ReceiptList/>
+        </Route>
+        <Route path="/Admin/Trouble/View/:id">
+          <TroubleView/>
+        </Route>
+        <Route path="/Admin/Trouble/Add">
+          <TroubleView/>
+        </Route>
+        <Route path="/Admin/Trouble">
+          <TroubleList/>
         </Route>
         <Route path="/">
           <Redirect to="/Admin/Material-Type" />
