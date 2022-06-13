@@ -69,7 +69,7 @@ export default function ContractList() {
                     <h3>{title} ({materials.length})</h3>
                 </div>
                 <Button className="ms-auto me-1" variant="contained">
-                    <LinkCustom color="white" to={"#"}>
+                    <LinkCustom color="white" to={"/Admin/Contract/Edit/1"}>
                         <AddIcon />
                         Thêm
                     </LinkCustom>

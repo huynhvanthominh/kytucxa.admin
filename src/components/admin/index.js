@@ -107,7 +107,7 @@ const IndexAdmin = () => {
         <Route path="/Admin/Contract/Edit/:id">
           <ContractAdd />
         </Route>
-        <Route path="/Admin/Contract/View/:id">
+        <Route path="/Admin/Contract/Add">
           <ContractView />
         </Route>
         <Route path="/Admin/Contract">

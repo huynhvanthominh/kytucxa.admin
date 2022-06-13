@@ -35,6 +35,16 @@ const FreeService = () => {
     const [loadingImage, setLoadingImage] = useState(false);
     const [file, setFile] = useState();
     const [image, setImage] = useState("")
+    const [freeService, setFreeService] = useState([
+        {
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLvkUURP9_2ErWH7KVCrbdPTIlnQzEBKxXJg&usqp=CAU",
+            name: "WI-FI"
+        },
+        {
+            image: "https://tl.cdnchinhphu.vn/Uploads/images/do%20xe%20ngam.jpg",
+            name: "Bãi đỗ xe"
+        }
+    ]);
     const handleChange = (e) => {
         setLoadingImage(true)
         const reader = new FileReader();
@@ -118,7 +128,7 @@ const FreeService = () => {
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
-            <Popup size="sm" title={title} close={() => setOpen(false)} open={open} confirm={() => { }} labelConfirm={"Thêm"}>
+            <Popup size="sm" title={title} close={() => setOpen(false)} open={open} confirm={() => { }} labelConfirm={"Cập nhật"}>
                 <Loading loading={loading}>
                     <Grid container spacing={4} columns={16} className="py-4">
                     <Grid item sm={16}>
@@ -160,7 +170,7 @@ const FreeService = () => {
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={materials} hover striped border filter={<Filter />}>
+                <Table dataSource={freeService} hover striped border filter={<Filter />}>
                     {{
                         columns: [
                             {
@@ -168,17 +178,11 @@ const FreeService = () => {
                                 search: false,
                                 data: "media",
                                 className: "justify-content-center",
-                                render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
+                                render: (data, row) => <div className="table-img"><img src={row.image} alt="" /></div>
                             },
                             {
-                                title: "Tên vật chất",
+                                title: "Tên dịch vụ",
                                 data: "name",
-                                className: "justify-content-center",
-                                sort: true,
-                            },
-                            {
-                                title: "Tên loại vật chất",
-                                data: "nameMaterialtype",
                                 className: "justify-content-center",
                                 sort: true,
                             },
@@ -188,7 +192,6 @@ const FreeService = () => {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Detail-Material/" + data) }} variant="text"><RemoveRedEyeIcon color="success" /></Button>
                                             <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>

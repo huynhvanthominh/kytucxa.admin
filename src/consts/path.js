@@ -1,5 +1,5 @@
 let PATH = {
-    URL_SERVER: "http://192.168.1.236:3001/",
+    URL_SERVER: "http://10.10.10.40:3001/",
     IMAGES: "",
     MATERIAL: "",
 }

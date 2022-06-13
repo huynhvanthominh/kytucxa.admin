@@ -33,7 +33,7 @@ export default function BillView() {
     const [image, setImage] = useState("")
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
@@ -144,11 +144,11 @@ export default function BillView() {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Phòng</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={material?.x}
                                             label="Phòng"
                                             onChange={e => setMaterial({
                                                 ...material,
-                                                idMaterialType: e.target.value
+                                                x: e.target.value
                                             })}
                                         >
                                             {
@@ -163,11 +163,11 @@ export default function BillView() {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Hợp đồng</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={material?.y}
                                             label="Phòng"
                                             onChange={e => setMaterial({
                                                 ...material,
-                                                idMaterialType: e.target.value
+                                                y: e.target.value
                                             })}
                                         >
                                             {
@@ -195,9 +195,9 @@ export default function BillView() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.u} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            u: e.target.value
                                         })} label="Tên hoá đơn" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -205,9 +205,9 @@ export default function BillView() {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.i} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            i: e.target.value
                                         })} label="Giảm giá (%)" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -215,9 +215,9 @@ export default function BillView() {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.p} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            p: e.target.value
                                         })} label="Phạt" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -235,9 +235,9 @@ export default function BillView() {
                             <Grid item sm={10}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.w} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            w: e.target.value
                                         })} label="Tổng" size="small"/>
                                     </FormControl>
                                 </Box>
@@ -254,11 +254,11 @@ export default function BillView() {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Tình trạng</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={material?.f}
                                             label="Phòng"
                                             onChange={e => setMaterial({
                                                 ...material,
-                                                idMaterialType: e.target.value
+                                                f: e.target.value
                                             })}
                                         >
                                             {
@@ -271,9 +271,9 @@ export default function BillView() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.n} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            n: e.target.value
                                         })} label="Ghi chú" variant="standard" multiline rows={4} size="small"/>
                                     </FormControl>
                                 </Box>
