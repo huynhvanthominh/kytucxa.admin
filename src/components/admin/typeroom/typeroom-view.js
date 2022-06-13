@@ -16,25 +16,26 @@ import { uploadFileService } from "../../../apis/upload-file.api";
 import { materialService } from "../../../apis/material.api";
 import MESSAGE from "../../../consts/message-alert";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import EditIcon from '@mui/icons-material/Edit';
-
-const initMaterial = {
-    idMaterialType: "",
-    name: "",
-    media: "",
-}
+import { areaAPI } from "../../../apis/area.api";
+import { freeServiceAPI } from "../../../apis/freeService.api";
+import { paidServiceAPI } from "../../../apis/paidService.api";
+import { MultiSelect } from "react-multi-select-component";
 
 const TypeRoomView = () => {
 
     const title = "Loại phòng";
     const history = useHistory();
     const { id } = useParams();
-    const [materialTypes, setMaterialTypes] = useState([]);
-    const [material, setMaterial] = useState(initMaterial);
-    const [image, setImage] = useState("")
-    const [file, setFile] = useState();
+    const [areaList, setAreaValue] = useState([]);
+    const [typeOfRoom, setTypeOfRoom] = useState();
+    const [freeService, setFreeService] = useState([]);
+    const [freeServiceSelected, setFreeServiceSelected] = useState([]);
+    const [paidService, setPaidService] = useState([]);
+    const [paidServiceSelected, setPaidServiceSelected] = useState([]);
+    const [image, setImage] = useState([])
+    const [file, setFile] = useState([]);
     const [loadingImage, setLoadingImage] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
@@ -47,11 +48,11 @@ const TypeRoomView = () => {
             TOAST.WARN("Vui lòng chọn hình ảnh !");
             return false
         }
-        if (material?.idMaterialType.length === 0) {
+        if (typeOfRoom?.idMaterialType.length === 0) {
             TOAST.WARN("Vui lòng chọn loại vật chất !");
             return false
         }
-        if (material?.name.length === 0) {
+        if (typeOfRoom?.name.length === 0) {
             TOAST.WARN("Vui lòng nhập tên vật chất !");
             return false
         }
@@ -59,63 +60,94 @@ const TypeRoomView = () => {
     }
 
     const handleAdd = async () => {
-        try {
-            if (checkValue()) {
-                setLoading(true);
-                const upload = await uploadFile();
+        // try {
+        //     if (checkValue()) {
+        //         setLoading(true);
+        //         const upload = await uploadFile();
 
-                if (upload?.name) {
-                    const { data } = await materialService.add({
-                        ...material,
-                        media: upload.name
-                    });
-                    if (data?.error) {
-                        console.log(data);
-                        TOAST.EROR(data.message)
-                        setLoading(false)
-                        await uploadFileService.removeImage(upload?.name, "material");
-                    } else {
-                        TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
-                        history.goBack();
-                        setLoading(false);
-                    }
-                    setLoading(false);
-                } else {
-                    TOAST.EROR("Upload file thất bại !");
-                    setTimeout(() => setLoadingButton(false), 500);
-                }
-            }
-        } catch (error) {
-            TOAST.EROR(error.message)
-        }
-        setLoading(false)
+        //         if (upload?.name) {
+        //             const { data } = await materialService.add({
+        //                 ...material,
+        //                 media: upload.name
+        //             });
+        //             if (data?.error) {
+        //                 console.log(data);
+        //                 TOAST.EROR(data.message)
+        //                 await uploadFileService.removeImage(upload?.name, "material");
+        //             } else {
+        //                 TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
+        //                 history.goBack();
+        //             }
+        //         } else {
+        //             TOAST.EROR("Upload file thất bại !");
+        //         }
+        //     }
+        // } catch (error) {
+        //     TOAST.EROR(error.message)
+        // }
     }
 
-    const fetchMaterialType = async () => {
+    const handleChange = (e) => {
+        // const reader = new FileReader();
+        // const file = e.files
+        // setFile(file)
+        // for (let index = 0; file < file.length; index++) {
+        //     reader.readAsDataURL(file[index]);
+        //     reader.onloadend = function (e) {
+        //         console.log(e.target.result);
+        //     };
+        // }
+        let a = [];
+        let b = [];
+        a.push(e.target.files)
+        for (let i = 0; i < a[0].length; i++) {
+            b.push(URL.createObjectURL(a[0][i]))
+        }
+        setImage(b);
+    }
+
+    const getListArea = async () => {
         try {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data);
+            await areaAPI.getListArea({userId: 1}).then(data => {
+                setAreaValue(data);
+            });
         } catch (error) {
             TOAST.EROR(error.message)
         }
-        setTimeout(() => setLoading(false), 500)
+        // setTimeout(() => setLoading(false), 1000)
+    }
+
+    const getFreeService = async () => {
+        try {
+            await freeServiceAPI.getListFreeService({userId: 1}).then(data => {
+                setFreeService(data.map((item, index) => ({label: item.name, value: item.id})))
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        // setTimeout(() => setLoading(false), 1000)
+    }
+
+    const getPaidService = async () => {
+        try {
+            await paidServiceAPI.getListPaidService({userId: 1}).then(data => {
+                setPaidService(data.map((item, index) => ({label: item.name, value: item.id})))
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        // setTimeout(() => setLoading(false), 1000)
     }
 
     useEffect(() => {
-        fetchMaterialType();
+        getListArea();
+        getFreeService();
+        getPaidService();
     }, []);
 
-    const handleChange = (e) => {
-        setLoadingImage(true)
-        const reader = new FileReader();
-        const file = e.target.files[0]
-        setFile(file)
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-            setImage(reader.result)
-        };
-        setTimeout(() => setLoadingImage(false), 500)
-    }
+    useEffect(() => {
+        console.log(freeServiceSelected);
+    }, [freeServiceSelected]);
 
     return (
         <Loading loading={loading}>
@@ -132,30 +164,35 @@ const TypeRoomView = () => {
                             <label className="input-file">
                                 <input multiple onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
                                 {
-                                    loadingImage ? <CircularProgress /> :
                                         image.length === 0 ?
-                                            <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
-                                            <img src={image} />
+                                        <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
+                                        <div>
+                                            {
+                                                image.map(item => {
+                                                    <img src={item} />
+                                                })
+                                            }
+                                        </div>
                                 }
                             </label>
                         </Card>
                     </Grid>
                     <Grid item md={8} sm={16}>
-                        <Grid container spacing={2} columns={16}>
+                        <Grid container spacing={2.36} columns={16}>
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Khu</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={typeOfRoom?.areaId}
                                             label="Khu"
-                                            onChange={e => setMaterial({
-                                                ...material,
+                                            onChange={e => setTypeOfRoom({
+                                                ...typeOfRoom,
                                                 idMaterialType: e.target.value
                                             })}
                                         >
                                             {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                                areaList.map((area, i) => <MenuItem key={i} value={area?.id}>{area?.areaName}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
@@ -164,19 +201,19 @@ const TypeRoomView = () => {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
+                                        <TextField value={typeOfRoom?.name} onChange={e => setTypeOfRoom({
+                                            ...typeOfRoom,
                                             name: e.target.value
                                         })} label="Tên loại phòng" variant="standard" />
                                     </FormControl>
                                 </Box>
                             </Grid>
-                            <Grid item sm={16}>
+                            <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
+                                        <TextField value={typeOfRoom?.price} onChange={e => setTypeOfRoom({
+                                            ...typeOfRoom,
+                                            price: e.target.value
                                         })} label="Giá loại phòng" type={"number"} className="hide-spin" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -184,9 +221,19 @@ const TypeRoomView = () => {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
+                                        <TextField value={typeOfRoom?.typeOfCustomer} onChange={e => setTypeOfRoom({
+                                            ...typeOfRoom,
+                                            typeOfCustomer: e.target.value
+                                        })} label="Đối tượng" variant="standard" />
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={8}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <TextField value={typeOfRoom?.stretch} onChange={e => setTypeOfRoom({
+                                            ...typeOfRoom,
+                                            stretch: e.target.value
                                         })} label="Diện tích" type={"number"} className="hide-spin" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -194,9 +241,9 @@ const TypeRoomView = () => {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
+                                        <TextField value={typeOfRoom?.numberOfCustomer} onChange={e => setTypeOfRoom({
+                                            ...typeOfRoom,
+                                            numberOfCustomer: e.target.value
                                         })} label="Số lượng khách" type={"number"} className="hide-spin" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -204,65 +251,35 @@ const TypeRoomView = () => {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
-                                        })} label="Đối tượng" variant="standard" />
+                                        <TextField value={typeOfRoom?.note} onChange={e => setTypeOfRoom({
+                                            ...typeOfRoom,
+                                            note: e.target.value
+                                        })} label="Lưu ý"   multiline rows={3}/>
                                     </FormControl>
                                 </Box>
                             </Grid>
-                            <Grid item sm={16}>
-                                <Box>
-                                    <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
-                                        })} label="Lưu ý"   multiline rows={4}/>
-                                    </FormControl>
-                                </Box>
+                            <Grid item sm={8}>
+                                <span style={{color: '#757575'}}>Dịch vụ miễn phí</span>
+                                <MultiSelect
+                                    options={freeService}
+                                    value={freeServiceSelected}
+                                    onChange={setFreeServiceSelected}
+                                    displayValue="Dịch vụ miễn phí"
+                                />
                             </Grid>
-                            <Grid item sm={16}>
-                                <Box>
-                                    <FormControl fullWidth size="small">
-                                        <InputLabel>Dịch vụ có phí</InputLabel>
-                                        <Select
-                                            value={material?.idMaterialType}
-                                            label="Dịch vụ có phí"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                idMaterialType: e.target.value
-                                            })}
-                                        >
-                                            {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
-                                            }
-                                        </Select>
-                                    </FormControl>
-                                </Box>
-                            </Grid>
-                            <Grid item sm={16}>
-                                <Box>
-                                    <FormControl fullWidth size="small">
-                                        <InputLabel>Dịch vụ miễn phí</InputLabel>
-                                        <Select
-                                            value={material?.idMaterialType}
-                                            label="Dịch vụ miễn phí"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                idMaterialType: e.target.value
-                                            })}
-                                        >
-                                            {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
-                                            }
-                                        </Select>
-                                    </FormControl>
-                                </Box>
+                            <Grid item sm={8}>
+                                <span style={{color: '#757575'}}>Dịch vụ có phí</span>
+                                <MultiSelect
+                                    options={paidService}
+                                    value={paidServiceSelected}
+                                    onChange={setPaidServiceSelected}
+                                    displayValue="Dịch vụ có phí"
+                                />
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
                                     {id ? <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>:
-                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Thêm</Button>}
+                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>}
                                     <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>
                                 </Box>
                             </Grid>
