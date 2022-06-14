@@ -17,6 +17,9 @@ import { materialService } from "../../../apis/material.api";
 import MESSAGE from "../../../consts/message-alert";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import EditIcon from '@mui/icons-material/Edit';
+import { areaAPI } from "../../../apis/area.api";
+import { typeOfRoomAPI } from "../../../apis/typeroom.api";
+import { roomAPI } from "../../../apis/room.api";
 
 const initMaterial = {
     idMaterialType: "",
@@ -29,61 +32,98 @@ const RoomView = () => {
     const title = "Phòng";
     const history = useHistory();
     const { id } = useParams();
-    const [materialTypes, setMaterialTypes] = useState([]);
-    const [material, setMaterial] = useState(initMaterial);
     const [image, setImage] = useState("")
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
-
+    const [listArea, setListArea] = useState([]);
+    const [listTypeOfRoom, setListTypeOfRoom] = useState([]);
+    const [areaSelected, setAreaSelected] = useState({areaName: ''});
+    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState({name: ''});
+    const [roomAdd, setRoomAdd] = useState({roomName: '', note: ''});
     const uploadFile = async () => {
         const { data } = await uploadFileService.uploadImage(file, "material");
         return data
     }
 
     const checkValue = () => {
-        if (!file) {
-            TOAST.WARN("Vui lòng chọn hình ảnh !");
+        // if (!file) {
+        //     TOAST.WARN("Vui lòng chọn hình ảnh !");
+        //     return false
+        // }
+        if (areaSelected.areaName.length === 0) {
+            TOAST.WARN("Vui lòng chọn khu !");
             return false
         }
-        if (material?.idMaterialType.length === 0) {
-            TOAST.WARN("Vui lòng chọn loại vật chất !");
+        if (typeOfRoomSelected.name.length === 0) {
+            TOAST.WARN("Vui lòng chọn loại phòng !");
             return false
         }
-        if (material?.name.length === 0) {
-            TOAST.WARN("Vui lòng nhập tên vật chất !");
+        if (!roomAdd.roomName) {
+            TOAST.WARN("Vui lòng nhập tên phòng !");
+            return false
+        }
+        if (!roomAdd.note) {
+            TOAST.WARN("Vui lòng nhập lưu ý !");
             return false
         }
         return true
     }
 
+    const getDataArea = async () => {
+        try {
+            await areaAPI.getListArea({ userId: 1 }).then(data => {
+                setListArea(data);
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+
+    
+    const getRoomById = async (areaId) => {
+        try {
+            await roomAPI.getRoomById({ id: id }).then(data => {
+                setRoomAdd(data);
+                
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+    
+
+    const getDataTypeOfRoom = async (areaId) => {
+        try {
+            await typeOfRoomAPI.getTypeOfRoomByArea({ areaId: areaId }).then(data => {
+                setListTypeOfRoom(data);
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+
     const handleAdd = async () => {
         try {
             if (checkValue()) {
-                setLoading(true);
-                const upload = await uploadFile();
-
-                if (upload?.name) {
-                    const { data } = await materialService.add({
-                        ...material,
-                        media: upload.name
-                    });
+                setLoading(true)
+                await roomAPI.addRoom({
+                    ...roomAdd,
+                    status: 0,
+                    typeOfRoomId: typeOfRoomSelected.id
+                }).then(data => {
                     if (data?.error) {
                         console.log(data);
                         TOAST.EROR(data.message)
                         setLoading(false)
-                        await uploadFileService.removeImage(upload?.name, "material");
                     } else {
                         TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
                         history.goBack();
                         setLoading(false);
                     }
-                    setLoading(false);
-                } else {
-                    TOAST.EROR("Upload file thất bại !");
-                    setTimeout(() => setLoadingButton(false), 500);
-                }
+                });
+                setLoading(false);
             }
         } catch (error) {
             TOAST.EROR(error.message)
@@ -91,19 +131,20 @@ const RoomView = () => {
         setLoading(false)
     }
 
-    const fetchMaterialType = async () => {
-        try {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data);
-        } catch (error) {
-            TOAST.EROR(error.message)
-        }
-        setTimeout(() => setLoading(false), 500)
-    }
+    // useEffect(() => {
+    //     getDataTypeOfRoom(areaSelected.id);
+    // }, [areaSelected]);
 
     useEffect(() => {
-        fetchMaterialType();
+        getDataArea();
     }, []);
+
+    useEffect(() => {
+        getDataArea();
+        if(id){
+            getRoomById()
+        }
+    }, [id]);
 
     const handleChange = (e) => {
         setLoadingImage(true)
@@ -131,18 +172,40 @@ const RoomView = () => {
                         <Grid container spacing={4} columns={16}>
                             <Grid item sm={16}>
                                 <Box>
-                                <FormControl fullWidth size="small">
-                                        <InputLabel>Loại phòng</InputLabel>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Khu</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
-                                            label="Dịch vụ miễn phí"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                idMaterialType: e.target.value
-                                            })}
+                                            defaultValue={""}
+                                            value={listArea?.areaName}
+                                            label="Khu"
+                                            onChange={e => {
+                                                setAreaSelected(e.target.value)
+                                                getDataTypeOfRoom(
+                                                    e.target.value.id
+                                                );
+                                            }}
                                         >
                                             {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                                listArea?.map((area, i) => <MenuItem key={i} value={area}>{area?.areaName}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Loại phòng</InputLabel>
+                                        <Select
+                                            defaultValue={""}
+                                            value={listTypeOfRoom?.name}
+                                            label="Loại phòng"
+                                            onChange={e => setTypeOfRoomSelected(
+                                                e.target.value
+                                            )}
+                                        >
+                                            {
+                                                listTypeOfRoom?.map((typeOfRoom, i) => <MenuItem key={i} value={typeOfRoom}>{typeOfRoom?.name}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
@@ -151,13 +214,13 @@ const RoomView = () => {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField size="small" value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
+                                        <TextField size="small" value={roomAdd.roomName} onChange={e => setRoomAdd({
+                                            ...roomAdd,
+                                            roomName: e.target.value
                                         })} label="Tên phòng" />
                                     </FormControl>
                                 </Box>
-                            </Grid>      
+                            </Grid>
                         </Grid>
                     </Grid>
                     <Grid item md={8} sm={16}>
@@ -166,11 +229,16 @@ const RoomView = () => {
                                 <Box>
                                     <FormControl fullWidth>
                                         <TextField
+                                            value={roomAdd.note}
                                             id="outlined-multiline-static"
                                             label="Lưu ý:"
                                             multiline
-                                            rows={4}
+                                            rows={8}
                                             size="small"
+                                            onChange={e => setRoomAdd({
+                                                ...roomAdd,
+                                                note: e.target.value
+                                            })}
                                         />
                                     </FormControl>
                                 </Box>
@@ -180,8 +248,9 @@ const RoomView = () => {
                 </Grid>
                 <div className="d-flex align-items-center">
                     {
-                        id ? <Button variant="contained" className="me-1" endIcon={<EditIcon />}>Cập nhật</Button> :
-                            <Button variant="contained" className="me-1" endIcon={<AddIcon />}>Cập nhật</Button>}
+                        // id ? <Button variant="contained" className="me-1" endIcon={<EditIcon />}>Thêm</Button> :
+                            <Button onClick={handleAdd} variant="contained" className="me-1" endIcon={<AddIcon />}>{roomAdd.id ? "Cập nhật" : "Thêm"}</Button>
+                    }
                     <Button variant="contained" color="inherit" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Trở về</Button>
                 </div>
             </div >

@@ -1,5 +1,5 @@
 let PATH = {
-    URL_SERVER: "http://192.168.1.231:3001/",
+    URL_SERVER: "http://localhost:3001/",
     IMAGES: "",
     MATERIAL: "",
 }

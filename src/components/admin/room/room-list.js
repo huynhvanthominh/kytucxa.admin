@@ -15,68 +15,45 @@ import ALERT from "../../../consts/status-alter";
 import MESSAGE from "../../../consts/message-alert";
 import PATH from "../../../consts/path";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { roomAPI } from "../../../apis/room.api";
+import { areaAPI } from "../../../apis/area.api";
+import { id } from "date-fns/locale";
+
 
 const RoomList = () => {
 
     const title = "Phòng";
     const history = useHistory();
     const { path } = useRouteMatch();
-    const [materials, setMaterials] = useState([]);
-    const [materialType, setMaterialType] = useState(-1)
-    const [materialTypes, setMaterialTypes] = useState([])
     const [message, setMessage] = useState("");
     const [isShow, setIsShow] = useState(false)
     const [selected, setSelected] = useState({});
+    const [listArea, setListArea] = useState([]);
+    const [areaSelected, setAreaSelected] = useState([]);
+    const [typeOfRoom, setTypeOfRoom] = useState([])
+    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState([])
+    const [room, setRoom] = useState([])
 
-    const [room, setRoom] = useState([
-        {
-            name: "Phòng A",
-            note: "Phòng rộng rãi"
-        },
-        {
-            name: "Phòng B",
-            note: "Phòng thoáng mát"
-        },
-        {
-            name: "Phòng C",
-            note: "Phòng rộng rãi"
-        },
-        {
-            name: "Phòng D",
-            note: "Phòng thoáng mát"
-        },
-    ])
 
-    useEffect(() => {
-        const fetchMaterialType = async () => {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data)
-        }
-        fetchMaterialType()
-    }, [])
-
-    const getData = async () => {
+    const getRoomByUser = async () => {
         try {
-            if (materialType === -1) {
-                const { data } = await materialService.get();
-                setMaterials(data);
-            } else {
-                const { data } = await materialService.getByIdLoaivatchat(materialType);
-                setMaterials(data);
-            }
-
+            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+                setListArea(data);
+                setAreaSelected(-1);
+                setTypeOfRoomSelected(-1);
+            });
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
     useEffect(() => {
-        getData();
-    }, [materialType]);
+        getRoomByUser();
+    }, []);
 
     const confirm = (_, row) => {
         setSelected(row);
-        setMessage(`Có chắc mún xóa "${row.name}"`);
+        setMessage(`Có chắc muốn xóa "${row.name}"`);
         setIsShow(true);
     }
     const handleDelete = async () => {
@@ -84,7 +61,7 @@ const RoomList = () => {
             const { data } = await materialService.delete(selected?.id);
             if (data.status) {
                 TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                getData();
+                // getDataRoom();
             } else {
                 TOAST.EROR(MESSAGE.DELETE_ERROR)
             }
@@ -93,33 +70,98 @@ const RoomList = () => {
         }
     }
 
-    const Filter = () => {
+    useEffect(() => {
+        if(areaSelected === -1){
+            const listRoom = [];
+            const listType = [];
+            listArea.map(item => {
+                item.typeofrooms.map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.map(itemRoom => {
+                        listRoom.push(itemRoom)
+                    })
+                })
+            })
+            console.log(listRoom);
+            setTypeOfRoom(listType);
+            setRoom(listRoom);
+        }else{
+            const listType = [];
+            const listRoom = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.map(itemType => {
+                    listType.push(itemType);
+                })
+            })
+            listType.map(itemType => {
+                itemType.rooms.map(itemRoom => {
+                    listRoom.push(itemRoom);
+                })
+            })
+            setTypeOfRoomSelected(-1);
+            setTypeOfRoom(listType);
+            setRoom(listRoom);
+        }
+    }, [areaSelected])
+
+
+    const setFilterType = (type) => {
+        
+    }
+
+    const FilterKhu = () => {
         return (
-            <Box>
-                <FormControl fullWidth size="small">
-                    <InputLabel>Loại vật chất</InputLabel>
-                    <Select
-                        className="min-width-200"
-                        label="Loại vật chất"
-                        value={materialType}
-                        onChange={e => setMaterialType(e.target.value)}
-                    >
-                        <MenuItem value={-1}>Tất cả</MenuItem>
-                        {
-                            materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
-                        }
-                    </Select>
-                </FormControl>
-            </Box>
+            <div className="d-flex">
+                <Box className="ms-2">
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Khu</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Khu"
+                            defaultValue={"Tất cả"}
+                            value={areaSelected}
+                            onChange={e => {
+                                setAreaSelected(e.target.value)
+                            }}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                listArea.map((area, i) => <MenuItem key={i} value={area}>{area?.areaName}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+                <Box className="ms-2">
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Loại Phòng</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Loại Phòng"
+                            defaultValue={"Tất cả"}
+                            value={typeOfRoomSelected}
+                            onChange={e => {
+                                setTypeOfRoomSelected(e.target.value)
+                                setRoom(e.target.value.rooms)
+                            }}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                typeOfRoom.map((type, i) => <MenuItem key={i} value={type}>{type?.name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+            </div>
         )
     }
+    
 
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
             <div className="d-flex align-items-center">
                 <div>
-                    <h3>{title} ({materials.length})</h3>
+                    <h3>{title} ({room?.length})</h3>
                 </div>
                 <Button className="ms-auto me-1" variant="contained">
                     <LinkCustom color="white" to={"/Admin/Room/Add"}>
@@ -130,24 +172,17 @@ const RoomList = () => {
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={room} hover striped border filter={<Filter />}>
+                <Table dataSource={room} hover striped border filter={<FilterKhu />} >
                     {{
                         columns: [
-                            // {
-                            //     title: "",
-                            //     search: false,
-                            //     data: "media",
-                            //     className: "justify-content-center",
-                            //     render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
-                            // },
                             {
                                 title: "Tên phòng",
-                                data: "name",
+                                data: "roomName",
                                 className: "justify-content-center",
                                 sort: true,
                             },
                             {
-                                title: "Shi chú",
+                                title: "Ghi chú",
                                 data: "note",
                                 className: "justify-content-center",
                                 sort: true,
@@ -158,8 +193,7 @@ const RoomList = () => {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Detail-Material/" + data) }} variant="text"><RemoveRedEyeIcon color="success" /></Button>
-                                            <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
+                                            <Button onClick={() => { history.push("/Admin/Room/View/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>
                                     );
