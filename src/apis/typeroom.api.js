@@ -26,6 +26,32 @@ const getListTypeofroom = (params = {}) => {
     });
 };
 
+const getTypeOfRoomByArea = (params = {}) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get('/getTypeOfRoomByArea', {params})
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+
+const getTypeOfRoomByRoom = (params = {}) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get('/getTypeOfRoomByRoom', {params})
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+
 export const addArea = (body) => {
     return new Promise((resolve, reject) => {
         axios
@@ -73,5 +99,7 @@ export const typeOfRoomAPI = {
     getAreaById,
     addArea,
     updateArea,
-    deleteArea
+    deleteArea,
+    getTypeOfRoomByArea,
+    getTypeOfRoomByRoom
 }
