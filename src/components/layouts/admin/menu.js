@@ -22,6 +22,10 @@ export default function Menu() {
   const [selected, setSelected] = React.useState(0);
   const [statistical, setStatistical] = React.useState(false);
   const [service, setService] = React.useState(false);
+  const [connect, setConnect] = React.useState(false);
+  const clickConnect = () => {
+    setConnect(!connect);
+  }
   const handleClick = () => {
     setOpen(!open);
   };
@@ -264,6 +268,46 @@ export default function Menu() {
               <SendIcon />
             </ListItemIcon>
             <ListItemText primary="Loại vật chất" />
+          </ListItem>
+
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 4.2}
+            onClick={() => setSelected(4.2)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Bill-Material"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Vật chất" />
+          </ListItem>
+        </List>
+      </Collapse >
+      <ListItemButton onClick={clickConnect}>
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText primary="Liên kết" />
+        {connect ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={connect} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            sx={{ pl: 4 }}
+            button
+            selected={selected === 11.1}
+            onClick={() => setSelected(11.1)}
+            component={React.forwardRef((props, ref) => (
+              <Link {...props} ref={ref} to={"/Admin/Connect/input-material-to-room"}></Link>
+            ))}
+          >
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Nhập vật chất vào phòng" />
           </ListItem>
 
           <ListItem

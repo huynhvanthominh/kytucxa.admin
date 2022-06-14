@@ -30,6 +30,7 @@ import ReceiptList from "./receipt/receipt-list";
 import ReceiptView from "./receipt/receipt-view";
 import TroubleList from "./trouble/trouble-list";
 import TroubleView from "./trouble/trouble-view";
+import InputMaterialToRoom from "./connect/input-material-to-room";
 
 const IndexAdmin = () => {
   return (
@@ -142,6 +143,9 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Trouble">
           <TroubleList/>
+        </Route>
+        <Route path="/Admin/Connect/input-material-to-room">
+          <InputMaterialToRoom/>
         </Route>
         <Route path="/">
           <Redirect to="/Admin/Material-Type" />
