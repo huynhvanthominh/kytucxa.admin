@@ -30,7 +30,7 @@ export default function ContractAdd() {
     const [image, setImage] = useState("")
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
@@ -130,11 +130,11 @@ export default function ContractAdd() {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Phòng</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={material?.x}
                                             label="Phòng"
                                             onChange={e => setMaterial({
                                                 ...material,
-                                                idMaterialType: e.target.value
+                                                x: e.target.value
                                             })}
                                         >
                                             {
@@ -149,11 +149,11 @@ export default function ContractAdd() {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Khách thuê</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={material?.y}
                                             label="Khách thuê"
                                             onChange={e => setMaterial({
                                                 ...material,
-                                                idMaterialType: e.target.value
+                                                y: e.target.value
                                             })}
                                         >
                                             {
@@ -166,9 +166,9 @@ export default function ContractAdd() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.z} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            z: e.target.value
                                         })} label="Ngày vào" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -176,9 +176,9 @@ export default function ContractAdd() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.d} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            d: e.target.value
                                         })} label="Thời hạn" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -186,9 +186,9 @@ export default function ContractAdd() {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.f} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            f: e.target.value
                                         })} label="Chỉ số điện" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -196,9 +196,9 @@ export default function ContractAdd() {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.t} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            t: e.target.value
                                         })} label="Chỉ số nước" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -214,9 +214,9 @@ export default function ContractAdd() {
                     <Grid item md={8} sm={16}>
                         <Box>
                             <FormControl fullWidth>
-                                <TextField value={material?.name} onChange={e => setMaterial({
+                                <TextField value={material?.x} onChange={e => setMaterial({
                                     ...material,
-                                    name: e.target.value
+                                    x: e.target.value
                                 })} label="Điều khoản" multiline rows={8}/>
                             </FormControl>
                         </Box>

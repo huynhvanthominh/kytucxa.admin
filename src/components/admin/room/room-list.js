@@ -28,6 +28,25 @@ const RoomList = () => {
     const [isShow, setIsShow] = useState(false)
     const [selected, setSelected] = useState({});
 
+    const [room, setRoom] = useState([
+        {
+            name: "Phòng A",
+            note: "Phòng rộng rãi"
+        },
+        {
+            name: "Phòng B",
+            note: "Phòng thoáng mát"
+        },
+        {
+            name: "Phòng C",
+            note: "Phòng rộng rãi"
+        },
+        {
+            name: "Phòng D",
+            note: "Phòng thoáng mát"
+        },
+    ])
+
     useEffect(() => {
         const fetchMaterialType = async () => {
             const { data } = await materialTypeService.get();
@@ -111,25 +130,25 @@ const RoomList = () => {
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={materials} hover striped border filter={<Filter />}>
+                <Table dataSource={room} hover striped border filter={<Filter />}>
                     {{
                         columns: [
+                            // {
+                            //     title: "",
+                            //     search: false,
+                            //     data: "media",
+                            //     className: "justify-content-center",
+                            //     render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
+                            // },
                             {
-                                title: "",
-                                search: false,
-                                data: "media",
-                                className: "justify-content-center",
-                                render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
-                            },
-                            {
-                                title: "Tên vật chất",
+                                title: "Tên phòng",
                                 data: "name",
                                 className: "justify-content-center",
                                 sort: true,
                             },
                             {
-                                title: "Tên loại vật chất",
-                                data: "nameMaterialtype",
+                                title: "Shi chú",
+                                data: "note",
                                 className: "justify-content-center",
                                 sort: true,
                             },

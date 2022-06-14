@@ -34,7 +34,7 @@ const RoomView = () => {
     const [image, setImage] = useState("")
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
@@ -132,7 +132,7 @@ const RoomView = () => {
                             <Grid item sm={16}>
                                 <Box>
                                 <FormControl fullWidth size="small">
-                                        <InputLabel>Dịch vụ miễn phí</InputLabel>
+                                        <InputLabel>Loại phòng</InputLabel>
                                         <Select
                                             value={material?.idMaterialType}
                                             label="Dịch vụ miễn phí"
@@ -181,7 +181,7 @@ const RoomView = () => {
                 <div className="d-flex align-items-center">
                     {
                         id ? <Button variant="contained" className="me-1" endIcon={<EditIcon />}>Cập nhật</Button> :
-                            <Button variant="contained" className="me-1" endIcon={<AddIcon />}>Thêm</Button>}
+                            <Button variant="contained" className="me-1" endIcon={<AddIcon />}>Cập nhật</Button>}
                     <Button variant="contained" color="inherit" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Trở về</Button>
                 </div>
             </div >

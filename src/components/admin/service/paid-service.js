@@ -35,6 +35,20 @@ const PaidService = () => {
     const [loadingImage, setLoadingImage] = useState(false);
     const [file, setFile] = useState();
     const [image, setImage] = useState("")
+    const [paidService, setPaidService] = useState([
+        {
+            image: "https://cafefcdn.com/2019/11/1/photo-4-1572573804043806864838.jpg",
+            name: "Thức ăn",
+            unit: "vnd/phần",
+            price: 100000
+        },
+        {
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoahKd2vmM-Mv3SYb0WRTBYfcx569D6AaT1Q&usqp=CAU",
+            name: "Thức uống",
+            unit: "vnd/phần",
+            price: 50000
+        }
+    ]);
     const handleChange = (e) => {
         setLoadingImage(true)
         const reader = new FileReader();
@@ -118,7 +132,7 @@ const PaidService = () => {
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
-            <Popup size="lg" title={title} close={() => setOpen(false)} open={open} confirm={() => { }} labelConfirm={"Thêm"}>
+            <Popup size="lg" title={title} close={() => setOpen(false)} open={open} confirm={() => { }} labelConfirm={"Cập nhật"}>
                 <Loading loading={loading}>
                     <Grid container spacing={4} columns={16} className="py-4">
                         <Grid item md={8} sm={16}>
@@ -149,9 +163,9 @@ const PaidService = () => {
                                 <Grid item sm={16}>
                                     <Box>
                                         <FormControl fullWidth>
-                                            <TextField value={material?.name} onChange={e => setMaterial({
+                                            <TextField value={material?.unit} onChange={e => setMaterial({
                                                 ...material,
-                                                name: e.target.value
+                                                unit: e.target.value
                                             })} label="Đơn vị tính" variant="standard" />
                                         </FormControl>
                                     </Box>
@@ -159,9 +173,9 @@ const PaidService = () => {
                                 <Grid item sm={16}>
                                     <Box>
                                         <FormControl fullWidth>
-                                            <TextField value={material?.name} onChange={e => setMaterial({
+                                            <TextField value={material?.price} onChange={e => setMaterial({
                                                 ...material,
-                                                name: e.target.value
+                                                price: e.target.value
                                             })} label="Giá dịch vụ" variant="standard" type={"number"} className="hide-spin" />
                                         </FormControl>
                                     </Box>
@@ -184,7 +198,7 @@ const PaidService = () => {
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={materials} hover striped border filter={<Filter />}>
+                <Table dataSource={paidService} hover striped border filter={<Filter />}>
                     {{
                         columns: [
                             {
@@ -192,17 +206,24 @@ const PaidService = () => {
                                 search: false,
                                 data: "media",
                                 className: "justify-content-center",
-                                render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
+                                render: (data, row) => <div className="table-img"><img src={row.image} alt="" /></div>
                             },
                             {
-                                title: "Tên vật chất",
+                                title: "Tên dịch vụ",
                                 data: "name",
                                 className: "justify-content-center",
                                 sort: true,
                             },
+                            
                             {
-                                title: "Tên loại vật chất",
-                                data: "nameMaterialtype",
+                                title: "Giá",
+                                data: "price",
+                                className: "justify-content-center",
+                                sort: true,
+                            },
+                            {
+                                title: "Đơn vị tính",
+                                data: "unit",
                                 className: "justify-content-center",
                                 sort: true,
                             },
@@ -212,7 +233,6 @@ const PaidService = () => {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Detail-Material/" + data) }} variant="text"><RemoveRedEyeIcon color="success" /></Button>
                                             <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>

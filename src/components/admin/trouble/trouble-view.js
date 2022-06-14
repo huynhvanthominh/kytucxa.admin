@@ -24,14 +24,14 @@ const initMaterial = {
 }
 export default function TroubleView() {
     const [value, setValue] = useState(new Date());
-    const title = "Thêm biên nhận";
+    const title = "Sự cố";
     const history = useHistory();
     const [materialTypes, setMaterialTypes] = useState([]);
     const [material, setMaterial] = useState(initMaterial);
     const [image, setImage] = useState("")
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
@@ -54,9 +54,7 @@ export default function TroubleView() {
         }
         return true
     }
-    const handleChange = (newValue) => {
-        setValue(newValue);
-    };
+
     const handleAdd = async () => {
         try {
             if (checkValue()) {
@@ -88,6 +86,18 @@ export default function TroubleView() {
             TOAST.EROR(error.message)
         }
         setLoading(false)
+    }
+
+    const handleChange = (e) => {
+        setLoadingImage(true)
+        const reader = new FileReader();
+        const file = e.target.files[0]
+        setFile(file)
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+            setImage(reader.result)
+        };
+        setTimeout(() => setLoadingImage(false), 500)
     }
 
     const fetchMaterialType = async () => {
@@ -171,9 +181,9 @@ export default function TroubleView() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
+                                        <TextField value={material?.status} onChange={e => setMaterial({
                                             ...material,
-                                            name: e.target.value
+                                            status: e.target.value
                                         })} label="Tên sự cố" variant="standard" />
                                     </FormControl>
                                 </Box>

@@ -26,6 +26,20 @@ export default function () {
     const [message, setMessage] = useState("");
     const [isShow, setIsShow] = useState(false)
     const [selected, setSelected] = useState({});
+    const [trouble, setTroubleH] = useState([
+        {
+            name: "Sự cố internet",
+            describe: "Mất kết nối toàn khu vực",
+            createdAt: "2022-06-12 08:41:27",
+            image: "https://znews-photo.zingcdn.me/w660/Uploaded/yqdlcqrwq/2021_06_08/13808062021.jpg"
+        },
+        {
+            name: "Sự cố mất điện",
+            describe: "Mất điện toàn khu vực",
+            createdAt: "2022-06-12 08:41:27",
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoN_9Xg2TbG-CBJf0IpM0kGNhCKWOaD4OlYg&usqp=CAU"
+        }
+    ]);
 
     useEffect(() => {
         const fetchMaterialType = async () => {
@@ -128,19 +142,37 @@ export default function () {
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={materials} hover striped border filter={<Filter />}>
+                <Table dataSource={trouble} hover striped border filter={<Filter />}>
                     {{
                         columns: [
                             {
-                                title: "Tên",
+                                title: "",
                                 search: false,
                                 data: "media",
                                 className: "justify-content-center",
-                                render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
+                                render: (data, row) => <div className="table-img"><img src={row.image} alt="" /></div>
                             },
                             {
-                                title: "Ngày bị",
+                                title: "Tên sự cố",
                                 data: "name",
+                                className: "justify-content-center",
+                                sort: true,
+                            },
+                            {
+                                title: "Tên sự cố",
+                                data: "name",
+                                className: "justify-content-center",
+                                sort: true,
+                            },
+                            {
+                                title: "Ngày tạo",
+                                data: "describe",
+                                className: "justify-content-center",
+                                sort: true,
+                            },
+                            {
+                                title: "Mô tả",
+                                data: "createdAt",
                                 className: "justify-content-center",
                                 sort: true,
                             },
@@ -150,7 +182,6 @@ export default function () {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Detail-Material/" + data) }} variant="text"><RemoveRedEyeIcon color="success" /></Button>
                                             <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>
