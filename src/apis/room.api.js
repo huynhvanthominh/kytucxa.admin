@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const getListPaidService = (params = {}) => {
+const getRoomById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getListPaidService', {params})
+            .get('/getRoomById', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -13,11 +13,37 @@ const getListPaidService = (params = {}) => {
     });
 };
 
-export const addPaidService = (body) => {
+const getRoomByType = (params = {}) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get('/getRoomByType', {params})
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+
+const getRoomByUser= (params = {}) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get('/getRoom', {params})
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+
+export const addRoom = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addPaidService',
+                '/addRoom',
                 body
             )
             .then(function(response) {
@@ -29,13 +55,10 @@ export const addPaidService = (body) => {
     });
 };
 
-export const updatePaidService = (body = {}, params = {}) => {
+export const updateArea = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put(
-                '/updatePaidService',
-                body, {params}
-            )
+            .put('/updateArea', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -45,10 +68,10 @@ export const updatePaidService = (body = {}, params = {}) => {
     });
 };
 
-export const deletePaidservice = (params = {}) => {
+export const deleteArea = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deletePaidservice',{params})
+            .delete('/deleteArea',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -58,26 +81,11 @@ export const deletePaidservice = (params = {}) => {
     });
 };
 
-export const addPriceofservice = (body) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .post('/addPriceofservice',
-                    body)
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
-
-
-
-export const paidServiceAPI = {
-    getListPaidService,
-    addPaidService,
-    deletePaidservice,
-    updatePaidService,
-    addPriceofservice
+export const roomAPI = {
+    getRoomByType,
+    addRoom,
+    updateArea,
+    deleteArea,
+    getRoomByUser,
+    getRoomById
 }

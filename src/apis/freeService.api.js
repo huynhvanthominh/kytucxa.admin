@@ -13,24 +13,12 @@ const getListFreeService = (params = {}) => {
     });
 };
 
-const getListArea = (params = {}) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get('/getListArea', {params})
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
 
-export const addArea = (body) => {
+export const addFreeService = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addArea',
+                '/addFreeService',
                 body
             )
             .then(function(response) {
@@ -42,10 +30,13 @@ export const addArea = (body) => {
     });
 };
 
-export const updateArea = (body = {}, params = {}) => {
+export const updateFreeService = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateArea', body, {params})
+            .put(
+                '/updateFreeService',
+                body, {params}
+            )
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -55,10 +46,10 @@ export const updateArea = (body = {}, params = {}) => {
     });
 };
 
-export const deleteArea = (params = {}) => {
+export const deleteFreeservice = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteArea',{params})
+            .delete('/deleteFreeservice',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -67,11 +58,11 @@ export const deleteArea = (params = {}) => {
             });
     });
 };
+
 
 export const freeServiceAPI = {
     getListFreeService,
-    getListArea,
-    addArea,
-    updateArea,
-    deleteArea
+    updateFreeService,
+    addFreeService,
+    deleteFreeservice
 }

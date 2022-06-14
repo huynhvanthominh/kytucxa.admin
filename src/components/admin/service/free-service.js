@@ -19,6 +19,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import Popup from "../../themes/popup/popup";
 import { Card, CircularProgress, Grid, Input, TextField } from "@mui/material";
 import Loading from "../../../customs/loading";
+import { freeServiceAPI } from "../../../apis/freeService.api";
 const FreeService = () => {
     const [loading, setLoading] = useState(false);
     const [material, setMaterial] = useState();
@@ -35,17 +36,106 @@ const FreeService = () => {
     const [loadingImage, setLoadingImage] = useState(false);
     const [file, setFile] = useState();
     const [image, setImage] = useState("")
-    const [freeService, setFreeService] = useState([
-        {
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLvkUURP9_2ErWH7KVCrbdPTIlnQzEBKxXJg&usqp=CAU",
-            name: "WI-FI"
-        },
-        {
-            image: "https://tl.cdnchinhphu.vn/Uploads/images/do%20xe%20ngam.jpg",
-            name: "Bãi đỗ xe"
+    const [freeService, setFreeService] = useState([]);
+    const [freeServiceAdd, setFreeServiceAdd] = useState({ name: '' });
+    const [fileSrc, setFileSrc] = useState("");
+    
+    const getFreeService = async () => {
+        try {
+            await freeServiceAPI.getListFreeService({ userId: 1 }).then(data => {
+                setFreeService(data)
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
         }
-    ]);
+        // setTimeout(() => setLoading(false), 1000)
+    }
+
+    const checkValue = () => {
+        if (!file && !freeServiceAdd.image) {
+            TOAST.WARN("Vui lòng chọn hình ảnh !");
+            return false
+        }
+        if (freeServiceAdd.name?.length === 0 || !freeServiceAdd?.name) {
+            TOAST.WARN("Vui lòng nhập tên dịch vụ !");
+            return false
+        }
+        return true
+    }
+
+    const handleAdd = async () => {
+        try {
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                let freeService = {
+                    ...freeServiceAdd,
+                    userId: 1
+                }
+                data.append("image", file);
+                data.append("freeService", JSON.stringify(freeService));
+                console.log(file)
+                await freeServiceAPI.addFreeService(data).then(data => {
+                    if (data) {
+                        setImage("");
+                        setFreeServiceAdd({});
+                        setLoading(false);
+                        setOpen(false);
+                        getFreeService();
+                    }
+                })
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
+    }
+
+    const openEdit = async (data) => {
+        try {
+            let freeServiceSelected = freeService.filter(item => item.id === data)
+            console.log(freeServiceSelected);
+            setFreeServiceAdd(freeServiceSelected[0]);
+            setOpen(true)
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+
+    const handleUpdate = async () => {
+        try {
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                let freeService = {
+                    ...freeServiceAdd,
+                    userId: 1
+                }
+                data.append("image", file);
+                data.append("freeService", JSON.stringify(freeService));
+                console.log(file)
+                await freeServiceAPI.updateFreeService(data, { id: freeServiceAdd.id }).then(data => {
+                    if (data) {
+                        setImage("");
+                        setFreeServiceAdd({});
+                        setLoading(false);
+                        setOpen(false);
+                        getFreeService();
+                    }
+                })
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
+    }
+
     const handleChange = (e) => {
+        setFileSrc(e);
         setLoadingImage(true)
         const reader = new FileReader();
         const file = e.target.files[0]
@@ -57,47 +147,27 @@ const FreeService = () => {
         setTimeout(() => setLoadingImage(false), 500)
     }
 
-    useEffect(() => {
-        const fetchMaterialType = async () => {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data)
-        }
-        fetchMaterialType()
-    }, [])
-
-    const getData = async () => {
-        try {
-            if (materialType === -1) {
-                const { data } = await materialService.get();
-                setMaterials(data);
-            } else {
-                const { data } = await materialService.getByIdLoaivatchat(materialType);
-                setMaterials(data);
-            }
-
-        } catch (error) {
-            TOAST.EROR(error.message)
-        }
-    }
 
     useEffect(() => {
-        getData();
-    }, [materialType]);
+        getFreeService();
+    }, []);
 
     const confirm = (_, row) => {
         setSelected(row);
-        setMessage(`Có chắc mún xóa "${row.name}"`);
+        setMessage(`Có chắc muốn xóa "${row.name}"`);
         setIsShow(true);
     }
     const handleDelete = async () => {
         try {
-            const { data } = await materialService.delete(selected?.id);
-            if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                getData();
-            } else {
-                TOAST.EROR(MESSAGE.DELETE_ERROR)
-            }
+            await freeServiceAPI.deleteFreeservice({ id: selected?.id, image: selected?.image }).then(data => {
+                if (data) {
+                    TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+                    getFreeService();
+                } else {
+                    TOAST.EROR(MESSAGE.DELETE_ERROR)
+                }
+            });
+
         } catch (error) {
             TOAST.EROR(error.message)
         }
@@ -128,14 +198,14 @@ const FreeService = () => {
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
-            <Popup size="sm" title={title} close={() => setOpen(false)} open={open} confirm={() => { }} labelConfirm={"Cập nhật"}>
+            <Popup size="sm" title={title} close={() => setOpen(false)} open={open} confirm={freeServiceAdd?.id ? handleUpdate : handleAdd} labelConfirm={freeServiceAdd?.id ? "Cập nhật" : "Thêm"}>
                 <Loading loading={loading}>
                     <Grid container spacing={4} columns={16} className="py-4">
-                    <Grid item sm={16}>
+                        <Grid item sm={16}>
                             <Box>
                                 <FormControl fullWidth>
-                                    <TextField value={material?.name} onChange={e => setMaterial({
-                                        ...material,
+                                    <TextField value={freeServiceAdd?.name} onChange={e => setFreeServiceAdd({
+                                        ...freeServiceAdd,
                                         name: e.target.value
                                     })} label="Tên dịch vụ" variant="standard" />
                                 </FormControl>
@@ -147,9 +217,9 @@ const FreeService = () => {
                                     <Input onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
                                     {
                                         loadingImage ? <CircularProgress /> :
-                                            image.length === 0 ?
+                                            image.length === 0 && !freeServiceAdd ?
                                                 <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
-                                                <img src={image} />
+                                                <img src={image ? image : (PATH.URL_SERVER.concat(freeServiceAdd.image))} />
                                     }
                                 </label>
                             </Card>
@@ -176,9 +246,9 @@ const FreeService = () => {
                             {
                                 title: "",
                                 search: false,
-                                data: "media",
+                                data: "image",
                                 className: "justify-content-center",
-                                render: (data, row) => <div className="table-img"><img src={row.image} alt="" /></div>
+                                render: (data, row) => <div className="table-img"><img src={PATH.URL_SERVER + row.image} alt="" /></div>
                             },
                             {
                                 title: "Tên dịch vụ",
@@ -192,7 +262,7 @@ const FreeService = () => {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
+                                            <Button onClick={() => { openEdit(data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>
                                     );
