@@ -31,6 +31,8 @@ import ReceiptView from "./receipt/receipt-view";
 import TroubleList from "./trouble/trouble-list";
 import TroubleView from "./trouble/trouble-view";
 import InputMaterialToRoom from "./connect/input-material-to-room";
+import BillInputMaterialToRoom from "./connect/bill-input-material-to-room";
+import RoomMaterial from "./room/room-material";
 
 const IndexAdmin = () => {
   return (
@@ -87,6 +89,9 @@ const IndexAdmin = () => {
         <Route path="/Admin/TypeRoom">
           <TypeRoomList />
         </Route>
+        <Route path="/Admin/Room/RoomMaterial/:id">
+          <RoomMaterial />
+        </Route>
         <Route path="/Admin/Room/Add">
           <RoomView />
         </Route>
@@ -121,31 +126,34 @@ const IndexAdmin = () => {
           <Redirect to={"/Admin/Statistical/Material-Type"} />
         </Route>
         <Route path="/Admin/Service/Paid">
-          <PaidService/>
+          <PaidService />
         </Route>
         <Route path="/Admin/Service/Free">
-          <FreeService/>
+          <FreeService />
         </Route>
         <Route path="/Admin/Receipt/Add">
-          <ReceiptView/>
+          <ReceiptView />
         </Route>
         <Route path="/Admin/Receipt/View/:id">
-          <ReceiptView/>
+          <ReceiptView />
         </Route>
         <Route path="/Admin/Receipt">
-          <ReceiptList/>
+          <ReceiptList />
         </Route>
         <Route path="/Admin/Trouble/View/:id">
-          <TroubleView/>
+          <TroubleView />
         </Route>
         <Route path="/Admin/Trouble/Add">
-          <TroubleView/>
+          <TroubleView />
         </Route>
         <Route path="/Admin/Trouble">
-          <TroubleList/>
+          <TroubleList />
+        </Route>
+        <Route path="/Admin/Connect/bill-input-material-to-room">
+          <BillInputMaterialToRoom />
         </Route>
         <Route path="/Admin/Connect/input-material-to-room">
-          <InputMaterialToRoom/>
+          <InputMaterialToRoom />
         </Route>
         <Route path="/">
           <Redirect to="/Admin/Material-Type" />

@@ -316,13 +316,13 @@ export default function Menu() {
             selected={selected === 4.2}
             onClick={() => setSelected(4.2)}
             component={React.forwardRef((props, ref) => (
-              <Link {...props} ref={ref} to={"/Admin/Bill-Material"}></Link>
+              <Link {...props} ref={ref} to={"/Admin/Connect/bill-input-material-to-room"}></Link>
             ))}
           >
             <ListItemIcon>
               <SendIcon />
             </ListItemIcon>
-            <ListItemText primary="Vật chất" />
+            <ListItemText primary="Hóa đơn" />
           </ListItem>
         </List>
       </Collapse >

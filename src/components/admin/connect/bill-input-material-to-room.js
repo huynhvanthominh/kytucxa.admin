@@ -7,8 +7,8 @@ import Table from "../../themes/table/table";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { formatMoney } from "../../../helps/formatMoney";
 
-const BillMaterial = () => {
-    const title = "Hóa đơn nhập vật chất"
+const BillInputMaterialToRoom = () => {
+    const title = "Hóa đơn nhập vật chất vào phòng"
     const [bills, setBills] = useState([]);
     const history = useHistory();
     const fetchBill = async () => {
@@ -83,4 +83,4 @@ const BillMaterial = () => {
     )
 }
 
-export default BillMaterial;
+export default BillInputMaterialToRoom;
