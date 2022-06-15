@@ -39,9 +39,9 @@ const RoomView = () => {
     const [loadingButton, setLoadingButton] = useState(false)
     const [listArea, setListArea] = useState([]);
     const [listTypeOfRoom, setListTypeOfRoom] = useState([]);
-    const [areaSelected, setAreaSelected] = useState({areaName: ''});
-    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState({name: ''});
-    const [roomAdd, setRoomAdd] = useState({roomName: '', note: ''});
+    const [areaSelected, setAreaSelected] = useState('');
+    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState('');
+    const [roomAdd, setRoomAdd] = useState({ roomName: '', note: '' });
     const uploadFile = async () => {
         const { data } = await uploadFileService.uploadImage(file, "material");
         return data
@@ -73,26 +73,54 @@ const RoomView = () => {
 
     const getDataArea = async () => {
         try {
-            await areaAPI.getListArea({ userId: 1 }).then(data => {
+            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+                console.log("area>>",data);
                 setListArea(data);
+                if (id) {
+                    getRoomDataEdit(data)
+                }
             });
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
-    
-    const getRoomById = async (areaId) => {
+
+    const getRoomDataEdit = async (listArea) => {
         try {
-            await roomAPI.getRoomById({ id: id }).then(data => {
-                setRoomAdd(data);
-                
-            });
+            let ASelect = [];
+            let TSelect = [];
+            let listT = [];
+            let R = [];
+
+            listArea.map(itemA => {
+                itemA.typeofrooms.map(itemT => {
+                    itemT.rooms.map(item => R.push(item) )
+                })
+            })
+            R = (R.filter(item => item.id == id))[0];
+            setRoomAdd(R);
+            listArea.map(itemA => {
+                itemA.typeofrooms.map(itemT => {
+                    listT.push(itemT);
+                    if(itemT.id === R.typeOfRoomId){
+                        TSelect = itemT;
+                    }
+                });
+            })
+            setListTypeOfRoom(listT);
+            setTypeOfRoomSelected(TSelect);
+            ASelect = (listArea.filter(item => item.id === TSelect.areaId))[0]
+            setAreaSelected(ASelect);
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
-    
+
+    useEffect(() => {
+        
+    },[areaSelected, typeOfRoomSelected])
+
 
     const getDataTypeOfRoom = async (areaId) => {
         try {
@@ -131,6 +159,33 @@ const RoomView = () => {
         setLoading(false)
     }
 
+    const handleUpdate = async () => {
+        try {
+            if (checkValue()) {
+                setLoading(true)
+                await roomAPI.updateRoom({
+                    ...roomAdd,
+                    status: 0,
+                    typeOfRoomId: typeOfRoomSelected.id
+                }, {id: id}).then(data => {
+                    if (data?.error) {
+                        console.log(data);
+                        TOAST.EROR(data.message)
+                        setLoading(false)
+                    } else {
+                        TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
+                        history.goBack();
+                        setLoading(false);
+                    }
+                });
+                setLoading(false);
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
+    }
+
     // useEffect(() => {
     //     getDataTypeOfRoom(areaSelected.id);
     // }, [areaSelected]);
@@ -139,12 +194,6 @@ const RoomView = () => {
         getDataArea();
     }, []);
 
-    useEffect(() => {
-        getDataArea();
-        if(id){
-            getRoomById()
-        }
-    }, [id]);
 
     const handleChange = (e) => {
         setLoadingImage(true)
@@ -175,8 +224,8 @@ const RoomView = () => {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Khu</InputLabel>
                                         <Select
-                                            defaultValue={""}
-                                            value={listArea?.areaName}
+                                            defaultValue={areaSelected}
+                                            value={areaSelected}
                                             label="Khu"
                                             onChange={e => {
                                                 setAreaSelected(e.target.value)
@@ -197,12 +246,15 @@ const RoomView = () => {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Loại phòng</InputLabel>
                                         <Select
-                                            defaultValue={""}
-                                            value={listTypeOfRoom?.name}
+                                            defaultValue={typeOfRoomSelected}
+                                            value={typeOfRoomSelected}
                                             label="Loại phòng"
-                                            onChange={e => setTypeOfRoomSelected(
-                                                e.target.value
-                                            )}
+                                            onChange={e => {
+                                                console.log(e.target.value);
+                                                setTypeOfRoomSelected(
+                                                    e.target.value
+                                                )
+                                            }}
                                         >
                                             {
                                                 listTypeOfRoom?.map((typeOfRoom, i) => <MenuItem key={i} value={typeOfRoom}>{typeOfRoom?.name}</MenuItem>)
@@ -249,7 +301,7 @@ const RoomView = () => {
                 <div className="d-flex align-items-center">
                     {
                         // id ? <Button variant="contained" className="me-1" endIcon={<EditIcon />}>Thêm</Button> :
-                            <Button onClick={handleAdd} variant="contained" className="me-1" endIcon={<AddIcon />}>{roomAdd.id ? "Cập nhật" : "Thêm"}</Button>
+                        <Button onClick={id ? handleUpdate : handleAdd} variant="contained" className="me-1" endIcon={<AddIcon />}>{roomAdd.id ? "Cập nhật" : "Thêm"}</Button>
                     }
                     <Button variant="contained" color="inherit" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Trở về</Button>
                 </div>
