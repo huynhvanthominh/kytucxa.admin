@@ -310,20 +310,6 @@ export default function Menu() {
             <ListItemText primary="Nhập vật chất vào phòng" />
           </ListItem>
 
-          <ListItem
-            sx={{ pl: 4 }}
-            button
-            selected={selected === 4.2}
-            onClick={() => setSelected(4.2)}
-            component={React.forwardRef((props, ref) => (
-              <Link {...props} ref={ref} to={"/Admin/Connect/bill-input-material-to-room"}></Link>
-            ))}
-          >
-            <ListItemIcon>
-              <SendIcon />
-            </ListItemIcon>
-            <ListItemText primary="Hóa đơn" />
-          </ListItem>
         </List>
       </Collapse >
     </List >

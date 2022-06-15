@@ -1,5 +1,4 @@
 import { Redirect, Route, Switch } from "react-router-dom";
-import NotFoundPage from "../error/not-found-page";
 import LayoutAdmin from "../layouts/admin/layout-admin";
 import AreaList from "./area/area-list";
 import AreaView from "./area/area-view";
@@ -31,7 +30,6 @@ import ReceiptView from "./receipt/receipt-view";
 import TroubleList from "./trouble/trouble-list";
 import TroubleView from "./trouble/trouble-view";
 import InputMaterialToRoom from "./connect/input-material-to-room";
-import BillInputMaterialToRoom from "./connect/bill-input-material-to-room";
 import RoomMaterial from "./room/room-material";
 
 const IndexAdmin = () => {
@@ -148,9 +146,6 @@ const IndexAdmin = () => {
         </Route>
         <Route path="/Admin/Trouble">
           <TroubleList />
-        </Route>
-        <Route path="/Admin/Connect/bill-input-material-to-room">
-          <BillInputMaterialToRoom />
         </Route>
         <Route path="/Admin/Connect/input-material-to-room">
           <InputMaterialToRoom />
