@@ -21,6 +21,7 @@ import { areaAPI } from "../../../apis/area.api";
 import { typeOfRoomAPI } from "../../../apis/typeroom.api";
 import { roomAPI } from "../../../apis/room.api";
 import Table from "../../themes/table/table";
+import { set } from "date-fns";
 
 const initMaterial = {
     idMaterialType: "",
@@ -31,23 +32,27 @@ const initMaterial = {
 const RoomMaterial = () => {
 
     const title = "Phòng";
-    const history = useHistory();
     const { id } = useParams();
-    const [image, setImage] = useState("")
-    const [file, setFile] = useState();
-    const [loadingImage, setLoadingImage] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [loadingButton, setLoadingButton] = useState(false)
-    const [listArea, setListArea] = useState([]);
-    const [listTypeOfRoom, setListTypeOfRoom] = useState([]);
-    const [areaSelected, setAreaSelected] = useState({ areaName: '' });
-    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState({ name: '' });
+    const [materials, setMaterials] = useState([]);
     const [room, setRoom] = useState({});
     useEffect(() => {
         if (id) {
             getRoomById();
+            fetchMaterialByRoom();
         }
     }, [id])
+    const fetchMaterialByRoom = async () => {
+        setLoading(true)
+        try {
+            const { data } = await materialService.getDetailMaterialByOwner(id);
+            setMaterials(data)
+            setLoading(false)
+        } catch (error) {
+            TOAST.EROR(error.message)
+            setLoading(false)
+        }
+    }
     const getRoomById = async () => {
         try {
             await roomAPI.getRoomById({ id: id }).then(data => {
@@ -69,22 +74,17 @@ const RoomMaterial = () => {
                 </div>
                 <div className="border-bottom border-primary border-5" />
                 <div className="py-4">
-                    <Table dataSource={[]} hover striped border>
+                    <Table dataSource={materials} hover striped border>
                         {{
                             columns: [
                                 {
                                     title: "Tên vật chất",
-                                    data: "total",
-                                    className: "justify-content-center",
-                                },
-                                {
-                                    title: "Tình trạng",
                                     data: "name",
                                     className: "justify-content-center",
                                 },
                                 {
                                     title: "Số lượng",
-                                    data: "phone",
+                                    data: "total",
                                     className: "justify-content-center",
                                 },
                             ],

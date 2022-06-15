@@ -8,19 +8,53 @@ const StatisticalMaterial = () => {
     const [selected, setSelected] = useState("");
     const [materials, setMaterials] = useState([]);
 
+    const getColumn = id => {
+        switch (+id) {
+            case 1:
+                return "moi";
+            case 2:
+                return "thanhly";
+            case 3:
+                return "dangsudung";
+            case 4:
+                return "chothue";
+            case 5:
+                return "daban";
+            case 6:
+                return "hong";
+        }
+    }
+
+    const total = (item) => {
+        return +item.moi + +item.thanhly + +item.dangsudung + +item.chothue + +item.daban + +item.hong
+    }
+
     const fetchMaterials = async () => {
         try {
             if (selected !== "") {
-                const { data } = await materialService.getByIdLoaivatchat(selected);
+                const { data } = await materialService.statisticalByMaterialType(selected);
                 let tmp = [];
                 data.forEach(item => {
-                    materialService.getDetailMaterial(item.id).then(rs => {
-                        tmp = [...tmp, rs.data]
-                    })
-                    console.log(tmp);
-                });
-                console.log(tmp);
-                setMaterials(data)
+                    const index = tmp.findIndex(obj => obj.id === item.id)
+                    if (index >= 0) {
+                        tmp[index] = {
+                            ...tmp[index],
+                            [getColumn(item.idStatus)]: item.total
+                        }
+                    } else {
+                        tmp.push({
+                            id: item.id,
+                            name: item.name,
+                            moi: +item.idStatus === 1 ? item.total : 0,
+                            thanhly: +item.idStatus === 2 ? item.total : 0,
+                            dangsudung: +item.idStatus === 3 ? item.total : 0,
+                            chothue: +item.idStatus === 4 ? item.total : 0,
+                            daban: +item.idStatus === 5 ? item.total : 0,
+                            hong: +item.idStatus === 6 ? item.total : 0
+                        })
+                    }
+                })
+                setMaterials(tmp)
             }
         } catch (error) {
             TOAST.EROR(error.message)
@@ -127,10 +161,24 @@ const StatisticalMaterial = () => {
                                     materials.map((material, i) => (
                                         <tr key={i}>
                                             <td>{material.name}</td>
-                                            <td className="center">{materials.length}</td>
-                                            <td className="center">{materials.filter(item => item.idStatus === 1).length}</td>
+                                            <td className="center">{total(material)}</td>
+                                            <td className="center">{material.moi}</td>
+                                            <td className="center">{material.thanhly}</td>
+                                            <td className="center">{material.dangsudung}</td>
+                                            <td className="center">{material.chothue}</td>
+                                            <td className="center">{material.daban}</td>
+                                            <td className="center">{material.hong}</td>
                                         </tr>
                                     ))
+                                }
+                                {
+                                    materials.length === 0 && (
+                                        <tr>
+                                            <td colSpan={8}  className="center">
+                                                Không có số lượng vật chất để thống kê
+                                            </td>
+                                        </tr>
+                                    )
                                 }
                             </tbody>
                         </table>

@@ -120,6 +120,8 @@ const InputMaterial = () => {
                             id: `${Date.now()}-${item.material}-${item.status}-${item.quantity}-${item.price}-${i}`,
                             idMaterial: item.material,
                             idDetailBill: rs.data.id,
+                            idStatusMaterial: item.status,
+                            owner:"",
                             qr: ""
                         }
                         const base64 = await QRCode.toDataURL(detailMaterial.id, {

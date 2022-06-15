@@ -150,7 +150,12 @@ export default function InputMaterialToRoom() {
                 await updateDetailMaterial(detailBill.idMaterial, detailBill.idStatusMaterial, detailBill.quantity, detailBill.idRoom);
             })
             TOAST.SUCCESS("Thêm thành công!");
-            history.push("/Admin/Connect/bill-input-material-to-room");
+            history.push({
+                pathname: "/Admin/Bill-Material",
+                state:{
+                    selected: 3.2
+                }
+            });
         } catch (error) {
             TOAST.EROR(error.message);
         }
@@ -160,7 +165,7 @@ export default function InputMaterialToRoom() {
         try {
             const { data } = await materialService.getDetailMaterialByStatus(material, status)
             if (+quantity > data.length) {
-                TOAST.EROR(`Số lượng "${getVatchatByIdVatchat(material)}" không đủ cung cấp, hiện tại chỉ còn ${data.length} !`)
+                TOAST.EROR(`Số lượng "${getVatchatByIdVatchat(material)} (${getTypeByValueType(status)})"  không đủ cung cấp, hiện tại chỉ còn ${data.length} !`)
                 return false;
             }
         } catch (error) {
@@ -201,7 +206,7 @@ export default function InputMaterialToRoom() {
         return materials.filter(item => item.id === id)[0].name
     }
     const getTypeByValueType = (status) => {
-        return statuses.filter(item => item.id === status)[0]
+        return statuses.filter(item => item.id === status)[0].name
     }
     const getRoomByValueRoom = (room) => {
         return rooms.filter(item => item.id === room)[0].roomName
@@ -296,7 +301,7 @@ export default function InputMaterialToRoom() {
                                         <tr key={i}>
                                             <td>{getRoomByValueRoom(item?.room)}</td>
                                             <td>{(getVatchatByIdVatchat(item?.material))}</td>
-                                            <td>{getTypeByValueType(item?.status).name}</td>
+                                            <td>{getTypeByValueType(item?.status)}</td>
                                             <td>{formatMoney(item?.quantity)}</td>
                                             <td>{(formatMoney(item?.price))} VNĐ</td>
                                             <td>{formatMoney(+item.quantity * item.price)} VNĐ</td>

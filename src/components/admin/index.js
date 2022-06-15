@@ -151,7 +151,7 @@ const IndexAdmin = () => {
           <InputMaterialToRoom />
         </Route>
         <Route path="/">
-          <Redirect to="/Admin/Material-Type" />
+          <Redirect to="/Admin/Area" />
         </Route>
       </Switch>
     </LayoutAdmin>

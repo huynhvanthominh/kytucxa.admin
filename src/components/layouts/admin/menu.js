@@ -12,29 +12,41 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 export default function Menu() {
   const { path } = useRouteMatch();
+  const location = useLocation();
   const materialType = path + "Material-Type";
   const material = path + "Material";
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState(0);
+  const [selected, setSelected] = React.useState(5);
   const [statistical, setStatistical] = React.useState(false);
   const [service, setService] = React.useState(false);
   const [connect, setConnect] = React.useState(false);
+
   const clickConnect = () => {
     setConnect(!connect);
   }
+
   const handleClick = () => {
     setOpen(!open);
   };
+
   const clickService = () => {
     setService(!service);
   };
+
   const clickStatistical = () => {
     setStatistical(!statistical)
   }
+
+  React.useEffect(() => { 
+    if(location?.state?.selected){
+      setSelected(+location.state.selected);
+    }
+  }, [location])
+
   return (
     <List
       component="nav"
