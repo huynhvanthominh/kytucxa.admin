@@ -282,7 +282,7 @@ export default function Menu() {
             <ListItemText primary="Loại vật chất" />
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             sx={{ pl: 4 }}
             button
             selected={selected === 4.2}
@@ -295,7 +295,7 @@ export default function Menu() {
               <SendIcon />
             </ListItemIcon>
             <ListItemText primary="Vật chất" />
-          </ListItem>
+          </ListItem> */}
         </List>
       </Collapse >
       <ListItemButton onClick={clickConnect}>

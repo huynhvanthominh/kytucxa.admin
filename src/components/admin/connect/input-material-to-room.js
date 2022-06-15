@@ -152,7 +152,7 @@ export default function InputMaterialToRoom() {
             TOAST.SUCCESS("Thêm thành công!");
             history.push({
                 pathname: "/Admin/Bill-Material",
-                state:{
+                state: {
                     selected: 3.2
                 }
             });
@@ -164,6 +164,10 @@ export default function InputMaterialToRoom() {
     const checkQuantity = async () => {
         try {
             const { data } = await materialService.getDetailMaterialByStatus(material, status)
+            if (data.length === 0) {
+                TOAST.WARN("Hiện tại chưa có vật chất này !");
+                return false
+            }
             if (+quantity > data.length) {
                 TOAST.EROR(`Số lượng "${getVatchatByIdVatchat(material)} (${getTypeByValueType(status)})"  không đủ cung cấp, hiện tại chỉ còn ${data.length} !`)
                 return false;
