@@ -43,7 +43,7 @@ const BillMaterial = () => {
         return (
             <Box>
                 <FormControl fullWidth size="small">
-                    <InputLabel>Trạng thái</InputLabel>
+                    <InputLabel>Loại</InputLabel>
                     <Select
                         className="min-width-200"
                         label="Loại"
