@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const getRoomById = (params = {}) => {
+const getTrouble = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getRoomById', {params})
+            .get('/getTroubleByUser', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -13,10 +13,10 @@ const getRoomById = (params = {}) => {
     });
 };
 
-const getRoomByType = (params = {}) => {
+const getListArea = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getRoomByType', {params})
+            .get('/getListArea', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -26,37 +26,11 @@ const getRoomByType = (params = {}) => {
     });
 };
 
-const getRoomByUser= (params = {}) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get('/getRoom', {params})
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
-
-const getTroubleById= (params = {}) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get('/getTroubleById', {params})
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
-
-export const addRoom = (body) => {
+export const addTrouble = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addRoom',
+                '/addTrouble',
                 body
             )
             .then(function(response) {
@@ -68,10 +42,10 @@ export const addRoom = (body) => {
     });
 };
 
-export const updateRoom = (body = {}, params = {}) => {
+export const updateTrouble = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateRoom', body, {params})
+            .put('/updateTrouble', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -81,10 +55,10 @@ export const updateRoom = (body = {}, params = {}) => {
     });
 };
 
-export const deleteRoom = (params = {}) => {
+export const deleteArea = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteRoom',{params})
+            .delete('/deleteArea',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -94,12 +68,10 @@ export const deleteRoom = (params = {}) => {
     });
 };
 
-export const roomAPI = {
-    getRoomByType,
-    addRoom,
-    updateRoom,
-    getRoomByUser,
-    getRoomById,
-    deleteRoom,
-    getTroubleById
+export const troubleAPI = {
+    getListArea,
+    getTrouble,
+    addTrouble,
+    updateTrouble,
+    deleteArea
 }

@@ -105,7 +105,7 @@ const PaidService = () => {
                     ...paidServiceAdd,
                     userId: 1
                 }
-                data.append("image", file);
+                data.append("image", file ? file : paidServiceAdd.image);
                 data.append("paidService", JSON.stringify(paidService));
                 await paidServiceAPI.updatePaidService(data, { id: paidServiceAdd.id }).then(async data => {
                     if (data) {
