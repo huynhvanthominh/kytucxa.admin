@@ -12,7 +12,6 @@ const getById = async (id) => {
 }
 
 const getDetailMaterialByStatus = async (id, status) => {
-    console.log(id, status);
     return await axios.get(path + "detail-material/" + id + "/" + status)
 };
 
@@ -31,6 +30,7 @@ const addDetailMaterial = async (detailMaterial) => await axios.post(path + "det
 const update = async (material) => await axios.patch(path, material);
 
 const updateDetailMaterial = async (detailMaterial) => await axios.patch(path + "detail-material", detailMaterial);
+
 const _delete = async (id) => await axios.delete(path + id)
 
 export const materialService = {

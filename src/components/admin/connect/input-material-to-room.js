@@ -91,8 +91,8 @@ export default function InputMaterialToRoom() {
     }
 
 
-    const handleAdd = () => {
-        if (checkValue()) {
+    const handleAdd = async () => {
+        if (checkValue() && await checkQuantity()) {
             setData([
                 ...data,
                 {
@@ -122,6 +122,19 @@ export default function InputMaterialToRoom() {
         }
         return true
     }
+
+    const updateDetailMaterial = async (id, status, quantity, room) => {
+        const { data } = await materialService.getDetailMaterialByStatus(id, status);
+        await data.slice(0, quantity).forEach(item => {
+            const detailMaterial = {
+                ...item,
+                owner: room,
+                idStatusMaterial: 3
+            }
+            materialService.updateDetailMaterial(detailMaterial)
+        })
+    }
+
     const createDetailBill = async (idBill) => {
         try {
             data.forEach(async (item) => {
@@ -133,32 +146,28 @@ export default function InputMaterialToRoom() {
                     quantity: +item.quantity,
                     price: +item.price,
                 }
-                await billMaterialAPI.createDetailBill(detailBill).then(async rs => {
-                    if (rs.status) {
-                        materialService.getDetailMaterialByStatus(detailBill.idMaterial, detailBill.idStatusMaterial).then(async (result) => {
-                            console.log(+result.data.length);
-                            console.log(detailBill.quantity);
-                            console.log(+result.data.length < +detailBill.quantity);
-
-                            if (+result.data.length < +detailBill.quantity) {
-                                await TOAST.EROR(`Số lượng vật chất "${result.data[0].name} chỉ còn ${result.data.length} !"`);
-                            } else {
-                                const detailMaterials = result.data.slice(0, detailBill.quantity);
-                                detailMaterials.forEach(async (item) => {
-                                    await materialService.updateDetailMaterial({ id: item.id, idStatusMaterial: 3, owner: detailBill.idRoom })
-                                })
-                            }
-                        });
-                    }
-                }).catch(err => {
-                    TOAST.EROR(err)
-                });
+                await billMaterialAPI.createDetailBill(detailBill)
+                await updateDetailMaterial(detailBill.idMaterial, detailBill.idStatusMaterial, detailBill.quantity, detailBill.idRoom);
             })
-            TOAST.SUCCESS("Tạo hóa đơn thành công !");
-            history.push("/Admin/Bill-Material/");
+            TOAST.SUCCESS("Thêm thành công!");
+            history.push("/Admin/Connect/bill-input-material-to-room");
         } catch (error) {
             TOAST.EROR(error.message);
         }
+    }
+
+    const checkQuantity = async () => {
+        try {
+            const { data } = await materialService.getDetailMaterialByStatus(material, status)
+            if (+quantity > data.length) {
+                TOAST.EROR(`Số lượng "${getVatchatByIdVatchat(material)}" không đủ cung cấp, hiện tại chỉ còn ${data.length} !`)
+                return false;
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+            return false;
+        }
+        return true;
     }
 
     const submit = async () => {
@@ -189,7 +198,7 @@ export default function InputMaterialToRoom() {
         fetchStatus();
     }, [])
     const getVatchatByIdVatchat = (id) => {
-        return materials.filter(item => item.id === id)[0]
+        return materials.filter(item => item.id === id)[0].name
     }
     const getTypeByValueType = (status) => {
         return statuses.filter(item => item.id === status)[0]
@@ -286,10 +295,10 @@ export default function InputMaterialToRoom() {
                                     data.map((item, i) => (
                                         <tr key={i}>
                                             <td>{getRoomByValueRoom(item?.room)}</td>
-                                            <td>{(getVatchatByIdVatchat(item?.material).name)}</td>
+                                            <td>{(getVatchatByIdVatchat(item?.material))}</td>
                                             <td>{getTypeByValueType(item?.status).name}</td>
-                                            <td>{item?.quantity}</td>
-                                            <td>{(item?.price)} VNĐ</td>
+                                            <td>{formatMoney(item?.quantity)}</td>
+                                            <td>{(formatMoney(item?.price))} VNĐ</td>
                                             <td>{formatMoney(+item.quantity * item.price)} VNĐ</td>
                                             <td>
                                                 <div className="d-flex justify-content-center">
