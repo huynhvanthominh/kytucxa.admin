@@ -3,7 +3,7 @@ const path = "/bill-material/"
 
 const getAllAdmin = async () => await axios.get(path);
 
-const getAllAdminByKind = async (kind) => await axios.get(path + kind);
+const getAllAdminByKind = async (kind) => await axios.get(path + "kind/" + kind);
 
 const getById = async (id) => await axios.get(path + id);
 
