@@ -11,7 +11,13 @@ const getById = async (id) => {
     return await axios.get(path + id)
 }
 
-const getDetailMaterialByStatus = async (id, status) => await axios.get(path + "detail-material/" + id + "/" + status);
+const getDetailMaterialByStatus = async (id, status) => {
+    return await axios.get(path + "detail-material/" + id + "/" + status)
+};
+
+const statisticalByMaterialType = async (id) => await axios.get(path + "statistical/" + id);
+
+const getDetailMaterialByOwner = async (id) => await axios.get(path + "detail-material/room/" + id);
 
 const getDetailMaterialById = async (id) => await axios.get(path + "detail-material/view/" + id);
 
@@ -27,18 +33,23 @@ const addDetailMaterial = async (detailMaterial) => await axios.post(path + "det
 
 const update = async (material) => await axios.patch(path, material);
 
+const updateDetailMaterial = async (detailMaterial) => await axios.patch(path + "detail-material", detailMaterial);
+
 const _delete = async (id) => await axios.delete(path + id)
 
 export const materialService = {
     get,
     getById,
+    getDetailMaterialByOwner,
     getByIdLoaivatchat,
     getDetailMaterialByStatus,
+    statisticalByMaterialType,
     getDetailMaterialById,
     getDetailMaterial,
     getStatus,
     add,
     addDetailMaterial,
     update,
+    updateDetailMaterial,
     delete: _delete
 }

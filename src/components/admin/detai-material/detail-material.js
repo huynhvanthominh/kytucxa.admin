@@ -85,12 +85,6 @@ const DetailMaterial = () => {
                 <div>
                     <h3>Vật chất: {title}</h3>
                 </div>
-                <div className="ms-auto d-flex flex-wrap">
-                    <h3 className="me-4">Tổng: {total.length}</h3>
-                    <h3 className="me-4"> Mới: {total.filter(item => item.idStatus === 1).length}</h3>
-                    <h3 className="me-4">Đã qua sử dụng: {total.filter(item => item.idStatus === 2).length}</h3>
-                    <h3 className="me-4">Đang sử dụng: {total.filter(item => item.idStatus === 3).length}</h3>
-                </div>
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">

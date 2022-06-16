@@ -23,6 +23,9 @@ const InputMaterial = () => {
     const [quantity, setQuantity] = useState("");
     const [material, setMaterial] = useState("");
     const [total, setTotal] = useState(0);
+    const [address, setAddress] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
 
     useEffect(() => {
         let tmp = 0;
@@ -117,6 +120,8 @@ const InputMaterial = () => {
                             id: `${Date.now()}-${item.material}-${item.status}-${item.quantity}-${item.price}-${i}`,
                             idMaterial: item.material,
                             idDetailBill: rs.data.id,
+                            idStatusMaterial: item.status,
+                            owner:"",
                             qr: ""
                         }
                         const base64 = await QRCode.toDataURL(detailMaterial.id, {
@@ -148,16 +153,30 @@ const InputMaterial = () => {
         }
     }
 
+    const checkInfo = () => {
+        if (phone === "") {
+            TOAST.WARN("Vui lòng nhập số điện thoại !");
+            return false
+        }
+        if (address === "") {
+            TOAST.WARN("Vui lòng nhập địa chỉ !");
+            return false
+        }
+        return true
+    }
+
     const submit = async () => {
         setLoading(true)
         try {
-            const { data } = await billMaterialAPI.create({ total })
-            if (data.id) {
-                await createDetailBill(data.id)
-            } else {
-                TOAST.EROR("Tạo hóa đơn thất bại !");
+            if (checkInfo()) {
+                const { data } = await billMaterialAPI.create({ total, address, name, phone, kind: "import" })
+                if (data.id) {
+                    await createDetailBill(data.id)
+                } else {
+                    TOAST.EROR("Tạo hóa đơn thất bại !");
+                }
             }
-            setTimeout(() => setLoading(false), 500)
+            setLoading(false)
         } catch (error) {
             TOAST.EROR(error.message)
             setLoading(false)
@@ -284,6 +303,23 @@ const InputMaterial = () => {
                                 </tr>
                             </tbody>
                         </table>
+                        <div className="row">
+                            <div className="col-lg-4 my-2">
+                                <FormControl fullWidth>
+                                    <TextField value={name} onChange={e => setName(e.target.value)} label="Họ và tên" variant="outlined" size="small" />
+                                </FormControl>
+                            </div>
+                            <div className="col-lg-4 my-2">
+                                <FormControl fullWidth>
+                                    <TextField value={phone} onChange={e => setPhone(e.target.value)} className="hide-spin" type="number" status={"number"} label="Số điện thoại" variant="outlined" size="small" />
+                                </FormControl>
+                            </div>
+                            <div className="col-lg-4 my-2">
+                                <FormControl fullWidth>
+                                    <TextField value={address} onChange={e => setAddress(e.target.value)} label="Địa chỉ" variant="outlined" size="small" />
+                                </FormControl>
+                            </div>
+                        </div>
                         <Box>
                             <Button variant="contained" endIcon={<AddIcon />} onClick={submit}>Tạo</Button>
                             <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>

@@ -18,7 +18,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { roomAPI } from "../../../apis/room.api";
 import { areaAPI } from "../../../apis/area.api";
 import { id } from "date-fns/locale";
-
+import AppsIcon from '@mui/icons-material/Apps';
 
 const RoomList = () => {
 
@@ -37,11 +37,13 @@ const RoomList = () => {
 
     const getRoomByUser = async () => {
         try {
-            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
-                setListArea(data);
-                setAreaSelected(-1);
-                setTypeOfRoomSelected(-1);
-            });
+            // await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+            //     setListArea(data);
+            //     setAreaSelected(-1);
+            //     setTypeOfRoomSelected(-1);
+            // });
+            const { data } = await roomAPI.getRoomAdmin();
+            setRoom(data)
         } catch (error) {
             TOAST.EROR(error.message)
         }
@@ -199,6 +201,7 @@ const RoomList = () => {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
+                                            <Button onClick={() => { history.push("/Admin/Room/RoomMaterial/" + data) }} variant="text"><AppsIcon color="success" /></Button>
                                             <Button onClick={() => { history.push("/Admin/Room/View/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>

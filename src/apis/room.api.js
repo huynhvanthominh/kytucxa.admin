@@ -1,5 +1,9 @@
 import axios from "axios"
 
+const getRoomAdmin = async() => {
+    return await axios.get("/getRoomAdmin");
+}
+
 const getRoomById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
@@ -96,6 +100,7 @@ export const deleteRoom = (params = {}) => {
 
 export const roomAPI = {
     getRoomByType,
+    getRoomAdmin,
     addRoom,
     updateRoom,
     getRoomByUser,
