@@ -141,7 +141,7 @@ export default function TroubleView() {
                     status: statusSelect.id,
                     level: levelSelect.id,
                     roomId: roomSelected.id,
-                    dateOfSolve: new Date()
+                    dateOfSolve: Number(statusSelect.id) === 0 ? '' : new Date()
                 }
                 data.append("image", file);
                 data.append("trouble", JSON.stringify(troubleData));
@@ -173,7 +173,7 @@ export default function TroubleView() {
                     level: levelSelect.id,
                     roomId: roomSelected.id,
                     status: statusSelect.id,
-                    dateOfSolve: new Date()
+                    dateOfSolve: Number(statusSelect.id) === 0 ? '' : new Date()
                 }
                 data.append("image", file ? file : troubleAdd.image);
                 data.append("trouble", JSON.stringify(troubleData));

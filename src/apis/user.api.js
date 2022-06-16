@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const getTrouble = (params = {}) => {
+const getUserById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getTroubleByUser', {params})
+            .get('/getUser', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -13,10 +13,10 @@ const getTrouble = (params = {}) => {
     });
 };
 
-const getListArea = (params = {}) => {
+const getUserByBookTicket = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getListArea', {params})
+            .get('/getUserByBookTicket', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -26,11 +26,11 @@ const getListArea = (params = {}) => {
     });
 };
 
-export const addTrouble = (body) => {
+export const addContract = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addTrouble',
+                '/addContract',
                 body
             )
             .then(function(response) {
@@ -42,10 +42,10 @@ export const addTrouble = (body) => {
     });
 };
 
-export const updateTrouble = (body = {}, params = {}) => {
+export const updateArea = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateTrouble', body, {params})
+            .put('/updateArea', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -55,10 +55,10 @@ export const updateTrouble = (body = {}, params = {}) => {
     });
 };
 
-export const deleteTrouble = (params = {}) => {
+export const deleteArea = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteTrouble',{params})
+            .delete('/deleteArea',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -68,10 +68,10 @@ export const deleteTrouble = (params = {}) => {
     });
 };
 
-export const troubleAPI = {
-    getListArea,
-    getTrouble,
-    addTrouble,
-    updateTrouble,
-    deleteTrouble
+export const userAPI = {
+    getUserById,
+    addContract,
+    updateArea,
+    deleteArea,
+    getUserByBookTicket
 }
