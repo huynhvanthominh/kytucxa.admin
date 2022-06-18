@@ -9,28 +9,12 @@
     width: 300px;
     min-width: 300px;
     height: 100vh;
-    overflow: auto;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 999;
-    background: rgb(216, 216, 216, 0.7);
     margin-right: 1rem;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 55px 0 rgba(0, 0, 0, 0.19);
-
-    .css-1aosqlb-MuiButtonBase-root-MuiListItem-root.Mui-selected {
-      background: rgba(8, 129, 251);
-      color: white;
-    }
-
-    .css-bshv44-MuiButtonBase-root-MuiListItem-root.Mui-selected {
-      background: rgba(8, 129, 251);
-      color: white;
-    }
+    box-sizing: border-box;
   }
 
   .header-main {
-    width: calc(100% - 300px - 1rem);
+    flex-grow: 1;
     height: 100%;
 
     .header {
