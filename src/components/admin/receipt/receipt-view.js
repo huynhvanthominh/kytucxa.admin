@@ -14,41 +14,73 @@ import { LoadingButton } from "@mui/lab";
 import { uploadFileService } from "../../../apis/upload-file.api";
 import { materialService } from "../../../apis/material.api";
 import MESSAGE from "../../../consts/message-alert";
-
-const initMaterial = {
-    idMaterialType: "",
-    name: "",
-    media: "",
-}
+import { receiptAPI } from "../../../apis/receipt.api";
 export default function ReceiptView() {
     const title = "Thêm biên nhận";
     const history = useHistory();
     const [materialTypes, setMaterialTypes] = useState([]);
-    const [material, setMaterial] = useState(initMaterial);
+    const [material, setMaterial] = useState([]);
     const [image, setImage] = useState("")
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
+    const [listReceipt, setListReceipt] = useState([]);
+    const [listBill, setListBill] = useState([]);
+    const [billSelect, setBillSelect] = useState([]);
+    const [paymentMethod, setpaymentMethod] = useState([{ id: '0', label: 'Thanh toán tiền mặt' }, { id: '1', label: 'Chuyển khoản' }])
+    const [paymentMethodSelect, setPaymentMethodSelect] = useState({ id: '' });
+    const [status, setStatus] = useState([{ id: '0', label: 'Chưa thanh toán' }, { id: '1', label: 'Đã thanh toán' }])
+    const [statusSelect, setStatusSelect] = useState({ id: '' });
+    const [receiptAdd, setReceiptAdd] = useState([]);
+
+
+
+    const getReceipt = async () => {
+        await receiptAPI.getBillByArea({userId: 1}).then(data => {
+            let listR = [];
+            let listB = [];
+            data.map(itemArea => {
+                itemArea.typeofrooms.map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemCtr => {
+                            itemCtr.bills.map(itemBill => {
+                                listB.push(itemBill)
+                                itemBill.receipts.map(itemRe => {
+                                    listR.push(itemRe);
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            setListReceipt(listR);
+            setListBill(listB);
+        })
+    }
+    useEffect(() => {
+        getReceipt();
+    }, [])
+
 
     const uploadFile = async () => {
-        const { data } = await uploadFileService.uploadImage(file, "material");
+        const { data } = await uploadFileService.uploadImage(file, "receipt");
         return data
     }
 
     const checkValue = () => {
-        if (!file) {
-            TOAST.WARN("Vui lòng chọn hình ảnh !");
-            return false
-        }
-        if (material?.idMaterialType.length === 0) {
-            TOAST.WARN("Vui lòng chọn loại vật chất !");
-            return false
-        }
-        if (material?.name.length === 0) {
-            TOAST.WARN("Vui lòng nhập tên vật chất !");
-            return false
-        }
+        // if (!file) {
+        //     TOAST.WARN("Vui lòng chọn hình ảnh !");
+        //     return false
+        // }
+        // if (material?.idMaterialType.length === 0) {
+        //     TOAST.WARN("Vui lòng chọn loại vật chất !");
+        //     return false
+        // }
+        // if (material?.name.length === 0) {
+        //     TOAST.WARN("Vui lòng nhập tên vật chất !");
+        //     return false
+        // }
         return true
     }
 
@@ -56,28 +88,23 @@ export default function ReceiptView() {
         try {
             if (checkValue()) {
                 setLoading(true);
-                const upload = await uploadFile();
-
-                if (upload?.name) {
-                    const { data } = await materialService.add({
-                        ...material,
-                        media: upload.name
-                    });
-                    if (data?.error) {
-                        console.log(data);
-                        TOAST.EROR(data.message)
-                        setLoading(false)
-                        await uploadFileService.removeImage(upload?.name, "material");
-                    } else {
-                        TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
-                        history.goBack();
-                        setLoading(false);
-                    }
-                    setLoading(false);
-                } else {
-                    TOAST.EROR("Upload file thất bại !");
-                    setTimeout(() => setLoadingButton(false), 500);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                let receiptData = {
+                    ...receiptAdd,
+                    billId: billSelect.id,
+                    status: statusSelect.id,
+                    paymentMethod: paymentMethodSelect.id,
                 }
+                data.append("image", file);
+                data.append("receipt", JSON.stringify(receiptData));
+                console.log(file)
+                await receiptAPI.addReceipt(receiptData).then(data => {
+                    if (data) {
+                        history.goBack()
+                    }
+                })
             }
         } catch (error) {
             TOAST.EROR(error.message)
@@ -135,20 +162,33 @@ export default function ReceiptView() {
                     </Grid>
                     <Grid item md={8} sm={16}>
                         <Grid container spacing={2} columns={16}>
+                        <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Hóa đơn</InputLabel>
+                                        <Select
+                                            value={billSelect}
+                                            label="Hóa đơn"
+                                            onChange={e => setBillSelect(e.target.value)}
+                                        >
+                                            {
+                                                listBill.map((bill, i) => <MenuItem key={i} value={bill}>{bill?.nameOfBill}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Phương thức thanh toán</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={paymentMethodSelect}
                                             label="Phương thức thanh toán"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                idMaterialType: e.target.value
-                                            })}
+                                            onChange={e => setPaymentMethodSelect(e.target.value)}
                                         >
                                             {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                                paymentMethod.map((pay, i) => <MenuItem key={i} value={pay}>{pay?.label}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
@@ -159,15 +199,12 @@ export default function ReceiptView() {
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Tình trạng</InputLabel>
                                         <Select
-                                            value={material?.idMaterialType}
+                                            value={statusSelect}
                                             label="Tình trạng"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                idMaterialType: e.target.value
-                                            })}
+                                            onChange={e => setStatusSelect(e.target.value)}
                                         >
                                             {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                                status.map((stt, i) => <MenuItem key={i} value={stt}>{stt?.label}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
@@ -176,9 +213,9 @@ export default function ReceiptView() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.name} onChange={e => setMaterial({
-                                            ...material,
-                                            name: e.target.value
+                                        <TextField value={receiptAdd.note} onChange={e => setReceiptAdd({
+                                            ...receiptAdd,
+                                            note: e.target.value
                                         })} label="Ghi chú" variant="standard"  multiline rows={4}/>
                                     </FormControl>
                                 </Box>

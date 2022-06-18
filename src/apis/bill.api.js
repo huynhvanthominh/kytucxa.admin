@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const getTrouble = (params = {}) => {
+const getBillById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getTroubleByUser', {params})
+            .get('/getBillById', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -13,10 +13,10 @@ const getTrouble = (params = {}) => {
     });
 };
 
-const getListArea = (params = {}) => {
+const addBill = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getListArea', {params})
+            .post('/addBill', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -26,11 +26,11 @@ const getListArea = (params = {}) => {
     });
 };
 
-export const addTrouble = (body) => {
+export const addArea = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addTrouble',
+                '/addArea',
                 body
             )
             .then(function(response) {
@@ -42,10 +42,10 @@ export const addTrouble = (body) => {
     });
 };
 
-export const updateTrouble = (body = {}, params = {}) => {
+export const updateBill = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateTrouble', body, {params})
+            .put('/updateBill', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -55,10 +55,10 @@ export const updateTrouble = (body = {}, params = {}) => {
     });
 };
 
-export const deleteTrouble = (params = {}) => {
+export const deleteBill = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteTrouble',{params})
+            .delete('/deleteBill',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -68,10 +68,10 @@ export const deleteTrouble = (params = {}) => {
     });
 };
 
-export const troubleAPI = {
-    getListArea,
-    getTrouble,
-    addTrouble,
-    updateTrouble,
-    deleteTrouble
+export const billAPI = {
+    addBill,
+    getBillById,
+    addArea,
+    updateBill,
+    deleteBill
 }

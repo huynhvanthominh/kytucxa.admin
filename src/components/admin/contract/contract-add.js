@@ -11,75 +11,165 @@ import AddIcon from '@mui/icons-material/Add';
 import { useHistory } from "react-router-dom";
 import { TOAST } from "../../../customs/toast-custom";
 import { LoadingButton } from "@mui/lab";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { uploadFileService } from "../../../apis/upload-file.api";
 import { materialService } from "../../../apis/material.api";
 import MESSAGE from "../../../consts/message-alert";
-
-const initMaterial = {
-    idMaterialType: "",
-    name: "",
-    media: "",
-}
+import { roomAPI } from "../../../apis/room.api";
+import { contractAPI } from "../../../apis/contract.api";
+import { userAPI } from "../../../apis/user.api";
 
 export default function ContractAdd() {
 
-    const title = "Cập nhật hợp đồng";
+    const title = "Thêm hợp đồng";
     const history = useHistory();
-    const [materialTypes, setMaterialTypes] = useState([]);
-    const [material, setMaterial] = useState(initMaterial);
-    const [image, setImage] = useState("")
-    const [file, setFile] = useState();
-    const [loadingImage, setLoadingImage] = useState(false);
+    const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false)
+    const [contractAdd, setContractAdd] = useState({numberOfElectric: '', numberOfWater: '', term: ''});
+    const [listArea, setListArea] = useState([]);
+    const [areaSelected, setAreaSelected] = useState({ id: '' });
+    const [typeOfRoom, setTypeOfRoom] = useState([]);
+    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState({ id: '' });
+    const [room, setRoom] = useState([]);
+    const [roomSelected, setRoomSelected] = useState({ id: '' });
+    const [user, setUser] = useState([]);
+    const [userSelected, setUserSelected] = useState({ id: '' });
 
-    const uploadFile = async () => {
-        const { data } = await uploadFileService.uploadImage(file, "material");
-        return data
-    }
 
     const checkValue = () => {
-        if (!file) {
-            TOAST.WARN("Vui lòng chọn hình ảnh !");
+
+        if (!areaSelected || areaSelected.id?.length === 0) {
+            TOAST.WARN("Vui lòng chọn khu !");
             return false
         }
-        if (material?.idMaterialType.length === 0) {
-            TOAST.WARN("Vui lòng chọn loại vật chất !");
+        if (!typeOfRoomSelected || typeOfRoomSelected.id?.length === 0) {
+            TOAST.WARN("Vui lòng chọn loại phòng !");
             return false
         }
-        if (material?.name.length === 0) {
-            TOAST.WARN("Vui lòng nhập tên vật chất !");
+        if (!roomSelected || roomSelected.id?.length === 0) {
+            TOAST.WARN("Vui lòng chọn phòng !");
+            return false
+        }
+        if (!userSelected || userSelected.id?.length === 0) {
+            TOAST.WARN("Vui lòng chọn khách !");
+            return false
+        }
+        if (!contractAdd.numberOfElectric) {
+            TOAST.WARN("Vui lòng nhập số điện !");
+            return false
+        }
+        if (!contractAdd.numberOfWater) {
+            TOAST.WARN("Vui lòng nhập số nước !");
+            return false
+        }
+        if (!contractAdd.term) {
+            TOAST.WARN("Vui lòng nhập điều khoản !");
             return false
         }
         return true
     }
 
+    const getDataRoom = async () => {
+        try {
+            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+                setListArea(data);
+                const listRoom = [];
+                const listType = [];
+                const listTrouble = [];
+                data.map(item => {
+                    item?.typeofrooms.map(itemType => {
+                        listType.push(itemType);
+                        itemType.rooms.map(itemR => {
+                            listRoom.push(itemR);
+                        })
+                    })
+                })
+                setTypeOfRoom(listType);
+                setRoom(listRoom);
+                if (id) {
+                    getDataContractEdit(data);
+                }
+                // if (id) {
+                //     getTroubleAdd(listRoom, listType, data);
+                // }
+
+            });
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+
+    const getDataContractEdit = async (listArea) => {
+        try {
+            let ASelect = [];
+            let TSelect = [];
+            let listT = [];
+            let R = [];
+
+            await contractAPI.getContractById({ id: id }).then(async data => {
+                console.log(id);
+                listArea.map(itemA => {
+                    itemA.typeofrooms.map(itemT => {
+                        itemT.rooms.map(item => R.push(item))
+                    })
+                })
+                setContractAdd(data)
+                R = (R.filter(item => item.id === data.roomId))[0];
+                console.log("R>>>", R);
+                setRoomSelected(R);
+                await userAPI.getUserById({ userId: data.userId }).then(data => {
+                    setUser([data]);
+                    setUserSelected(data);
+                    console.log("Us>>>",  data);
+                })
+                listArea.map(itemA => {
+                    itemA.typeofrooms.map(itemT => {
+                        listT.push(itemT);
+                        if (itemT.id === R.typeOfRoomId) {
+                            TSelect = itemT;
+                        }
+                    });
+                })
+                setTypeOfRoom(listT);
+                setTypeOfRoomSelected(TSelect);
+                ASelect = (listArea.filter(item => item.id === TSelect.areaId))[0]
+                setAreaSelected(ASelect);
+            })
+
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+
+
     const handleAdd = async () => {
         try {
             if (checkValue()) {
                 setLoading(true);
-                const upload = await uploadFile();
+                let contractData = {
+                    ...contractAdd,
+                    status: "0",
+                    userId: userSelected.id,
+                    roomId: roomSelected.id,
+                    dayIn: contractAdd.dayIn ? contractAdd.dayIn : new Date(),
+                    dateOfPayment: contractAdd.dateOfPayment ? contractAdd.dateOfPayment : new Date(),
+                    duration: contractAdd.duration ? contractAdd.duration : new Date(),
+                }
 
-                if (upload?.name) {
-                    const { data } = await materialService.add({
-                        ...material,
-                        media: upload.name
-                    });
-                    if (data?.error) {
-                        console.log(data);
-                        TOAST.EROR(data.message)
-                        setLoading(false)
-                        await uploadFileService.removeImage(upload?.name, "material");
-                    } else {
+                console.log(contractData);
+
+                await contractAPI.addContract(contractData).then(data => {
+                    if (data) {
                         TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
                         history.goBack();
                         setLoading(false);
                     }
-                    setLoading(false);
-                } else {
-                    TOAST.EROR("Upload file thất bại !");
-                    setTimeout(() => setLoadingButton(false), 500);
-                }
+                })
+                console.log("form =>", contractData);
             }
         } catch (error) {
             TOAST.EROR(error.message)
@@ -87,31 +177,47 @@ export default function ContractAdd() {
         setLoading(false)
     }
 
-    const fetchMaterialType = async () => {
+    const handleUpdate = async () => {
         try {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data);
+            if (checkValue()) {
+                setLoading(true);
+                let contractData = {
+                    ...contractAdd,
+                    status: "0",
+                    userId: userSelected.id,
+                    roomId: roomSelected.id,
+                }
+
+                await contractAPI.updateContract(contractData,{id: id}).then(data => {
+                    if (data) {
+                        TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
+                        history.goBack();
+                        setLoading(false);
+                    }
+                })
+                console.log("form =>", contractData);
+            }
         } catch (error) {
             TOAST.EROR(error.message)
         }
-        setTimeout(() => setLoading(false), 500)
+        setLoading(false)
     }
 
     useEffect(() => {
-        fetchMaterialType();
+        getDataRoom();
     }, []);
 
-    const handleChange = (e) => {
-        setLoadingImage(true)
-        const reader = new FileReader();
-        const file = e.target.files[0]
-        setFile(file)
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-            setImage(reader.result)
-        };
-        setTimeout(() => setLoadingImage(false), 500)
+    const getDataUserByRoom = async (id) => {
+        try {
+            await contractAPI.getUserByBookTicket({ roomId: id }).then(data => {
+                setUser(data);
+                console.log("res get User: >>>", data);
+            })
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
     }
+
 
     return (
         <Loading loading={loading}>
@@ -125,39 +231,77 @@ export default function ContractAdd() {
                 <Grid container spacing={4} columns={16} className="py-4">
                     <Grid item md={8} sm={16}>
                         <Grid container spacing={2} columns={16}>
-                            <Grid item sm={8}>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Khu</InputLabel>
+                                        <Select
+                                            value={areaSelected}
+                                            label="Khu"
+                                            onChange={e => {
+                                                setAreaSelected(e.target.value);
+                                                setTypeOfRoom(e.target.value.typeofrooms);
+                                            }}
+                                        >
+                                            {
+                                                listArea.map((area, i) => <MenuItem key={i} value={area}>{area?.areaName}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Loại Phòng</InputLabel>
+                                        <Select
+                                            value={typeOfRoomSelected}
+                                            label="Loại Phòng"
+                                            onChange={e => {
+                                                setTypeOfRoomSelected(e.target.value);
+                                                console.log(e.target.value.rooms)
+                                                setRoom(e.target.value.rooms);
+                                            }}
+                                        >
+                                            {
+                                                typeOfRoom.map((type, i) => <MenuItem key={i} value={type}>{type?.name}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Phòng</InputLabel>
                                         <Select
-                                            value={material?.x}
+                                            value={roomSelected}
                                             label="Phòng"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                x: e.target.value
-                                            })}
+                                            onChange={e => {
+                                                setRoomSelected(e.target.value);
+                                                getDataUserByRoom(e.target.value.id)
+                                            }}
                                         >
                                             {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                                room.map((room, i) => <MenuItem key={i} value={room}>{room?.roomName}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
                                 </Box>
                             </Grid>
-                            <Grid item sm={8}>
+                            <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Khách thuê</InputLabel>
                                         <Select
-                                            value={material?.y}
+                                            value={userSelected}
                                             label="Khách thuê"
-                                            onChange={e => setMaterial({
-                                                ...material,
-                                                y: e.target.value
-                                            })}
+                                            onChange={e => {
+                                                setUserSelected(e.target.value);
+                                            }}
                                         >
                                             {
-                                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                                user.map((u, i) => <MenuItem key={i} value={u}>{u?.name}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
@@ -166,29 +310,72 @@ export default function ContractAdd() {
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.z} onChange={e => setMaterial({
-                                            ...material,
-                                            z: e.target.value
-                                        })} label="Ngày vào" variant="standard" />
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Ngày vào"
+                                                inputFormat="dd/MM/yyyy"
+                                                value={contractAdd?.dayIn}
+                                                onChange={e => {
+                                                    setContractAdd({
+                                                        ...contractAdd,
+                                                        dayIn: e
+                                                    })
+                                                }
+                                                }
+                                                renderInput={(params) => <TextField size="small" {...params} />}
+                                            />
+                                        </LocalizationProvider>
                                     </FormControl>
                                 </Box>
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.d} onChange={e => setMaterial({
-                                            ...material,
-                                            d: e.target.value
-                                        })} label="Thời hạn" variant="standard" />
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Ngày thanh toán"
+                                                inputFormat="dd/MM/yyyy"
+                                                value={contractAdd?.dateOfPayment}
+                                                onChange={e => {
+                                                    setContractAdd({
+                                                        ...contractAdd,
+                                                        dateOfPayment: e
+                                                    })
+                                                }
+                                                }
+                                                renderInput={(params) => <TextField size="small" {...params} />}
+                                            />
+                                        </LocalizationProvider>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Thời hạn"
+                                                inputFormat="dd/MM/yyyy"
+                                                value={contractAdd?.duration}
+                                                onChange={e => {
+                                                    setContractAdd({
+                                                        ...contractAdd,
+                                                        duration: e
+                                                    })
+                                                }
+                                                }
+                                                renderInput={(params) => <TextField size="small" {...params} />}
+                                            />
+                                        </LocalizationProvider>
                                     </FormControl>
                                 </Box>
                             </Grid>
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.f} onChange={e => setMaterial({
-                                            ...material,
-                                            f: e.target.value
+                                        <TextField value={contractAdd?.numberOfElectric} onChange={e => setContractAdd({
+                                            ...contractAdd,
+                                            numberOfElectric: e.target.value
                                         })} label="Chỉ số điện" variant="standard" />
                                     </FormControl>
                                 </Box>
@@ -196,16 +383,16 @@ export default function ContractAdd() {
                             <Grid item sm={8}>
                                 <Box>
                                     <FormControl fullWidth>
-                                        <TextField value={material?.t} onChange={e => setMaterial({
-                                            ...material,
-                                            t: e.target.value
+                                        <TextField value={contractAdd?.numberOfWater} onChange={e => setContractAdd({
+                                            ...contractAdd,
+                                            numberOfWater: e.target.value
                                         })} label="Chỉ số nước" variant="standard" />
                                     </FormControl>
                                 </Box>
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
-                                    <LoadingButton loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</LoadingButton>
+                                    <LoadingButton loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={id ? handleUpdate : handleAdd}>{id ? "Cập nhật" : "Thêm"}</LoadingButton>
                                     <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>
                                 </Box>
                             </Grid>
@@ -214,10 +401,10 @@ export default function ContractAdd() {
                     <Grid item md={8} sm={16}>
                         <Box>
                             <FormControl fullWidth>
-                                <TextField value={material?.x} onChange={e => setMaterial({
-                                    ...material,
-                                    x: e.target.value
-                                })} label="Điều khoản" multiline rows={8}/>
+                                <TextField value={contractAdd?.term} onChange={e => setContractAdd({
+                                    ...contractAdd,
+                                    term: e.target.value
+                                })} label="Điều khoản" multiline rows={18} />
                             </FormControl>
                         </Box>
                     </Grid>

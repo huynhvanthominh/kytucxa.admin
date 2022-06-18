@@ -109,11 +109,11 @@ const IndexAdmin = () => {
         <Route path="/Admin/Bill">
           <BillList />
         </Route>
-        <Route path="/Admin/Contract/Edit/:id">
+        <Route path="/Admin/Contract/Add">
           <ContractAdd />
         </Route>
-        <Route path="/Admin/Contract/Add">
-          <ContractView />
+        <Route path="/Admin/Contract/Edit/:id">
+          <ContractAdd />
         </Route>
         <Route path="/Admin/Contract">
           <ContractList />

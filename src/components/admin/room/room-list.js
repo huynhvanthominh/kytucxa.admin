@@ -61,7 +61,7 @@ const RoomList = () => {
     const handleDelete = async () => {
         try {
             console.log(selected);
-            await roomAPI.deleteRoom({ id: selected?.id }).then(data => {
+            await roomAPI.deleteRoom({id: selected?.id, image: selected?.image}).then(data => {
                 if (data) {
                     TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
                     getRoomByUser();
