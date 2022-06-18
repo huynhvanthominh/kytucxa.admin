@@ -15,62 +15,44 @@ import ALERT from "../../../consts/status-alter";
 import MESSAGE from "../../../consts/message-alert";
 import PATH from "../../../consts/path";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { troubleAPI } from "../../../apis/trouble.api";
+import { roomAPI } from "../../../apis/room.api";
 
 export default function () {
     const title = "Sự cố";
     const history = useHistory();
     const { path } = useRouteMatch();
-    const [materials, setMaterials] = useState([]);
-    const [materialType, setMaterialType] = useState(-1)
-    const [materialTypes, setMaterialTypes] = useState([])
     const [message, setMessage] = useState("");
     const [isShow, setIsShow] = useState(false)
     const [selected, setSelected] = useState({});
-    const [trouble, setTroubleH] = useState([
-        {
-            name: "Sự cố internet",
-            describe: "Mất kết nối toàn khu vực",
-            createdAt: "2022-06-12 08:41:27",
-            image: "https://znews-photo.zingcdn.me/w660/Uploaded/yqdlcqrwq/2021_06_08/13808062021.jpg"
-        },
-        {
-            name: "Sự cố mất điện",
-            describe: "Mất điện toàn khu vực",
-            createdAt: "2022-06-12 08:41:27",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoN_9Xg2TbG-CBJf0IpM0kGNhCKWOaD4OlYg&usqp=CAU"
-        }
-    ]);
+    const [trouble, setTrouble] = useState([]);
+    const [listArea, setListArea] = useState([]);
+    const [areaSelected, setAreaSelected] = useState([]);
+    const [typeOfRoom, setTypeOfRoom] = useState([]);
+    const [typeOfRoomSelected, setTypeOfRoomSelected] = useState([]);
+    const [room, setRoom] = useState([]);
+    const [roomSelected, setRoomSelected] = useState([]);
 
-    useEffect(() => {
-        const fetchMaterialType = async () => {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data)
-        }
-        fetchMaterialType()
-    }, [])
-
-    const getData = async () => {
+    const getDataTrouble = async () => {
         try {
-            if (materialType === -1) {
-                const { data } = await materialService.get();
-                setMaterials(data);
-            } else {
-                const { data } = await materialService.getByIdLoaivatchat(materialType);
-                setMaterials(data);
-            }
-
+            await troubleAPI.getTrouble({ userId: 1 }).then(data => {
+                setListArea(data);
+                setAreaSelected(-1);
+                setTypeOfRoomSelected(-1);
+                setRoomSelected(-1);
+            });
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
     useEffect(() => {
-        getData();
-    }, [materialType]);
+        getDataTrouble();
+    }, []);
 
     const confirm = (_, row) => {
         setSelected(row);
-        setMessage(`Có chắc mún xóa "${row.name}"`);
+        setMessage(`Có chắc muốn xóa "${row.name}"`);
         setIsShow(true);
     }
     const handleDelete = async () => {
@@ -78,7 +60,7 @@ export default function () {
             const { data } = await materialService.delete(selected?.id);
             if (data.status) {
                 TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                getData();
+                getDataTrouble();
             } else {
                 TOAST.EROR(MESSAGE.DELETE_ERROR)
             }
@@ -87,21 +69,126 @@ export default function () {
         }
     }
 
-    const Filter = () => {
+    useEffect(() => {
+        if (areaSelected === -1 && typeOfRoomSelected === -1 && roomSelected === -1) {
+            const listRoom = [];
+            const listType = [];
+            const listTrouble = [];
+            listArea.map(item => {
+                item?.typeofrooms.map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.troubles.map(itemTr => {
+                            listTrouble.push(itemTr)
+                        })
+                    })
+                })
+            })
+            console.log(listRoom);
+            setTypeOfRoom(listType);
+            setRoom(listRoom);
+            setTrouble(listTrouble);
+        } else if (areaSelected !== -1 && typeOfRoomSelected === -1 && roomSelected === -1) {
+            let listRoom = [];
+            let listTrouble = [];
+            listArea.filter(itemA => itemA.id === areaSelected.id).map(itemAr => {
+                itemAr.typeofrooms.map(item => {
+                    item.rooms.map(itemT => {
+                        listRoom.push(itemT);
+                        itemT.troubles.map(itemTr => {
+                            listTrouble.push(itemTr);
+                        })
+                    })
+                })
+            })
+            setRoom(listRoom);
+            setTrouble(listTrouble);
+        } else if (areaSelected !== -1 && typeOfRoomSelected !== -1 && roomSelected === -1) {
+            let listRoom = [];
+            let listTrouble = [];
+            typeOfRoom.filter(item => item.id === typeOfRoomSelected.id).map(itemT => {
+                listRoom.push(itemT);
+                itemT.troubles.map(itemTr => {
+                    listTrouble.push(itemTr);
+                })
+            })
+            setRoom(listRoom);
+            setTrouble(listTrouble);
+        }else if(areaSelected === -1 && typeOfRoomSelected !== -1 && roomSelected === -1){
+
+            let listRoom = [];
+            let listTrouble = [];
+            listArea.map(item => {
+                item?.typeofrooms.filter(itemType => itemType.id === typeOfRoomSelected.id).map(itemT => {
+                    itemT.rooms.map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.troubles.map(itemTr => {
+                            listTrouble.push(itemTr)
+                        })
+                    })
+                })
+            })
+
+            setRoom(listRoom);
+            setTrouble(listTrouble);
+        }else if(roomSelected !== -1){
+            let listTrouble = [];
+            room.filter(item => item.id === roomSelected.id).map(itemR => {
+                itemR.troubles.map(item => {
+                    listTrouble.push(item);
+                })
+            })
+            setTrouble(listTrouble);
+        }
+    }, [areaSelected, typeOfRoomSelected, roomSelected])
+
+    // useEffect(() => {
+    //     if (typeOfRoomSelected === -1) {
+
+    //     } else {
+
+    //     }
+    // }, [typeOfRoomSelected])
+
+
+    const FilterKhu = () => {
         return (
             <div className="d-flex">
-                <Box>
+                <Box className="ms-2">
                     <FormControl fullWidth size="small">
                         <InputLabel>Khu</InputLabel>
                         <Select
                             className="min-width-200"
                             label="Khu"
-                            value={materialType}
-                            onChange={e => setMaterialType(e.target.value)}
+                            defaultValue={"Tất cả"}
+                            value={areaSelected}
+                            onChange={e => {
+                                setAreaSelected(e.target.value)
+                            }}
                         >
                             <MenuItem value={-1}>Tất cả</MenuItem>
                             {
-                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                listArea.map((area, i) => <MenuItem key={i} value={area}>{area?.areaName}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+                <Box className="ms-2">
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Loại Phòng</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Loại Phòng"
+                            defaultValue={"Tất cả"}
+                            value={typeOfRoomSelected}
+                            onChange={e => {
+                                setTypeOfRoomSelected(e.target.value)
+                            }}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                typeOfRoom.map((type, i) => <MenuItem key={i} value={type}>{type?.name}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
@@ -112,12 +199,15 @@ export default function () {
                         <Select
                             className="min-width-200"
                             label="Phòng"
-                            value={materialType}
-                            onChange={e => setMaterialType(e.target.value)}
+                            defaultValue={"Tất cả"}
+                            value={roomSelected}
+                            onChange={e => {
+                                setRoomSelected(e.target.value)
+                            }}
                         >
                             <MenuItem value={-1}>Tất cả</MenuItem>
                             {
-                                materialTypes.map((materialType, i) => <MenuItem key={i} value={materialType?.id}>{materialType?.name}</MenuItem>)
+                                room.map((type, i) => <MenuItem key={i} value={type}>{type?.roomName}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
@@ -131,7 +221,7 @@ export default function () {
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
             <div className="d-flex align-items-center">
                 <div>
-                    <h3>{title} ({materials.length})</h3>
+                    <h3>{title} ({trouble?.length})</h3>
                 </div>
                 <Button className="ms-auto me-1" variant="contained">
                     <LinkCustom color="white" to={"/Admin/Trouble/Add"}>
@@ -142,7 +232,7 @@ export default function () {
             </div>
             <div className="border-bottom border-primary border-5" />
             <div className="py-4">
-                <Table dataSource={trouble} hover striped border filter={<Filter />}>
+                <Table dataSource={trouble} hover striped border filter={<FilterKhu />}>
                     {{
                         columns: [
                             {
@@ -150,7 +240,7 @@ export default function () {
                                 search: false,
                                 data: "media",
                                 className: "justify-content-center",
-                                render: (data, row) => <div className="table-img"><img src={row.image} alt="" /></div>
+                                render: (data, row) => <div className="table-img"><img src={PATH.URL_SERVER + row.image} alt="" /></div>
                             },
                             {
                                 title: "Tên sự cố",
@@ -159,10 +249,11 @@ export default function () {
                                 sort: true,
                             },
                             {
-                                title: "Tên sự cố",
-                                data: "name",
+                                title: "Trạng thái",
+                                data: "status",
                                 className: "justify-content-center",
                                 sort: true,
+                                render: (data, row) => <div><span>{row.status === "0" ? "Chưa giải quyết" : "Đã giải quyết"}</span></div>
                             },
                             {
                                 title: "Ngày tạo",
@@ -182,7 +273,7 @@ export default function () {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
+                                            <Button onClick={() => { history.push("/Admin/Trouble/View/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>
                                     );

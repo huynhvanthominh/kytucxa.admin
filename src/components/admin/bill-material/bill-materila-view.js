@@ -13,7 +13,6 @@ const BillMaterialView = () => {
     const fetchBill = async () => {
         try {
             const { data } = await billMaterialAPI.getById(id);
-            console.log(data);
             setBills(data)
         } catch (error) {
             TOAST.EROR(error.message)

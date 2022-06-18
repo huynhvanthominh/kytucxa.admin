@@ -18,7 +18,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { roomAPI } from "../../../apis/room.api";
 import { areaAPI } from "../../../apis/area.api";
 import { id } from "date-fns/locale";
-
+import AppsIcon from '@mui/icons-material/Apps';
 
 const RoomList = () => {
 
@@ -37,11 +37,13 @@ const RoomList = () => {
 
     const getRoomByUser = async () => {
         try {
-            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
-                setListArea(data);
-                setAreaSelected(-1);
-                setTypeOfRoomSelected(-1);
-            });
+            // await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+            //     setListArea(data);
+            //     setAreaSelected(-1);
+            //     setTypeOfRoomSelected(-1);
+            // });
+            const { data } = await roomAPI.getRoomAdmin();
+            setRoom(data)
         } catch (error) {
             TOAST.EROR(error.message)
         }
@@ -53,25 +55,31 @@ const RoomList = () => {
 
     const confirm = (_, row) => {
         setSelected(row);
-        setMessage(`Có chắc muốn xóa "${row.name}"`);
+        setMessage(`Có chắc muốn xóa "${row.roomName}"`);
         setIsShow(true);
     }
     const handleDelete = async () => {
         try {
-            const { data } = await materialService.delete(selected?.id);
-            if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                // getDataRoom();
-            } else {
-                TOAST.EROR(MESSAGE.DELETE_ERROR)
-            }
+            console.log(selected);
+            await roomAPI.deleteRoom({ id: selected?.id }).then(data => {
+                if (data) {
+                    TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+                    getRoomByUser();
+                    let rmv = room.splice(room.indexOf(selected), 1);
+                    setRoom(rmv);
+
+                } else {
+                    TOAST.EROR(MESSAGE.DELETE_ERROR)
+                }
+            })
+
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
     useEffect(() => {
-        if(areaSelected === -1){
+        if (areaSelected === -1) {
             const listRoom = [];
             const listType = [];
             listArea.map(item => {
@@ -85,7 +93,7 @@ const RoomList = () => {
             console.log(listRoom);
             setTypeOfRoom(listType);
             setRoom(listRoom);
-        }else{
+        } else {
             const listType = [];
             const listRoom = [];
             listArea.filter(item => item.id === areaSelected.id).map(item => {
@@ -106,7 +114,7 @@ const RoomList = () => {
 
 
     const setFilterType = (type) => {
-        
+
     }
 
     const FilterKhu = () => {
@@ -154,7 +162,7 @@ const RoomList = () => {
             </div>
         )
     }
-    
+
 
     return (
         <div>
@@ -193,6 +201,7 @@ const RoomList = () => {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
+                                            <Button onClick={() => { history.push("/Admin/Room/RoomMaterial/" + data) }} variant="text"><AppsIcon color="success" /></Button>
                                             <Button onClick={() => { history.push("/Admin/Room/View/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>

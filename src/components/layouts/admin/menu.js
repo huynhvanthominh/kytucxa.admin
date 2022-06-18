@@ -12,29 +12,41 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 export default function Menu() {
   const { path } = useRouteMatch();
+  const location = useLocation();
   const materialType = path + "Material-Type";
   const material = path + "Material";
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState(0);
+  const [selected, setSelected] = React.useState(5);
   const [statistical, setStatistical] = React.useState(false);
   const [service, setService] = React.useState(false);
   const [connect, setConnect] = React.useState(false);
+
   const clickConnect = () => {
     setConnect(!connect);
   }
+
   const handleClick = () => {
     setOpen(!open);
   };
+
   const clickService = () => {
     setService(!service);
   };
+
   const clickStatistical = () => {
     setStatistical(!statistical)
   }
+
+  React.useEffect(() => { 
+    if(location?.state?.selected){
+      setSelected(+location.state.selected);
+    }
+  }, [location])
+
   return (
     <List
       component="nav"
@@ -270,7 +282,7 @@ export default function Menu() {
             <ListItemText primary="Loại vật chất" />
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             sx={{ pl: 4 }}
             button
             selected={selected === 4.2}
@@ -283,7 +295,7 @@ export default function Menu() {
               <SendIcon />
             </ListItemIcon>
             <ListItemText primary="Vật chất" />
-          </ListItem>
+          </ListItem> */}
         </List>
       </Collapse >
       <ListItemButton onClick={clickConnect}>
@@ -310,20 +322,6 @@ export default function Menu() {
             <ListItemText primary="Nhập vật chất vào phòng" />
           </ListItem>
 
-          <ListItem
-            sx={{ pl: 4 }}
-            button
-            selected={selected === 4.2}
-            onClick={() => setSelected(4.2)}
-            component={React.forwardRef((props, ref) => (
-              <Link {...props} ref={ref} to={"/Admin/Bill-Material"}></Link>
-            ))}
-          >
-            <ListItemIcon>
-              <SendIcon />
-            </ListItemIcon>
-            <ListItemText primary="Vật chất" />
-          </ListItem>
         </List>
       </Collapse >
     </List >
