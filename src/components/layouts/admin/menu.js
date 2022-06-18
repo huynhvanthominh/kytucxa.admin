@@ -1,27 +1,20 @@
 import * as React from "react";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Menu() {
-  const { path } = useRouteMatch();
-  const location = useLocation();
-  const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState(5);
   const [statistical, setStatistical] = React.useState(false);
   const [service, setService] = React.useState(false);
   const [connect, setConnect] = React.useState(false);
   const [material, setMaterial] = React.useState(false);
   const [dormitory, setDormitory] = React.useState(false);
+
   const clickConnect = () => {
     setConnect(!connect);
     setMaterial(false)
     setDormitory(false)
   }
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   const clickService = () => {
     setService(!service);
@@ -42,11 +35,6 @@ export default function Menu() {
     setConnect(false)
     setDormitory(false)
   }
-  React.useEffect(() => {
-    if (location?.state?.selected) {
-      setSelected(+location.state.selected);
-    }
-  }, [location])
 
   return (
     <div className="component_menu_admin">
@@ -130,6 +118,9 @@ export default function Menu() {
                 <Link to={"/Admin/Bill-Material/"}>Hoá đơn</Link>
               </li>
               <li className="component_menu_admin_menu_item">
+                <Link to={"/Admin/Activity"}>Hoạt động</Link>
+              </li>
+              <li className="component_menu_admin_menu_item">
                 <Link to={"#"} onClick={clickStatistical}>Thống kê
                   <span className="component_menu_admin_menu_item_icon">
                     {statistical ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
@@ -141,6 +132,9 @@ export default function Menu() {
                   <ul className="component_menu_admin_menu component_menu_admin_sub_menu">
                     <li className="component_menu_admin_menu_item">
                       <Link to={"/Admin/Statistical/Material-Type/"}>Loại vật chất</Link>
+                    </li>
+                    <li className="component_menu_admin_menu_item">
+                      <Link to={"/Admin/Statistical/Report/"}>Sự cố</Link>
                     </li>
                   </ul>
                 )
@@ -161,7 +155,7 @@ export default function Menu() {
               <Link to={"/Admin/Connect/input-material-to-room/"}>Nhập vật chất vào phòng</Link>
             </li>
             <li className="component_menu_admin_menu_item">
-              <Link to={"/Admin/Connect/move-material/"}>Di chuyển vật chất</Link>
+              <Link to={"/Admin/Connect/view-material-in-room/"}>Xem vật chất trong phòng</Link>
             </li>
           </ul>
         )}

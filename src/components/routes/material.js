@@ -13,14 +13,27 @@ import MoveMaterial from "../admin/connect/move-material";
 import InputMaterialToRoom from "../admin/connect/input-material-to-room";
 import StatisticalMaterial from "../admin/statistical/statistical-material";
 import { Redirect, Route, Switch } from "react-router-dom";
+import ViewMaterialInRoom from "../admin/connect/view-material-in-room";
+import ReportList from "../admin/report/report-list";
+import Activty from "../admin/activity/activity";
+
 export default function MaterialRoute() {
     return (
         <Switch>
+            <Route path="/Admin/Activity/">
+                <Activty />
+            </Route>
+            <Route path="/Admin/Connect/view-material-in-room">
+                <ViewMaterialInRoom />
+            </Route>
             <Route path="/Admin/Connect/move-material">
                 <MoveMaterial />
             </Route>
             <Route path="/Admin/Connect/input-material-to-room">
                 <InputMaterialToRoom />
+            </Route>
+            <Route path="/Admin/Statistical/Report">
+                <ReportList />
             </Route>
             <Route path="/Admin/Statistical/Material-Type">
                 <StatisticalMaterial />
