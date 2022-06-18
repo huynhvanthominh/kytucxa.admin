@@ -1,4 +1,3 @@
-import { Route } from "react-router-dom/cjs/react-router-dom.min";
 import BillMaterial from "../admin/bill-material/bill-material";
 import BillMaterialView from "../admin/bill-material/bill-materila-view";
 import DetailMaterial from "../admin/detai-material/detail-material";
@@ -13,10 +12,10 @@ import MaterialView from "../admin/material/material-view";
 import MoveMaterial from "../admin/connect/move-material";
 import InputMaterialToRoom from "../admin/connect/input-material-to-room";
 import StatisticalMaterial from "../admin/statistical/statistical-material";
-import { Redirect } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 export default function MaterialRoute() {
     return (
-        <>
+        <Switch>
             <Route path="/Admin/Connect/move-material">
                 <MoveMaterial />
             </Route>
@@ -53,15 +52,15 @@ export default function MaterialRoute() {
             <Route path="/Admin/MaterialAdd">
                 <MaterialAdd />
             </Route>
-            <Route path="/Admin/Bill-Material/:id">
+            <Route path="/Admin/Bill-Material/:id/">
                 <BillMaterialView />
             </Route>
-            <Route path="/Admin/Bill-Material">
+            <Route path="/Admin/Bill-Material/">
                 <BillMaterial />
             </Route>
             <Route path="/Admin/Input">
                 <InputMaterial />
             </Route>
-        </>
+        </Switch>
     )
 }
