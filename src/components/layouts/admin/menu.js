@@ -127,7 +127,7 @@ export default function Menu() {
                 <Link to={"/Admin/Input/"}>Nhập vật chất</Link>
               </li>
               <li className="component_menu_admin_menu_item">
-                <Link to={"/Admin/Bill/"}>Hoá đơn</Link>
+                <Link to={"/Admin/Bill-Material/"}>Hoá đơn</Link>
               </li>
               <li className="component_menu_admin_menu_item">
                 <Link to={"#"} onClick={clickStatistical}>Thống kê
