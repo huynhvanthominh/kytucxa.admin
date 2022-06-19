@@ -1,7 +1,7 @@
 .component_menu_admin {
     height: 100%;
     display: flex;
-    background-color: #1976d2;
+    background-color: #208dfa;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
     * {
@@ -14,7 +14,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 1rem;
+        padding: 1rem;
+        background-color: #1976d2;
+        border-bottom: 5px solid #F8F8FF;
 
         * {
             font-size: 1.5rem;
@@ -24,12 +26,15 @@
 
     }
 
+    .driver {}
+
     .component_menu_admin_menu {
         margin: 0;
         padding: 0;
         flex-grow: 1;
         overflow: auto;
-        *{
+
+        * {
             font-weight: 500;
         }
 
@@ -49,6 +54,10 @@
             display: flex;
             width: 100%;
             align-items: center;
+
+            &.parent {
+                border-bottom: 1px solid #F8F8FF;
+            }
 
             &:hover {
                 background-color: #F8F8FF;

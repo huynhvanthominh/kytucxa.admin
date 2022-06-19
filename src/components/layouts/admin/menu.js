@@ -41,8 +41,9 @@ export default function Menu() {
       <div className="component_menu_admin_title">
         <p>Quản lý cơ sở vật chất</p>
       </div>
+      <div className="driver"></div>
       <ul className="component_menu_admin_menu">
-        <li className="component_menu_admin_menu_item">
+        <li className="component_menu_admin_menu_item parent">
           <Link to={"#"} onClick={clickDormitor}>Ký túc xá
             <span className="component_menu_admin_menu_item_icon">
               {dormitory ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
@@ -95,7 +96,7 @@ export default function Menu() {
             </ul>
           )
         }
-        <li className="component_menu_admin_menu_item">
+        <li className="component_menu_admin_menu_item parent">
           <Link to={"#"} onClick={clickMaterial}>Cơ sở vật chất
             <span className="component_menu_admin_menu_item_icon">
               {material ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
@@ -142,7 +143,7 @@ export default function Menu() {
             </ul>
           )
         }
-        <li className="component_menu_admin_menu_item">
+        <li className="component_menu_admin_menu_item parent">
           <Link to={"#"} onClick={clickConnect}>Liên kết
             <span className="component_menu_admin_menu_item_icon">
               {connect ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
