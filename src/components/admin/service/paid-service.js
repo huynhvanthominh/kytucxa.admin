@@ -172,8 +172,8 @@ const PaidService = () => {
         try {
             let paidServiceSelected = paidService.filter(item => item.id === data)
             console.log(paidServiceSelected);
-            setPaidServiceAdd(paidServiceSelected[0]);
             setOpen(true)
+            setPaidServiceAdd(paidServiceSelected[0]);
         } catch (error) {
             TOAST.EROR(error.message)
         }

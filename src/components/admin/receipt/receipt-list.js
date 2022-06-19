@@ -12,6 +12,9 @@ import { useHistory } from "react-router-dom"
 import { useEffect, useState } from "react";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { receiptAPI } from "../../../apis/receipt.api";
+import moment from "moment";
+import MESSAGE from "../../../consts/message-alert";
+import { TOAST } from "../../../customs/toast-custom"
 
 
 
@@ -50,8 +53,26 @@ export default function ReceiptList() {
         getReceipt();
     }, [])
 
-    const handleDelete = async () => { }
-    const confirm = () => { }
+    const handleDelete = async () => {
+        try {
+            await receiptAPI.deleteReceipt({ id: selected?.id, image: selected?.image }).then(data => {
+                if (data) {
+                    TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+                    getReceipt();
+                } else {
+                    TOAST.EROR(MESSAGE.DELETE_ERROR)
+                }
+            });
+
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+    }
+    const confirm = (_, row) => {
+        setSelected(row);
+        setMessage(`Có chắc muốn xóa biên nhận có mã: "${row.id}" không?`);
+        setIsShow(true);
+    }
     return (
         <div>
             <Alert isShow={isShow} close={() => setIsShow(false)} title={title} confirm={handleDelete} status={ALERT.QUESTION}>{message}</Alert>
@@ -95,18 +116,21 @@ export default function ReceiptList() {
                                 data: "dateOfPayment",
                                 className: "justify-content-center",
                                 sort: true,
+                            render: (data, row) => <div><span>{moment(row.dateOfPayment).format("DD-MM-YYYY")}</span></div>
                             },
                             {
                                 title: "Phương thức thanh toán",
                                 data: "paymentMethod",
                                 className: "justify-content-center",
                                 sort: true,
+                                render: (data) => <div><span>{data === "0" ? "Thanh toán tiền mặt" : "Chuyển khoản"}</span></div>
                             },
                             {
                                 title: "Trạng thái",
                                 data: "status",
                                 className: "justify-content-center",
                                 sort: true,
+                                render: (data) => <div><span>{data === "0" ? "Chưa thanh toán" : "Đã thanh toán"}</span></div>
                             },
                             {
                                 title: "",

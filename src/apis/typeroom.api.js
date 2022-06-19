@@ -52,11 +52,11 @@ const getTypeOfRoomByRoom = (params = {}) => {
     });
 };
 
-export const addArea = (body) => {
+export const addTypeOfRoom = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addArea',
+                '/addTypeOfRoom',
                 body
             )
             .then(function(response) {
@@ -97,7 +97,7 @@ export const deleteArea = (params = {}) => {
 export const typeOfRoomAPI = {
     getListTypeofroom,
     getAreaById,
-    addArea,
+    addTypeOfRoom,
     updateArea,
     deleteArea,
     getTypeOfRoomByArea,

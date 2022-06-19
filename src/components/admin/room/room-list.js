@@ -37,13 +37,13 @@ const RoomList = () => {
 
     const getRoomByUser = async () => {
         try {
-            // await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
-            //     setListArea(data);
-            //     setAreaSelected(-1);
-            //     setTypeOfRoomSelected(-1);
-            // });
-            const { data } = await roomAPI.getRoomAdmin();
-            setRoom(data)
+            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+                setListArea(data);
+                setAreaSelected(-1);
+                setTypeOfRoomSelected(-1);
+            });
+            // const { data } = await roomAPI.getRoomAdmin();
+            // setRoom(data)
         } catch (error) {
             TOAST.EROR(error.message)
         }

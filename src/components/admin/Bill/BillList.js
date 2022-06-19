@@ -4,7 +4,6 @@ import { LinkCustom } from "../../../customs/Link.Custom";
 import AddIcon from "@mui/icons-material/Add";
 import Table from "../../themes/table/table";
 import PATH from "../../../consts/path";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import EditIcon from "@mui/icons-material/Edit";
 import { TOAST } from "../../../customs/toast-custom";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -15,6 +14,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/mat
 import { contractAPI } from "../../../apis/contract.api";
 import { billAPI } from "../../../apis/bill.api";
 import MESSAGE from "../../../consts/message-alert";
+import moment from "moment";
 
 export default function BillList() {
     const title = "Hoá đơn hợp đồng";
@@ -38,6 +38,8 @@ export default function BillList() {
                 setListArea(data);
                 setAreaSelected(-1);
                 setTypeOfRoomSelected(-1);
+                setRoomSelected(-1);
+                setContractSelected(-1);
                 const listRoom = [];
                 const listType = [];
                 const listContract = [];
@@ -55,12 +57,11 @@ export default function BillList() {
                             })
                         })
                     })
-                })
-                console.log(listRoom);
+                });
                 setBill(listBill);
-                setTypeOfRoom(listType);
-                setRoom(listRoom);
-                setContract(listContract);
+                // setTypeOfRoom(listType);
+                // setRoom(listRoom);
+                // setContract(listContract);
             });
         } catch (error) {
             TOAST.EROR(error.message)
@@ -70,6 +71,191 @@ export default function BillList() {
     useEffect(() => {
         getContractData();
     }, [])
+
+    useEffect(() => {
+        if (areaSelected === -1) {
+            const listContract = [];
+            const listBill = [];
+            listArea.map(item => {
+                item?.typeofrooms.map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            setBill(listBill);
+            setContractSelected(-1);
+            setRoomSelected(-1);
+            setTypeOfRoomSelected(-1);
+            setContract([]);
+            setTypeOfRoom([]);
+            setRoom([]);
+        } else {
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            // setTypeOfRoom(listType);
+            // setContract(listContract);
+            // setRoom(listRoom);
+            setTypeOfRoomSelected(-1);
+            setRoomSelected(-1);
+            setContractSelected(-1);
+            setBill(listBill);
+        }
+    }, [areaSelected])
+
+    useEffect(() => {
+        if (typeOfRoomSelected === -1) {
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            setRoomSelected(-1);
+            setContractSelected(-1);
+            setRoom([]);
+            setContract([]);
+            setBill(listBill);
+        } else {
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            setRoomSelected(-1);
+            setRoom(listRoom);
+            setContractSelected(-1);
+            setContract([]);
+            setBill(listBill);
+        }
+    }, [typeOfRoomSelected])
+
+    useEffect(() => {
+        if (roomSelected === -1) {
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            setContractSelected(-1);
+            setContract(listContract);
+            setBill(listBill);
+        } else {
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.filter(item => item.id === roomSelected.id).map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            setContract(listContract);
+        }
+    }, [roomSelected])
+
+    useEffect(() => {
+        if (roomSelected === -1) {
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            setContractSelected(-1);
+            setContract(listContract);
+            setBill(listBill);
+        } else {
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            const listBill = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.filter(item => item.id === roomSelected.id).map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.contracts.filter(item => item.id === contractSelected.id).map(itemTr => {
+                            // listContract.push(itemTr);
+                            itemTr.bills.map(itemB => {
+                                listBill.push(itemB);
+                            })
+                        })
+                    })
+                })
+            })
+            // setContract(listContract);
+            setBill(listBill);
+        }
+    }, [contractSelected])
 
     const handleDelete = async () => {
         try {
@@ -106,6 +292,22 @@ export default function BillList() {
                             <MenuItem value={-1}>Tất cả</MenuItem>
                             {
                                 listArea.map((area, i) => <MenuItem key={i} value={area}>{area?.areaName}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Box>
+                <Box className="ms-2">
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Loại Phòng</InputLabel>
+                        <Select
+                            className="min-width-200"
+                            label="Loại Phòng"
+                            value={typeOfRoomSelected}
+                            onChange={e => setTypeOfRoomSelected(e.target.value)}
+                        >
+                            <MenuItem value={-1}>Tất cả</MenuItem>
+                            {
+                                typeOfRoom.map((type, i) => <MenuItem key={i} value={type}>{type?.name}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
@@ -179,9 +381,10 @@ export default function BillList() {
                             },
                             {
                                 title: "Ngày thu",
-                                data: "name",
+                                data: "dateOfPayment",
                                 className: "justify-content-center",
                                 sort: true,
+                                render: (data, row) => <div><span>{moment(row.dateOfPayment).format("DD-MM-YYYY")}</span></div>
                             },
                             {
                                 title: "Tổng tiền",

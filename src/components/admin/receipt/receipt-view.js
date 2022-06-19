@@ -3,24 +3,30 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Loading from "../../../customs/loading";
 import { materialTypeService } from "../../../apis/material-type.api";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { useHistory } from "react-router-dom";
+import PATH from "../../../consts/path";
 import { TOAST } from "../../../customs/toast-custom";
 import { LoadingButton } from "@mui/lab";
 import { uploadFileService } from "../../../apis/upload-file.api";
 import { materialService } from "../../../apis/material.api";
 import MESSAGE from "../../../consts/message-alert";
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { receiptAPI } from "../../../apis/receipt.api";
 export default function ReceiptView() {
-    const title = "Thêm biên nhận";
     const history = useHistory();
     const [materialTypes, setMaterialTypes] = useState([]);
     const [material, setMaterial] = useState([]);
-    const [image, setImage] = useState("")
+    const [image, setImage] = useState("");
+    const { id } = useParams();
+    const title = id ? "Cập nhật biên nhận" : "Thêm biên nhận";
     const [file, setFile] = useState();
     const [loadingImage, setLoadingImage] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -32,7 +38,7 @@ export default function ReceiptView() {
     const [paymentMethodSelect, setPaymentMethodSelect] = useState({ id: '' });
     const [status, setStatus] = useState([{ id: '0', label: 'Chưa thanh toán' }, { id: '1', label: 'Đã thanh toán' }])
     const [statusSelect, setStatusSelect] = useState({ id: '' });
-    const [receiptAdd, setReceiptAdd] = useState([]);
+    const [receiptAdd, setReceiptAdd] = useState({amountOfMoney: '', dateOfPayment: new Date(), note: ''});
 
 
 
@@ -56,6 +62,25 @@ export default function ReceiptView() {
             })
             setListReceipt(listR);
             setListBill(listB);
+            if(id){
+                getReceiptData(listB);
+            }
+        })
+    }
+
+    const getReceiptData = async (listB) => {
+        await receiptAPI.getReceiptById({id: id}).then(data => {
+            setReceiptAdd(data);
+            console.log(data);
+            setPaymentMethodSelect(
+                (paymentMethod.filter(item => item.id === data.paymentMethod))[0]
+            )
+            setStatusSelect(
+                (status.filter(item => item.id === data.status))[0]
+            )
+            setBillSelect(
+                (listB.filter(item => item.id === data.billId))[0]
+            )
         })
     }
     useEffect(() => {
@@ -69,18 +94,27 @@ export default function ReceiptView() {
     }
 
     const checkValue = () => {
-        // if (!file) {
-        //     TOAST.WARN("Vui lòng chọn hình ảnh !");
-        //     return false
-        // }
-        // if (material?.idMaterialType.length === 0) {
-        //     TOAST.WARN("Vui lòng chọn loại vật chất !");
-        //     return false
-        // }
-        // if (material?.name.length === 0) {
-        //     TOAST.WARN("Vui lòng nhập tên vật chất !");
-        //     return false
-        // }
+        if (!file && !receiptAdd.image) {
+            TOAST.WARN("Vui lòng chọn hình ảnh !");
+            return false
+        }
+        if (!receiptAdd?.amountOfMoney) {
+            TOAST.WARN("Vui lòng nhập số tiền !");
+            return false
+        }
+        if (!paymentMethodSelect) {
+            TOAST.WARN("Vui lòng chọn phương thức thanh toán !");
+            return false
+        }
+        if (!statusSelect) {
+            TOAST.WARN("Vui lòng chọn trạng thái !");
+            return false
+        }
+        if (!receiptAdd?.note) {
+            TOAST.WARN("Vui lòng nhập ghi chú !");
+            return false
+        }
+        
         return true
     }
 
@@ -100,7 +134,7 @@ export default function ReceiptView() {
                 data.append("image", file);
                 data.append("receipt", JSON.stringify(receiptData));
                 console.log(file)
-                await receiptAPI.addReceipt(receiptData).then(data => {
+                await receiptAPI.addReceipt(data).then(data => {
                     if (data) {
                         history.goBack()
                     }
@@ -112,19 +146,32 @@ export default function ReceiptView() {
         setLoading(false)
     }
 
-    const fetchMaterialType = async () => {
+    const handleUpdate = async () => {
         try {
-            const { data } = await materialTypeService.get();
-            setMaterialTypes(data);
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                let receiptData = {
+                    ...receiptAdd,
+                    billId: billSelect.id,
+                    status: statusSelect.id,
+                    paymentMethod: paymentMethodSelect.id,
+                }
+                data.append("image", file);
+                data.append("receipt", JSON.stringify(receiptData));
+                await receiptAPI.updateReceipt(data, {id: id}).then(data => {
+                    if (data) {
+                        history.goBack()
+                    }
+                })
+            }
         } catch (error) {
             TOAST.EROR(error.message)
         }
-        setTimeout(() => setLoading(false), 500)
+        setLoading(false)
     }
-
-    useEffect(() => {
-        fetchMaterialType();
-    }, []);
 
     const handleChange = (e) => {
         setLoadingImage(true)
@@ -153,9 +200,9 @@ export default function ReceiptView() {
                                 <Input onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
                                 {
                                     loadingImage ? <CircularProgress /> :
-                                        image.length === 0 ?
+                                        image.length === 0 && !receiptAdd.image?
                                             <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
-                                            <img src={image} />
+                                            <img src={image ? image : (PATH.URL_SERVER.concat(receiptAdd.image))} />
                                 }
                             </label>
                         </Card>
@@ -172,9 +219,40 @@ export default function ReceiptView() {
                                             onChange={e => setBillSelect(e.target.value)}
                                         >
                                             {
-                                                listBill.map((bill, i) => <MenuItem key={i} value={bill}>{bill?.nameOfBill}</MenuItem>)
+                                                listBill.map((bill, i) => <MenuItem key={i} value={bill}>Mã: {bill?.id} - {bill?.nameOfBill}</MenuItem>)
                                             }
                                         </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <TextField value={receiptAdd.amountOfMoney} onChange={e => setReceiptAdd({
+                                            ...receiptAdd,
+                                            amountOfMoney: e.target.value
+                                        })} label="Tổng tiền" variant="standard"  multiline rows={1}/>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item sm={16}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Ngày thanh toán"
+                                                inputFormat="dd/MM/yyyy"
+                                                value={receiptAdd?.dateOfPayment}
+                                                onChange={e => {
+                                                    setReceiptAdd({
+                                                        ...receiptAdd,
+                                                        dateOfPayment: e
+                                                    })
+                                                }
+                                                }
+                                                renderInput={(params) => <TextField size="small" {...params} />}
+                                            />
+                                        </LocalizationProvider>
                                     </FormControl>
                                 </Box>
                             </Grid>
@@ -222,7 +300,7 @@ export default function ReceiptView() {
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
-                                    <LoadingButton loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Thêm</LoadingButton>
+                                    <LoadingButton loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={id ? handleUpdate : handleAdd}>{id ? "Cập nhật" : "Thêm"}</LoadingButton>
                                     <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>
                                 </Box>
                             </Grid>
