@@ -13,10 +13,11 @@ const getBillById = (params = {}) => {
     });
 };
 
-const addBill = (params = {}) => {
+const addBill = (body) => {
     return new Promise((resolve, reject) => {
         axios
-            .post('/addBill', {params})
+            .post('/addBill',
+            body)
             .then(function(response) {
                 return resolve(response.data);
             })

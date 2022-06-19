@@ -38,23 +38,17 @@ export default function ContractList() {
                 setListArea(data);
                 setAreaSelected(-1);
                 setTypeOfRoomSelected(-1);
-                const listRoom = [];
-                const listType = [];
+                setRoomSelected(-1);
                 const listContract = [];
                 data.map(item => {
                     item?.typeofrooms.map(itemType => {
-                        listType.push(itemType);
                         itemType.rooms.map(itemRoom => {
-                            listRoom.push(itemRoom);
                             itemRoom.contracts.map(itemTr => {
                                 listContract.push(itemTr)
                             })
                         })
                     })
                 })
-                console.log(listRoom);
-                setTypeOfRoom(listType);
-                setRoom(listRoom);
                 setContract(listContract);
             });
         } catch (error) {
@@ -69,11 +63,63 @@ export default function ContractList() {
 
     useEffect(() => {
         if (areaSelected === -1) {
-            const listRoom = [];
-            const listType = [];
             const listContract = [];
             listArea.map(item => {
                 item?.typeofrooms.map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr)
+                        })
+                    })
+                })
+            })
+            setContract(listContract);
+            setRoomSelected(-1);
+            setTypeOfRoomSelected(-1);
+            setTypeOfRoom([]);
+            setRoom([]);
+        }else{
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr)
+                        })
+                    })
+                })
+            })
+            setTypeOfRoom(listType);
+            setContract(listContract);
+            setRoomSelected(-1);
+            setTypeOfRoomSelected(-1);
+        }
+    }, [areaSelected])
+
+    useEffect(() => {
+        if (typeOfRoomSelected === -1) {
+            const listContract = [];
+            listArea.map(item => {
+                item?.typeofrooms.map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr)
+                        })
+                    })
+                })
+            })         
+            setContract(listContract);
+            setRoomSelected(-1);
+            setRoom([]);
+        }else{
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
                     listType.push(itemType);
                     itemType.rooms.map(itemRoom => {
                         listRoom.push(itemRoom);
@@ -83,12 +129,45 @@ export default function ContractList() {
                     })
                 })
             })
-            console.log(listRoom);
-            setTypeOfRoom(listType);
+            setRoomSelected(-1);
             setRoom(listRoom);
             setContract(listContract);
         }
-    }, [areaSelected])
+    }, [typeOfRoomSelected])
+
+    useEffect(() => {
+        if (roomSelected === -1) {
+            const listContract = [];
+            listArea.map(item => {
+                item?.typeofrooms.map(itemType => {
+                    itemType.rooms.map(itemRoom => {
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr)
+                        })
+                    })
+                })
+            })         
+            setContract(listContract);
+        }else{
+            const listRoom = [];
+            const listType = [];
+            const listContract = [];
+            listArea.filter(item => item.id === areaSelected.id).map(item => {
+                item?.typeofrooms.filter(item => item.id === typeOfRoomSelected.id).map(itemType => {
+                    listType.push(itemType);
+                    itemType.rooms.filter(item => item.id === roomSelected.id).map(itemRoom => {
+                        listRoom.push(itemRoom);
+                        itemRoom.contracts.map(itemTr => {
+                            listContract.push(itemTr)
+                        })
+                    })
+                })
+            })
+            setContract(listContract);
+        }
+    }, [roomSelected])
+
+
     const handleDelete = async () => {
         try {
             await contractAPI.deleteContract({ id: selected?.id }).then(data => {
@@ -214,13 +293,13 @@ export default function ContractList() {
                                 title: "Trạng thái",
                                 data: "dateOfPayment",
                                 className: "justify-content-center",
+                                sort: true,
                                 render: (data, row) => <div><span>{row.status === "0" ? "Chưa duyệt" : "Đã duyệt"}</span></div>
                             },
                             {
                                 title: "Điều khoản",
                                 data: "term",
                                 className: "justify-content-center",
-                                sort: true,
                             },
                             {
                                 title: "",

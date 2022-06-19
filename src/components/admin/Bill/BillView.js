@@ -123,6 +123,7 @@ export default function BillView() {
         try {
             await billAPI.getBillById({ id: id }).then(data => {
                 setBillAdd(data);
+                console.log(data.status);
                 let stt = status.filter(item => item.id === data.status);
                 setStatusSelect(stt[0])
                 setPrice(data.total);
@@ -216,13 +217,13 @@ export default function BillView() {
                 setLoading(true);
                 let billData = {
                     ...billAdd,
+                    total: String(price),
+                    dateOfPayment: billAdd.dateOfPayment ? String(billAdd.dateOfPayment) : String(date),
+                    status: statusSelect.id,
                     contractId: contractSelected.id,
-                    total: price,
-                    dateOfPayment: billAdd.dateOfPayment ? billAdd.dateOfPayment : date,
-                    status: statusSelect.id
                 }
                 console.log("form =>", billData);
-                await billAPI.addBill(test).then(data => {
+                await billAPI.addBill(billData).then(data => {
                     if (data) {
                         TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
                         history.goBack();

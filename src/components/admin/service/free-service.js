@@ -138,10 +138,11 @@ const FreeService = () => {
         setFileSrc(e);
         setLoadingImage(true)
         const reader = new FileReader();
-        const file = e.target.files[0]
+        const file = e.target.files[0];
         setFile(file)
         reader.readAsDataURL(file);
         reader.onloadend = function () {
+            // console.log("rs: ",reader.result)
             setImage(reader.result)
         };
         setTimeout(() => setLoadingImage(false), 500)
@@ -217,7 +218,7 @@ const FreeService = () => {
                                     <Input onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
                                     {
                                         loadingImage ? <CircularProgress /> :
-                                            image.length === 0 && !freeServiceAdd ?
+                                            image.length === 0 && !freeServiceAdd.image ?
                                                 <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
                                                 <img src={image ? image : (PATH.URL_SERVER.concat(freeServiceAdd.image))} />
                                     }
@@ -229,7 +230,7 @@ const FreeService = () => {
             </Popup>
             <div className="d-flex align-items-center">
                 <div>
-                    <h3>{title} ({materials.length})</h3>
+                    <h3>{title} ({freeService.length})</h3>
                 </div>
                 <Button className="ms-auto me-1" variant="contained" onClick={() => setOpen(true)}>
                     <LinkCustom color="white" to={"#"}>

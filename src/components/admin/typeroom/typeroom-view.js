@@ -20,7 +20,7 @@ import { areaAPI } from "../../../apis/area.api";
 import { freeServiceAPI } from "../../../apis/freeService.api";
 import { paidServiceAPI } from "../../../apis/paidService.api";
 import { MultiSelect } from "react-multi-select-component";
-
+import { typeOfRoomAPI } from "../../../apis/typeroom.api";
 const TypeRoomView = () => {
 
     const title = "Loại phòng";
@@ -39,7 +39,7 @@ const TypeRoomView = () => {
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
-        const { data } = await uploadFileService.uploadImage(file, "material");
+        const { data } = await uploadFileService.uploadImage(file, "typeofroom");
         return data
     }
 
@@ -48,47 +48,48 @@ const TypeRoomView = () => {
             TOAST.WARN("Vui lòng chọn hình ảnh !");
             return false
         }
-        if (typeOfRoom?.idMaterialType.length === 0) {
-            TOAST.WARN("Vui lòng chọn loại vật chất !");
+        
+        if (typeOfRoom.areaId?.length === 0) {
+            TOAST.WARN("Vui lòng chọn khu !");
             return false
         }
-        if (typeOfRoom?.name.length === 0) {
-            TOAST.WARN("Vui lòng nhập tên vật chất !");
+        if (typeOfRoom.name?.length === 0) {
+            TOAST.WARN("Vui lòng nhập tên !");
+            return false
+        }
+        if (typeOfRoom.price?.length === 0) {
+            TOAST.WARN("Vui lòng nhập giá !");
             return false
         }
         return true
     }
 
     const handleAdd = async () => {
-        // try {
-        //     if (checkValue()) {
-        //         setLoading(true);
-        //         const upload = await uploadFile();
-
-        //         if (upload?.name) {
-        //             const { data } = await materialService.add({
-        //                 ...material,
-        //                 media: upload.name
-        //             });
-        //             if (data?.error) {
-        //                 console.log(data);
-        //                 TOAST.EROR(data.message)
-        //                 await uploadFileService.removeImage(upload?.name, "material");
-        //             } else {
-        //                 TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
-        //                 history.goBack();
-        //             }
-        //         } else {
-        //             TOAST.EROR("Upload file thất bại !");
-        //         }
-        //     }
-        // } catch (error) {
-        //     TOAST.EROR(error.message)
-        // }
+        try {
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                // let typeOfRoomData = {
+                //     ...typeOfRoom,
+                // }
+                data.append("image", file);
+                data.append("typeofroom", JSON.stringify(typeOfRoom));
+                console.log(file)
+                await typeOfRoomAPI.addTypeOfRoom(data).then(data => {
+                    if (data) {
+                        history.goBack()
+                    }
+                })
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
     }
 
     const handleChange = (e) => {
-        // const reader = new FileReader();
         // const file = e.files
         // setFile(file)
         // for (let index = 0; file < file.length; index++) {
@@ -100,10 +101,17 @@ const TypeRoomView = () => {
         let a = [];
         let b = [];
         a.push(e.target.files)
+
         for (let i = 0; i < a[0].length; i++) {
-            b.push(URL.createObjectURL(a[0][i]))
+            const reader = new FileReader();
+            reader.readAsDataURL(a[0][i]);
+            reader.onloadend = function () {
+                b.push(reader.result)
+            };
+            // b.push(URL.createObjectURL(a[0][i]))
         }
         setImage(b);
+        console.log(b);
     }
 
     const getListArea = async () => {
@@ -169,7 +177,7 @@ const TypeRoomView = () => {
                                         <div>
                                             {
                                                 image.map(item => {
-                                                    <img src={item} />
+                                                    <img src={item}/>
                                                 })
                                             }
                                         </div>

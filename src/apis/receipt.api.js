@@ -13,10 +13,23 @@ const getBillByArea = (params = {}) => {
     });
 };
 
-const addReceipt = (params = {}) => {
+const getReceiptById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .post('/addReceipt', {params})
+            .get('/getReceiptById', {params})
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+
+const addReceipt = (body) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .post('/addReceipt', body)
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -42,10 +55,10 @@ export const addArea = (body) => {
     });
 };
 
-export const updateBill = (body = {}, params = {}) => {
+export const updateReceipt = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateBill', body, {params})
+            .put('/updateReceipt', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -55,10 +68,10 @@ export const updateBill = (body = {}, params = {}) => {
     });
 };
 
-export const deleteBill = (params = {}) => {
+export const deleteReceipt = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteBill',{params})
+            .delete('/deleteReceipt',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -72,6 +85,7 @@ export const receiptAPI = {
     addReceipt,
     getBillByArea,
     addArea,
-    updateBill,
-    deleteBill
+    updateReceipt,
+    deleteReceipt,
+    getReceiptById
 }
