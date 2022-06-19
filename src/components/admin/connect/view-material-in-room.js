@@ -12,6 +12,7 @@ import Report from "../report/report";
 import MoveMaterial from "./move-material";
 import { useHistory } from "react-router-dom";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import TableDateCustom from "../../../customs/Table-Date-custom";
 export default function ViewMaterialInRoom() {
     const title = "Xem chi tiết vật chất trong phòng";
     const [room, setRoom] = useState("");
@@ -132,6 +133,13 @@ export default function ViewMaterialInRoom() {
                                 data: "nameMaterial",
                                 className: "justify-content-center",
                                 sort: true,
+                            },
+                            {
+                                title: "Thời gian",
+                                data: "createdAt",
+                                className: "justify-content-center",
+                                sort: false,
+                                render: (data)=> <TableDateCustom date={data}/>
                             },
                             {
                                 title: "",
