@@ -20,7 +20,12 @@ export default function MoveMaterial({ material, open = false, close, maxWidth =
     const fetchRooms = async () => {
         try {
             const { data } = await roomAPI.getRoomAdmin();
-            setRooms(data.filter(item => +item.id !== +material?.owner))
+            if(material.owner){
+                setRooms(data.filter(item => +item.id !== +material.owner))    
+            }else{
+                setRooms(data)
+            }
+         
         } catch (error) {
             TOAST.EROR(error.message)
         }
