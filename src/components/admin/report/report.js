@@ -10,20 +10,6 @@ import { TOAST } from '../../../customs/toast-custom';
 import { troubleMaterialAPI } from '../../../apis/trouble-material.api';
 import { uploadFileService } from '../../../apis/upload-file.api';
 import PATH from "../../../consts/path"
-const levels = [
-    {
-        id: 1,
-        name: "Bình thường"
-    },
-    {
-        id: 2,
-        name: "Nguy hiểm"
-    },
-    {
-        id: 3,
-        name: "Cấp thiết"
-    }
-]
 
 const initTrouble = {
     createdAt: "",
@@ -38,7 +24,21 @@ const initTrouble = {
 export default function Report({ material, open = false, report, close, maxWidth = "sm", fullWidth = true }) {
     const [src, setSrc] = React.useState("");
     const [file, setFile] = React.useState();
-    const [trouble, setTroble] = React.useState(initTrouble)
+    const [trouble, setTroble] = React.useState(initTrouble);
+    const [types, setTypes] = React.useState([])
+    const fetchType = async () => {
+        try {
+            const { data } = await troubleMaterialAPI.getType();
+            setTypes(data);
+        } catch (error) {
+            TOAST.EROR(error.message);
+        }
+    }
+
+    React.useEffect(() => {
+        fetchType();
+    }, [])
+    
     const handleChange = (e) => {
         const reader = new FileReader();
         const file = e.target.files[0]
@@ -120,7 +120,7 @@ export default function Report({ material, open = false, report, close, maxWidth
                                 onChange={e => setTroble({ ...trouble, statusTroubleMaterial: e.target.value })}
                             >
                                 {
-                                    levels.map((level, i) => <MenuItem key={i} value={level?.id}>{level?.name}</MenuItem>)
+                                    types.map((type, i) => <MenuItem key={i} value={type?.value}>{type?.label}</MenuItem>)
                                 }
                             </Select>
                         </FormControl>

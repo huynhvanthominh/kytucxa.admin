@@ -54,20 +54,8 @@ export default function ReportList() {
                             {
                                 title: "Loại",
                                 className: "justify-content-center",
-                                data: "statusTroubleMaterial",
+                                data: "label",
                                 sort: true,
-                                render: (data) => {
-                                    switch (+data) {
-                                        case 1:
-                                            return "Bình thường";
-                                        case 2:
-                                            return "Nguy hiểm"
-                                        case 3:
-                                            return "Cấp thiết"
-                                        default:
-                                            break;
-                                    }
-                                }
                             },
                             {
                                 title: "Ngày tạo",

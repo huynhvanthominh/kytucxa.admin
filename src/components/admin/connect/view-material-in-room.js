@@ -40,9 +40,7 @@ export default function ViewMaterialInRoom() {
 
     const fetchDetailMaterials = async () => {
         try {
-            console.log(material);
             const { data } = await materialService.getAllDetailMaterial(room, +material > 0 ? material : undefined);
-            console.log(data);
             setDetailMaterial(data);
         } catch (error) {
             TOAST.EROR(error.message)
