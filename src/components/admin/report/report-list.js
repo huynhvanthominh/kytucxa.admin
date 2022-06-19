@@ -7,6 +7,7 @@ import TableDateCustom from "../../../customs/Table-Date-custom";
 import { troubleMaterialAPI } from "../../../apis/trouble-material.api";
 import Report from "./report";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { TOAST } from "../../../customs/toast-custom";
 export default function ReportList() {
 
     const title = "Báo cáo sự cố";
@@ -14,8 +15,12 @@ export default function ReportList() {
     const [openReport, setOpenReport] = useState(false);
     const [selected, setSelected] = useState();
     const fetchTroubles = async () => {
-        const { data } = await troubleMaterialAPI.get();
-        setTroubles(data);
+        try {
+            const { data } = await troubleMaterialAPI.get();
+            setTroubles(data);
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
     }
     const closeReport = () => {
         setSelected()
@@ -41,8 +46,8 @@ export default function ReportList() {
                         columns: [
                             {
                                 search: false,
-                                title: "#ID",
-                                data: "idMaterial",
+                                title: "Tên vật chất",
+                                data: "nameMaterial",
                                 className: "justify-content-center",
                             },
                             {

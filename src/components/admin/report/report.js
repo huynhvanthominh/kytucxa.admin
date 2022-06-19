@@ -24,7 +24,7 @@ const initTrouble = {
 export default function Report({ material, open = false, report, close, maxWidth = "sm", fullWidth = true }) {
     const [src, setSrc] = React.useState("");
     const [file, setFile] = React.useState();
-    const [trouble, setTroble] = React.useState(initTrouble);
+    const [trouble, setTrouble] = React.useState(initTrouble);
     const [types, setTypes] = React.useState([])
     const fetchType = async () => {
         try {
@@ -38,7 +38,7 @@ export default function Report({ material, open = false, report, close, maxWidth
     React.useEffect(() => {
         fetchType();
     }, [])
-    
+
     const handleChange = (e) => {
         const reader = new FileReader();
         const file = e.target.files[0]
@@ -52,7 +52,7 @@ export default function Report({ material, open = false, report, close, maxWidth
     const fetchReport = async (id) => {
         try {
             const { data } = await troubleMaterialAPI.getOne(id)
-            setTroble(data)
+            setTrouble(data)
             setSrc(PATH.MATERIAL + data.mediaTroubleMaterial)
         } catch (error) {
 
@@ -69,7 +69,10 @@ export default function Report({ material, open = false, report, close, maxWidth
     }
     const submit = async () => {
         try {
-            let tmp = { ...trouble }
+            let tmp = {
+                ...trouble,
+                idMaterial: material?.id
+            }
             if (file) {
                 const upload = await uploadFile();
                 if (upload?.name) {
@@ -117,7 +120,7 @@ export default function Report({ material, open = false, report, close, maxWidth
                             <Select
                                 value={trouble.statusTroubleMaterial}
                                 label="Mức độ"
-                                onChange={e => setTroble({ ...trouble, statusTroubleMaterial: e.target.value })}
+                                onChange={e => setTrouble({ ...trouble, statusTroubleMaterial: e.target.value })}
                             >
                                 {
                                     types.map((type, i) => <MenuItem key={i} value={type?.value}>{type?.label}</MenuItem>)
@@ -131,7 +134,7 @@ export default function Report({ material, open = false, report, close, maxWidth
                                 label="Mô tả"
                                 multiline
                                 value={trouble.descriptionTroubleMaterial}
-                                onChange={e => setTroble({
+                                onChange={e => setTrouble({
                                     ...trouble,
                                     descriptionTroubleMaterial: e.target.value
                                 })}
