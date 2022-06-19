@@ -20,7 +20,7 @@ export default function MoveMaterial({ material, open = false, close, maxWidth =
     const fetchRooms = async () => {
         try {
             const { data } = await roomAPI.getRoomAdmin();
-            if(material.owner){
+            if(material){
                 setRooms(data.filter(item => +item.id !== +material.owner))    
             }else{
                 setRooms(data)
@@ -33,7 +33,7 @@ export default function MoveMaterial({ material, open = false, close, maxWidth =
 
     React.useEffect(() => {
         fetchRooms();
-    }, [])
+    }, [material])
 
     const submit = async () => {
         try {
