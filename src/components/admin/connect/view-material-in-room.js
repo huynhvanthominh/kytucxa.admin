@@ -10,6 +10,9 @@ import DangerousIcon from '@mui/icons-material/Dangerous';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import Report from "../report/report";
 import MoveMaterial from "./move-material";
+import { useHistory } from "react-router-dom";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import TableDateCustom from "../../../customs/Table-Date-custom";
 export default function ViewMaterialInRoom() {
     const title = "Xem chi tiết vật chất trong phòng";
     const [room, setRoom] = useState("");
@@ -20,6 +23,7 @@ export default function ViewMaterialInRoom() {
     const [openReport, setOpenReport] = useState(false);
     const [selected, setSelected] = useState();
     const [openMoveMaterial, setOpenMoveMaterial] = useState(false)
+    const history = useHistory();
     const fetchRooms = async () => {
         try {
             const { data } = await roomAPI.getRoomAdmin();
@@ -125,10 +129,17 @@ export default function ViewMaterialInRoom() {
                                 render: (data) => <div className="table-img"><img src={PATH.MATERIAL + data} alt="" /></div>
                             },
                             {
-                                title: "Tinh trạng",
-                                data: "nameStatusMaterial",
+                                title: "Tên vật chất",
+                                data: "nameMaterial",
                                 className: "justify-content-center",
                                 sort: true,
+                            },
+                            {
+                                title: "Thời gian",
+                                data: "createdAt",
+                                className: "justify-content-center",
+                                sort: false,
+                                render: (data)=> <TableDateCustom date={data}/>
                             },
                             {
                                 title: "",
@@ -137,6 +148,11 @@ export default function ViewMaterialInRoom() {
                                 render: function (data, row) {
                                     return (
                                         <div className="d-flex justify-content-center">
+                                            <IconButton onClick={() => {
+                                                history.push("/Admin/Detail-Material/View/" + data)
+                                            }}>
+                                                <RemoveRedEyeIcon color="success" />
+                                            </IconButton>
                                             <IconButton onClick={() => {
                                                 setSelected(row)
                                                 setOpenReport(true)
