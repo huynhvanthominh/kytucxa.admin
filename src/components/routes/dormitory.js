@@ -1,4 +1,4 @@
-import { Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import AreaView from "../admin/area/area-view";
 import AreaList from "../admin/area/area-list";
 import TypeRoomView from "../admin/typeroom/typeroom-view"
@@ -16,6 +16,7 @@ import ReceiptList from "../admin/receipt/receipt-list"
 import TroubleView from "../admin/trouble/trouble-view"
 import TroubleList from "../admin/trouble/trouble-list"
 import { Switch } from "react-router-dom/cjs/react-router-dom.min";
+import Dashboard from "../admin/dashboard/dashboard";
 export default function DormitoryRoute() {
   return (
     <Switch>
@@ -87,6 +88,12 @@ export default function DormitoryRoute() {
       </Route>
       <Route path="/Admin/Trouble">
         <TroubleList />
+      </Route>
+      <Route path={"/Admin/Dashboard"}>
+        <Dashboard />
+      </Route>
+      <Route exact path={"/Admin/"}>
+        <Redirect to={"/Admin/Dashboard"} />
       </Route>
     </Switch>
   )

@@ -10,17 +10,6 @@ const IndexAdmin = () => {
     <LayoutAdmin>
       <MaterialRoute />
       <DormitoryRoute />
-      <Switch>
-        <Route path={"/Admin/Dashboard"}>
-          <Dashboard />
-        </Route>
-        <Route path={"/Admin/**"}>
-          <Redirect to={"/Admin/Dashboard"} />
-        </Route>
-        <Route path={"/Admin"}>
-          <Dashboard />
-        </Route>
-      </Switch>
     </LayoutAdmin>
   );
 };
