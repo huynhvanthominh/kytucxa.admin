@@ -119,9 +119,6 @@ export default function Menu() {
                 <Link to={"/Admin/Bill-Material/"}>Hoá đơn</Link>
               </li>
               <li className="component_menu_admin_menu_item">
-                <Link to={"/Admin/Activity"}>Hoạt động</Link>
-              </li>
-              <li className="component_menu_admin_menu_item">
                 <Link to={"#"} onClick={clickStatistical}>Thống kê
                   <span className="component_menu_admin_menu_item_icon">
                     {statistical ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
@@ -136,6 +133,9 @@ export default function Menu() {
                     </li>
                     <li className="component_menu_admin_menu_item">
                       <Link to={"/Admin/Statistical/Report/"}>Sự cố</Link>
+                    </li>
+                    <li className="component_menu_admin_menu_item">
+                      <Link to={"/Admin/Activity"}>Hoạt động</Link>
                     </li>
                   </ul>
                 )
