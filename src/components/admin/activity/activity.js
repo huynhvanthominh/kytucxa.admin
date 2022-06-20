@@ -4,8 +4,6 @@ import TableDateCustom from "../../../customs/Table-Date-custom";
 import { eventMaterialAPI } from "../../../apis/event-material.api"
 export default function Activity() {
     const title = "Hoạt động";
-    const [material, setMaterial] = useState("");
-    const [materials, setMaterials] = useState([]);
     const [events, setEvents] = useState([]);
     const fetchEvents = async () => {
         try {
