@@ -45,6 +45,7 @@ export default function BillView() {
     const [status, setStatus] = useState([{ id: '0', label: 'Chưa thanh toán' }, { id: '1', label: 'Đã thanh toán' }])
     const [statusSelect, setStatusSelect] = useState({ id: '' });
     const [price, setPrice] = useState('');
+    const [priceTemp, setPriceTemp] = useState('');
     const [countPress, setCountPress] = useState(1);
     const title = id ? "Cập nhật hóa đơn" : "Thêm hoá đơn";
 
@@ -250,7 +251,7 @@ export default function BillView() {
                     status: statusSelect.id
                 }
                 console.log("form =>", billData);
-                await billAPI.updateBill(billData, {id: id}).then(data => {
+                await billAPI.updateBill(billData, { id: id }).then(data => {
                     if (data) {
                         TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
                         history.goBack();
@@ -326,9 +327,9 @@ export default function BillView() {
                                             label="Loại Phòng"
                                             onChange={e => {
                                                 setTypeOfRoomSelected(e.target.value);
-                                                console.log(e.target.value.rooms)
+                                                console.log(e.target.value)
                                                 setRoom(e.target.value.rooms);
-                                                setPrice(e.target.value.priceofrooms[e.target.value.priceofrooms?.length - 1].price)
+                                                setPriceTemp(e.target.value.priceofrooms[e.target.value.priceofrooms?.length - 1].price)
                                             }}
                                         >
                                             {
@@ -349,6 +350,12 @@ export default function BillView() {
                                                 setContractSelected(
                                                     e.target.value,
                                                 );
+                                                let data = e.target.value;
+                                                let dayIn = new Date(data.dayIn);
+                                                let duration = new Date(data.duration)
+                                                let result = duration.getTime() - dayIn.getTime();
+                                                let price = new Date(result).getDate() * Number(priceTemp);
+                                                setPrice(price);
                                             }}
                                         >
                                             {
