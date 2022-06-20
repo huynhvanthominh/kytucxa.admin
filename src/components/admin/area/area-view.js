@@ -66,6 +66,7 @@ const AreaView = () => {
                 if (checkValue()) {
                     await areaAPI.addArea({
                         ...area,
+                        status: 0,
                         userId: 1
                     }).then(data => {
                         if (data) {

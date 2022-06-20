@@ -64,6 +64,31 @@ const TypeRoomView = () => {
         return true
     }
 
+    const handleUpdate = async () => {
+        try {
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                // let typeOfRoomData = {
+                //     ...typeOfRoom,
+                // }
+                data.append("image", file);
+                data.append("typeofroom", JSON.stringify(typeOfRoom));
+                console.log(file)
+                await typeOfRoomAPI.updateTypeOfRoom(data).then(data => {
+                    if (data) {
+                        history.goBack()
+                    }
+                })
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
+    }
+
     const handleAdd = async () => {
         try {
             if (checkValue()) {
@@ -73,6 +98,7 @@ const TypeRoomView = () => {
                 let data = new FormData();
                 // let typeOfRoomData = {
                 //     ...typeOfRoom,
+                
                 // }
                 data.append("image", file);
                 data.append("typeofroom", JSON.stringify(typeOfRoom));
@@ -90,28 +116,24 @@ const TypeRoomView = () => {
     }
 
     const handleChange = (e) => {
-        // const file = e.files
-        // setFile(file)
-        // for (let index = 0; file < file.length; index++) {
-        //     reader.readAsDataURL(file[index]);
-        //     reader.onloadend = function (e) {
-        //         console.log(e.target.result);
-        //     };
-        // }
-        let a = [];
-        let b = [];
-        a.push(e.target.files)
-
-        for (let i = 0; i < a[0].length; i++) {
-            const reader = new FileReader();
-            reader.readAsDataURL(a[0][i]);
-            reader.onloadend = function () {
-                b.push(reader.result)
+        const file = e.files
+        setFile(file)
+        for (let index = 0; file < file.length; index++) {
+            const reader = new FileReader()
+            reader.readAsDataURL(file[index]);
+            reader.onloadend = function (e) {
+                console.log(e.target.result);
             };
-            // b.push(URL.createObjectURL(a[0][i]))
         }
-        setImage(b);
-        console.log(b);
+        // let a = [];
+        // let b = [];
+        // a.push(e.target.files)
+
+        // for (let i = 0; i < a[0].length; i++) {
+        //     b.push(URL.createObjectURL(a[0][i]))
+        // }
+        // setImage(b);
+        // console.log(b);
     }
 
     const getListArea = async () => {
@@ -286,8 +308,8 @@ const TypeRoomView = () => {
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
-                                    {id ? <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>:
-                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>}
+                                    {id ? <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleUpdate}>Cập nhật</Button>:
+                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Thêm</Button>}
                                     <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>
                                 </Box>
                             </Grid>

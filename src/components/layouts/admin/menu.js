@@ -44,7 +44,7 @@ export default function Menu() {
       <div className="driver"></div>
       <ul className="component_menu_admin_menu">
         <li className="component_menu_admin_menu_item parent">
-          <Link to={"#"} onClick={clickDormitor}>Ký túc xá
+          <Link to={"#"} onClick={clickDormitor}>Quản lý phòng
             <span className="component_menu_admin_menu_item_icon">
               {dormitory ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
             </span>
