@@ -37,13 +37,13 @@ const RoomList = () => {
 
     const getRoomByUser = async () => {
         try {
-            // await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
-            //     setListArea(data);
-            //     setAreaSelected(-1);
-            //     setTypeOfRoomSelected(-1);
-            // });
-            const { data } = await roomAPI.getRoomAdmin();
-            setRoom(data)
+            await roomAPI.getRoomByUser({ userId: 1 }).then(data => {
+                setListArea(data);
+                setAreaSelected(-1);
+                setTypeOfRoomSelected(-1);
+            });
+            // const { data } = await roomAPI.getRoomAdmin();
+            // setRoom(data)
         } catch (error) {
             TOAST.EROR(error.message)
         }
@@ -61,7 +61,7 @@ const RoomList = () => {
     const handleDelete = async () => {
         try {
             console.log(selected);
-            await roomAPI.deleteRoom({ id: selected?.id }).then(data => {
+            await roomAPI.deleteRoom({id: selected?.id, image: selected?.image}).then(data => {
                 if (data) {
                     TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
                     getRoomByUser();

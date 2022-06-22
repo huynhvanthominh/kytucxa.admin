@@ -184,9 +184,9 @@ const TypeRoomList = () => {
                                 title: "",
                                 data: "id",
                                 render: function (data, row) {
-                                    return (
+                                    return (    
                                         <div className="d-flex justify-content-center">
-                                            <Button onClick={() => { history.push("/Admin/Material/" + data) }} variant="text"><EditIcon color="primary" /></Button>
+                                            <Button onClick={() => { history.push("/Admin/TypeRoom/View/" + data) }} variant="text"><EditIcon color="primary" /></Button>
                                             <Button onClick={() => confirm(data, row)} variant="text"><DeleteForeverIcon sx={{ color: pink[500] }} /></Button>
                                         </div>
                                     );

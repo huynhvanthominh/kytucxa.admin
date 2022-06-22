@@ -38,8 +38,26 @@ export default function () {
             await troubleAPI.getTrouble({ userId: 1 }).then(data => {
                 setListArea(data);
                 setAreaSelected(-1);
-                setTypeOfRoomSelected(-1);
-                setRoomSelected(-1);
+                // setTypeOfRoomSelected(-1);
+                // setRoomSelected(-1);
+                const listRoom = [];
+                const listType = [];
+                const listTrouble = [];
+                data.map(item => {
+                    item?.typeofrooms.map(itemType => {
+                        listType.push(itemType);
+                        itemType.rooms.map(itemRoom => {
+                            listRoom.push(itemRoom);
+                            itemRoom.troubles.map(itemTr => {
+                                listTrouble.push(itemTr)
+                            })
+                        })
+                    })
+                })
+                console.log(listRoom);
+                setTypeOfRoom(listType);
+                setRoom(listRoom);
+                setTrouble(listTrouble);
             });
         } catch (error) {
             TOAST.EROR(error.message)
@@ -57,20 +75,22 @@ export default function () {
     }
     const handleDelete = async () => {
         try {
-            const { data } = await materialService.delete(selected?.id);
-            if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                getDataTrouble();
-            } else {
-                TOAST.EROR(MESSAGE.DELETE_ERROR)
-            }
+            await troubleAPI.deleteTrouble({ id: selected?.id, image: selected?.image }).then(data => {
+                if (data) {
+                    TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+                    getDataTrouble();
+                } else {
+                    TOAST.EROR(MESSAGE.DELETE_ERROR)
+                }
+            })
+
         } catch (error) {
             TOAST.EROR(error.message)
         }
     }
 
     useEffect(() => {
-        if (areaSelected === -1 && typeOfRoomSelected === -1 && roomSelected === -1) {
+        if (areaSelected === -1) {
             const listRoom = [];
             const listType = [];
             const listTrouble = [];
@@ -89,7 +109,7 @@ export default function () {
             setTypeOfRoom(listType);
             setRoom(listRoom);
             setTrouble(listTrouble);
-        } else if (areaSelected !== -1 && typeOfRoomSelected === -1 && roomSelected === -1) {
+        } else if (areaSelected !== -1) {
             let listRoom = [];
             let listTrouble = [];
             listArea.filter(itemA => itemA.id === areaSelected.id).map(itemAr => {
@@ -104,7 +124,48 @@ export default function () {
             })
             setRoom(listRoom);
             setTrouble(listTrouble);
-        } else if (areaSelected !== -1 && typeOfRoomSelected !== -1 && roomSelected === -1) {
+        }
+        //  else if (areaSelected !== -1 && typeOfRoomSelected !== -1 && roomSelected === -1) {
+        //     let listRoom = [];
+        //     let listTrouble = [];
+        //     typeOfRoom.filter(item => item.id === typeOfRoomSelected.id).map(itemT => {
+        //         listRoom.push(itemT);
+        //         itemT.troubles.map(itemTr => {
+        //             listTrouble.push(itemTr);
+        //         })
+        //     })
+        //     setRoom(listRoom);
+        //     setTrouble(listTrouble);
+        // }else if(areaSelected === -1 && typeOfRoomSelected !== -1 && roomSelected === -1){
+
+        //     let listRoom = [];
+        //     let listTrouble = [];
+        //     listArea.map(item => {
+        //         item?.typeofrooms.filter(itemType => itemType.id === typeOfRoomSelected.id).map(itemT => {
+        //             itemT.rooms.map(itemRoom => {
+        //                 listRoom.push(itemRoom);
+        //                 itemRoom.troubles.map(itemTr => {
+        //                     listTrouble.push(itemTr)
+        //                 })
+        //             })
+        //         })
+        //     })
+
+        //     setRoom(listRoom);
+        //     setTrouble(listTrouble);
+        // }else if(roomSelected !== -1){
+        //     let listTrouble = [];
+        //     room.filter(item => item.id === roomSelected.id).map(itemR => {
+        //         itemR.troubles.map(item => {
+        //             listTrouble.push(item);
+        //         })
+        //     })
+        //     setTrouble(listTrouble);
+        // }
+    }, [areaSelected, roomSelected])
+
+    useEffect(() => {
+        if (typeOfRoomSelected === -1) {
             let listRoom = [];
             let listTrouble = [];
             typeOfRoom.filter(item => item.id === typeOfRoomSelected.id).map(itemT => {
@@ -115,7 +176,7 @@ export default function () {
             })
             setRoom(listRoom);
             setTrouble(listTrouble);
-        }else if(areaSelected === -1 && typeOfRoomSelected !== -1 && roomSelected === -1){
+        } else if (typeOfRoomSelected !== -1) {
 
             let listRoom = [];
             let listTrouble = [];
@@ -132,24 +193,36 @@ export default function () {
 
             setRoom(listRoom);
             setTrouble(listTrouble);
-        }else if(roomSelected !== -1){
+        }
+    }, [typeOfRoomSelected])
+
+    useEffect(() => {
+        if (roomSelected === -1) {
+            let listRoom = [];
             let listTrouble = [];
-            room.filter(item => item.id === roomSelected.id).map(itemR => {
-                itemR.troubles.map(item => {
-                    listTrouble.push(item);
+            typeOfRoom.map(item => item.id === typeOfRoomSelected.id).map(itemT => {
+                listRoom.push(itemT);
+                itemT.troubles.map(itemTr => {
+                    listTrouble.push(itemTr);
                 })
             })
+            setRoom(listRoom);
+            setTrouble(listTrouble);
+        } else if (roomSelected !== -1) {
+            let listRoom = [];
+            let listTrouble = [];
+            typeOfRoom.filter(item => item.id === typeOfRoomSelected.id).map(itemT => {
+                listRoom.push(itemT);
+                itemT.rooms.filter(itemR => itemR.id === roomSelected.id).map(itemRo => {
+                    itemRo.troubles.map(itemTr => {
+                        listTrouble.push(itemTr);
+                    })
+                })
+            })
+            setRoom(listRoom);
             setTrouble(listTrouble);
         }
-    }, [areaSelected, typeOfRoomSelected, roomSelected])
-
-    // useEffect(() => {
-    //     if (typeOfRoomSelected === -1) {
-
-    //     } else {
-
-    //     }
-    // }, [typeOfRoomSelected])
+    }, [roomSelected])
 
 
     const FilterKhu = () => {
@@ -174,7 +247,7 @@ export default function () {
                         </Select>
                     </FormControl>
                 </Box>
-                <Box className="ms-2">
+                {/* <Box className="ms-2">
                     <FormControl fullWidth size="small">
                         <InputLabel>Loại Phòng</InputLabel>
                         <Select
@@ -211,7 +284,7 @@ export default function () {
                             }
                         </Select>
                     </FormControl>
-                </Box>
+                </Box> */}
             </div>
         )
     }

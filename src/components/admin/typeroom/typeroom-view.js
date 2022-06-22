@@ -20,7 +20,7 @@ import { areaAPI } from "../../../apis/area.api";
 import { freeServiceAPI } from "../../../apis/freeService.api";
 import { paidServiceAPI } from "../../../apis/paidService.api";
 import { MultiSelect } from "react-multi-select-component";
-
+import { typeOfRoomAPI } from "../../../apis/typeroom.api";
 const TypeRoomView = () => {
 
     const title = "Loại phòng";
@@ -39,7 +39,7 @@ const TypeRoomView = () => {
     const [loadingButton, setLoadingButton] = useState(false)
 
     const uploadFile = async () => {
-        const { data } = await uploadFileService.uploadImage(file, "material");
+        const { data } = await uploadFileService.uploadImage(file, "typeofroom");
         return data
     }
 
@@ -48,62 +48,92 @@ const TypeRoomView = () => {
             TOAST.WARN("Vui lòng chọn hình ảnh !");
             return false
         }
-        if (typeOfRoom?.idMaterialType.length === 0) {
-            TOAST.WARN("Vui lòng chọn loại vật chất !");
+        
+        if (typeOfRoom.areaId?.length === 0) {
+            TOAST.WARN("Vui lòng chọn khu !");
             return false
         }
-        if (typeOfRoom?.name.length === 0) {
-            TOAST.WARN("Vui lòng nhập tên vật chất !");
+        if (typeOfRoom.name?.length === 0) {
+            TOAST.WARN("Vui lòng nhập tên !");
+            return false
+        }
+        if (typeOfRoom.price?.length === 0) {
+            TOAST.WARN("Vui lòng nhập giá !");
             return false
         }
         return true
     }
 
-    const handleAdd = async () => {
-        // try {
-        //     if (checkValue()) {
-        //         setLoading(true);
-        //         const upload = await uploadFile();
+    const handleUpdate = async () => {
+        try {
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                // let typeOfRoomData = {
+                //     ...typeOfRoom,
+                // }
+                data.append("image", file);
+                data.append("typeofroom", JSON.stringify(typeOfRoom));
+                console.log(file)
+                await typeOfRoomAPI.updateTypeOfRoom(data).then(data => {
+                    if (data) {
+                        history.goBack()
+                    }
+                })
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
+    }
 
-        //         if (upload?.name) {
-        //             const { data } = await materialService.add({
-        //                 ...material,
-        //                 media: upload.name
-        //             });
-        //             if (data?.error) {
-        //                 console.log(data);
-        //                 TOAST.EROR(data.message)
-        //                 await uploadFileService.removeImage(upload?.name, "material");
-        //             } else {
-        //                 TOAST.SUCCESS(MESSAGE.ADD_SUCCESS);
-        //                 history.goBack();
-        //             }
-        //         } else {
-        //             TOAST.EROR("Upload file thất bại !");
-        //         }
-        //     }
-        // } catch (error) {
-        //     TOAST.EROR(error.message)
-        // }
+    const handleAdd = async () => {
+        try {
+            if (checkValue()) {
+                setLoading(true);
+                const date = new Date();
+                const minutes = date.getMinutes();
+                let data = new FormData();
+                // let typeOfRoomData = {
+                //     ...typeOfRoom,
+                
+                // }
+                data.append("image", file);
+                data.append("typeofroom", JSON.stringify(typeOfRoom));
+                console.log(file)
+                await typeOfRoomAPI.addTypeOfRoom(data).then(data => {
+                    if (data) {
+                        history.goBack()
+                    }
+                })
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
+        }
+        setLoading(false)
     }
 
     const handleChange = (e) => {
-        // const reader = new FileReader();
-        // const file = e.files
-        // setFile(file)
-        // for (let index = 0; file < file.length; index++) {
-        //     reader.readAsDataURL(file[index]);
-        //     reader.onloadend = function (e) {
-        //         console.log(e.target.result);
-        //     };
-        // }
-        let a = [];
-        let b = [];
-        a.push(e.target.files)
-        for (let i = 0; i < a[0].length; i++) {
-            b.push(URL.createObjectURL(a[0][i]))
+        const file = e.files
+        setFile(file)
+        for (let index = 0; file < file.length; index++) {
+            const reader = new FileReader()
+            reader.readAsDataURL(file[index]);
+            reader.onloadend = function (e) {
+                console.log(e.target.result);
+            };
         }
-        setImage(b);
+        // let a = [];
+        // let b = [];
+        // a.push(e.target.files)
+
+        // for (let i = 0; i < a[0].length; i++) {
+        //     b.push(URL.createObjectURL(a[0][i]))
+        // }
+        // setImage(b);
+        // console.log(b);
     }
 
     const getListArea = async () => {
@@ -169,7 +199,7 @@ const TypeRoomView = () => {
                                         <div>
                                             {
                                                 image.map(item => {
-                                                    <img src={item} />
+                                                    <img src={item}/>
                                                 })
                                             }
                                         </div>
@@ -278,8 +308,8 @@ const TypeRoomView = () => {
                             </Grid>
                             <Grid item sm={16}>
                                 <Box>
-                                    {id ? <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>:
-                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Cập nhật</Button>}
+                                    {id ? <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleUpdate}>Cập nhật</Button>:
+                                    <Button loading={loadingButton} variant="contained" endIcon={<AddIcon />} onClick={handleAdd}>Thêm</Button>}
                                     <Button variant="contained" color='inherit' className="ms-1" endIcon={<CloseIcon />} onClick={() => history.goBack()}>Thoát</Button>
                                 </Box>
                             </Grid>

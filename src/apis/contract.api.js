@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const getAreaById = (params = {}) => {
+const getContractByArea = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getAreaById', {params})
+            .get('/getContractByArea', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -13,10 +13,22 @@ const getAreaById = (params = {}) => {
     });
 };
 
-const getListTypeofroom = (params = {}) => {
+const getContractById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getListTypeofroom', {params})
+            .get('/getContractById', {params})
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+const getUserByBookTicket = (params = {}) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get('/getUserByBookTicket', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -26,37 +38,11 @@ const getListTypeofroom = (params = {}) => {
     });
 };
 
-const getTypeOfRoomByArea = (params = {}) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get('/getTypeOfRoomByArea', {params})
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
-
-const getTypeOfRoomByRoom = (params = {}) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get('/getTypeOfRoomByRoom', {params})
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
-
-export const addTypeOfRoom = (body) => {
+export const addContract = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addTypeOfRoom',
+                '/addContract',
                 body
             )
             .then(function(response) {
@@ -68,10 +54,10 @@ export const addTypeOfRoom = (body) => {
     });
 };
 
-export const updateTypeOfRoom = (body = {}, params = {}) => {
+export const updateContract = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateTypeOfRoom', body, {params})
+            .put('/updateContract', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -81,10 +67,10 @@ export const updateTypeOfRoom = (body = {}, params = {}) => {
     });
 };
 
-export const deleteArea = (params = {}) => {
+export const deleteContract = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteArea',{params})
+            .delete('/deleteContract',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -94,12 +80,11 @@ export const deleteArea = (params = {}) => {
     });
 };
 
-export const typeOfRoomAPI = {
-    getListTypeofroom,
-    getAreaById,
-    addTypeOfRoom,
-    updateTypeOfRoom,
-    deleteArea,
-    getTypeOfRoomByArea,
-    getTypeOfRoomByRoom
+export const contractAPI = {
+    getContractByArea,
+    addContract,
+    updateContract,
+    deleteContract,
+    getUserByBookTicket,
+    getContractById
 }

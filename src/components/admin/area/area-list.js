@@ -38,7 +38,7 @@ const AreaList = () => {
 
     const confirm = (_, row) => {
         setSelected(row.id);
-        setMessage(`Có chắc mún xóa "${row.areaName}"`);
+        setMessage(`Có chắc muốn xóa khu: "${row.areaName}" ?`);
         setIsShow(true);
     }
     const handleDelete = async () => {

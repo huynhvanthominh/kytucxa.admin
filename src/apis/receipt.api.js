@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const getAreaById = (params = {}) => {
+const getBillByArea = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getAreaById', {params})
+            .get('/getBillByArea', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -13,10 +13,10 @@ const getAreaById = (params = {}) => {
     });
 };
 
-const getListTypeofroom = (params = {}) => {
+const getReceiptById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getListTypeofroom', {params})
+            .get('/getReceiptById', {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -26,10 +26,10 @@ const getListTypeofroom = (params = {}) => {
     });
 };
 
-const getTypeOfRoomByArea = (params = {}) => {
+const addReceipt = (body) => {
     return new Promise((resolve, reject) => {
         axios
-            .get('/getTypeOfRoomByArea', {params})
+            .post('/addReceipt', body)
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -39,24 +39,11 @@ const getTypeOfRoomByArea = (params = {}) => {
     });
 };
 
-const getTypeOfRoomByRoom = (params = {}) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get('/getTypeOfRoomByRoom', {params})
-            .then(function(response) {
-                return resolve(response.data);
-            })
-            .catch(function(error) {
-                return reject(error);
-            });
-    });
-};
-
-export const addTypeOfRoom = (body) => {
+export const addArea = (body) => {
     return new Promise((resolve, reject) => {
         axios
             .post(
-                '/addTypeOfRoom',
+                '/addArea',
                 body
             )
             .then(function(response) {
@@ -68,10 +55,10 @@ export const addTypeOfRoom = (body) => {
     });
 };
 
-export const updateTypeOfRoom = (body = {}, params = {}) => {
+export const updateReceipt = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .put('/updateTypeOfRoom', body, {params})
+            .put('/updateReceipt', body, {params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -81,10 +68,10 @@ export const updateTypeOfRoom = (body = {}, params = {}) => {
     });
 };
 
-export const deleteArea = (params = {}) => {
+export const deleteReceipt = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteArea',{params})
+            .delete('/deleteReceipt',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -94,12 +81,11 @@ export const deleteArea = (params = {}) => {
     });
 };
 
-export const typeOfRoomAPI = {
-    getListTypeofroom,
-    getAreaById,
-    addTypeOfRoom,
-    updateTypeOfRoom,
-    deleteArea,
-    getTypeOfRoomByArea,
-    getTypeOfRoomByRoom
+export const receiptAPI = {
+    addReceipt,
+    getBillByArea,
+    addArea,
+    updateReceipt,
+    deleteReceipt,
+    getReceiptById
 }

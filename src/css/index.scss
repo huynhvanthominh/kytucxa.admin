@@ -2,11 +2,6 @@ li {
     list-style: none;
 }
 
-@import url("size.scss");
-@import url("button.scss");
-@import url("card.scss");
-@import url("table.scss");
-
 .input-file {
     display: flex;
     width: 100%;
@@ -32,3 +27,10 @@ li {
 .dropdown-content{
     z-index: 9999 !important;
 }
+
+@import url("size.scss");
+@import url("button.scss");
+@import url("card.scss");
+@import url("table.scss");
+@import "./component//menu.scss";
+@import "./component/dashborad.scss";

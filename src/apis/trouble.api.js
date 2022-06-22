@@ -55,10 +55,10 @@ export const updateTrouble = (body = {}, params = {}) => {
     });
 };
 
-export const deleteArea = (params = {}) => {
+export const deleteTrouble = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteArea',{params})
+            .delete('/deleteTrouble',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -73,5 +73,5 @@ export const troubleAPI = {
     getTrouble,
     addTrouble,
     updateTrouble,
-    deleteArea
+    deleteTrouble
 }
