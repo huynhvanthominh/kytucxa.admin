@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { userAPI } from "../apis/user.api";
 import AuthContext from "../contexts/auth"
-
+import { TOAST } from "../customs/toast-custom"
 const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState({});
@@ -16,13 +17,18 @@ const AuthProvider = ({ children }) => {
     }
 
     const login = async (username, password, callback) => {
-        const data = { username, password }
-        if (data) {
-            const auth = JSON.stringify(data);
-            localStorage.setItem("auth", auth)
-        }
-        if (callback) {
-            callback();
+        try {
+            const {data} = await userAPI.login({ numberPhone: username, password })
+            if (data?.numberPhone?.length > 0 && data?.password?.length > 0) {
+                delete data.password
+                const auth = JSON.stringify(data);
+                localStorage.setItem("auth", auth)
+            }
+            if (callback) {
+                callback();
+            }
+        } catch (error) {
+            TOAST.EROR(error.message)
         }
     }
 

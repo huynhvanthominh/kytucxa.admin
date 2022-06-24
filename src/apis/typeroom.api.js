@@ -68,6 +68,22 @@ export const addTypeOfRoom = (body) => {
     });
 };
 
+export const addImageOfRoom = (body) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .post(
+                '/addImageOfRoom',
+                body
+            )
+            .then(function(response) {
+                return resolve(response.data);
+            })
+            .catch(function(error) {
+                return reject(error);
+            });
+    });
+};
+
 export const updateTypeOfRoom = (body = {}, params = {}) => {
     return new Promise((resolve, reject) => {
         axios
@@ -81,10 +97,10 @@ export const updateTypeOfRoom = (body = {}, params = {}) => {
     });
 };
 
-export const deleteArea = (params = {}) => {
+export const deleteTypeOfRoom = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
-            .delete('/deleteArea',{params})
+            .delete('/deleteTypeOfRoom',{params})
             .then(function(response) {
                 return resolve(response.data);
             })
@@ -98,8 +114,9 @@ export const typeOfRoomAPI = {
     getListTypeofroom,
     getAreaById,
     addTypeOfRoom,
+    addImageOfRoom,
     updateTypeOfRoom,
-    deleteArea,
+    deleteTypeOfRoom,
     getTypeOfRoomByArea,
     getTypeOfRoomByRoom
 }

@@ -49,17 +49,15 @@ const Login = () => {
                                         <h4 className="mt-1 mb-5 pb-1">Đăng Nhập Hệ Thống</h4>
                                     </div>
 
-
-
                                     <div className="form-outline mb-4">
                                         <label className="form-label" htmlFor="form2Example11">Tài Khoản:</label>
-                                        <input type="email" id="form2Example11" className="form-control"
+                                        <input type="email" id="form2Example11" className="form-control" value={value.phone} onChange={e => setValue({...value, phone: e.target.value})}
                                             placeholder="Nhập số điện thoại..." />
                                     </div>
 
                                     <div className="form-outline mb-4">
                                         <label className="form-label" htmlFor="form2Example22">Mật Khẩu:</label>
-                                        <input type="password" placeholder="Nhập mật khẩu..." id="form2Example22" className="form-control" />
+                                        <input type="password" placeholder="Nhập mật khẩu..." id="form2Example22" className="form-control" value={value.password} onChange={e => setValue({...value, password: e.target.value})} />
                                     </div>
 
                                     <div className="text-center pt-1 mb-5 pb-1">

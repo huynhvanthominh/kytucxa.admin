@@ -207,13 +207,14 @@ export default function InputMaterialToRoom() {
         fetchStatus();
     }, [])
     const getVatchatByIdVatchat = (id) => {
-        return materials.filter(item => item.id === id)[0].name
+        return materials.filter(item => item.id === id)[0]?.name
     }
     const getTypeByValueType = (status) => {
-        return statuses.filter(item => item.id === status)[0].name
+        return statuses.filter(item => item.id === status)[0]?.name
     }
     const getRoomByValueRoom = (room) => {
-        return rooms.filter(item => item.id === room)[0].roomName
+
+        return rooms.filter(item => item.id === room)[0]?.roomName   
     }
 
     return (

@@ -64,18 +64,19 @@ const TypeRoomList = () => {
 
     const confirm = (_, row) => {
         setSelected(row);
-        setMessage(`Có chắc mún xóa "${row.name}"`);
+        setMessage(`Có chắc muốn xóa "${row.name}"`);
         setIsShow(true);
     }
     const handleDelete = async () => {
         try {
-            const { data } = await materialService.delete(selected?.id);
-            if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
-                getData();
-            } else {
-                TOAST.EROR(MESSAGE.DELETE_ERROR)
-            }
+            await typeOfRoomAPI.deleteTypeOfRoom({id: selected?.id}).then(data => {
+                if (data) {
+                    TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+                    getData();
+                } else {
+                    TOAST.EROR(MESSAGE.DELETE_ERROR)
+                }
+            })
         } catch (error) {
             TOAST.EROR(error.message)
         }

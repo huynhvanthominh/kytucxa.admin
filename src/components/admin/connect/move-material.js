@@ -50,7 +50,7 @@ export default function MoveMaterial({ material, open = false, close, maxWidth =
                         desciptionEvent: value.comment,
                         from: material.owner,
                         to: value.room
-                    }).then(rs => console.log(rs))
+                    })
                     if (callback) {
                         callback();
                     }

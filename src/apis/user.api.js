@@ -1,5 +1,9 @@
 import axios from "axios"
 
+const login = async (user) => {
+    return await axios.post("/login", user)
+}
+
 const getUserById = (params = {}) => {
     return new Promise((resolve, reject) => {
         axios
@@ -70,6 +74,7 @@ export const deleteArea = (params = {}) => {
 
 export const userAPI = {
     getUserById,
+    login,
     addContract,
     updateArea,
     deleteArea,

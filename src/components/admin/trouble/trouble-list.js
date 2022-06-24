@@ -35,7 +35,7 @@ export default function () {
 
     const getDataTrouble = async () => {
         try {
-            await troubleAPI.getTrouble({ userId: 1 }).then(data => {
+            await troubleAPI.getTrouble({ userId: 8 }).then(data => {
                 setListArea(data);
                 setAreaSelected(-1);
                 // setTypeOfRoomSelected(-1);

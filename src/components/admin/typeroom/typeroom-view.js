@@ -103,9 +103,11 @@ const TypeRoomView = () => {
                 data.append("image", file);
                 data.append("typeofroom", JSON.stringify(typeOfRoom));
                 console.log(file)
-                await typeOfRoomAPI.addTypeOfRoom(data).then(data => {
-                    if (data) {
-                        history.goBack()
+                await typeOfRoomAPI.addTypeOfRoom(data).then(async datab => {
+                    if (datab) {
+                        await typeOfRoomAPI.addImageOfRoom({image: file, typeOfRoomId: datab}).then(data => {
+                            history.goBack();
+                        })
                     }
                 })
             }
@@ -116,15 +118,16 @@ const TypeRoomView = () => {
     }
 
     const handleChange = (e) => {
-        const file = e.files
+        setLoadingImage(true)
+        const reader = new FileReader();
+        const file = e.target.files[0];
         setFile(file)
-        for (let index = 0; file < file.length; index++) {
-            const reader = new FileReader()
-            reader.readAsDataURL(file[index]);
-            reader.onloadend = function (e) {
-                console.log(e.target.result);
-            };
-        }
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+            // console.log("rs: ",reader.result)
+            setImage(reader.result)
+        };
+        setTimeout(() => setLoadingImage(false), 500)
         // let a = [];
         // let b = [];
         // a.push(e.target.files)
@@ -192,16 +195,12 @@ const TypeRoomView = () => {
                     <Grid item md={8} sm={16}>
                         <Card className="card-file">
                             <label className="input-file">
-                                <input multiple onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
+                                <input onChange={e => handleChange(e)} accept="image/*" className="d-none" id="icon-button-file" type="file" />
                                 {
                                         image.length === 0 ?
                                         <CameraAltIcon color="primary" sx={{ fontSize: 120 }} /> :
                                         <div>
-                                            {
-                                                image.map(item => {
-                                                    <img src={item}/>
-                                                })
-                                            }
+                                            <img src={image}/>
                                         </div>
                                 }
                             </label>
