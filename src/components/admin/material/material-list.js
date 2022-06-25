@@ -63,8 +63,8 @@ const MaterialList = () => {
     const handleDelete = async () => {
         try {
             const { data } = await materialService.delete(selected?.id);
-            if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+            if (data?.status) {
+                TOAST.SUCCESS(data?.message)
                 getData();
             } else {
                 TOAST.EROR(MESSAGE.DELETE_ERROR)

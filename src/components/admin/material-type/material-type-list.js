@@ -51,7 +51,7 @@ const MaterialTypeList = () => {
         try {
             const { data } = await materialTypeService.delete(selected.id)
             if (data.status) {
-                TOAST.SUCCESS(MESSAGE.DELETE_SUCCESS)
+                TOAST.SUCCESS(data?.message)
                 fetchMaterialType();
                 uploadFileService.removeImage(selected.media, "materialType")
             } else {
